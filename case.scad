@@ -4,10 +4,11 @@
 // The concept is that we make a module of the PCB with attached parts, which is then used to cut out the design in a simple cuboid case
 // To this end, this file has a set of functions to create the outline for different types of parts
 
-
-// The module is designed to produce the parts
+// The case module expects one or two children, and creates the two parts of the case that clip together
 // child(0) is the PCB, a cube of width, length, and height with bits attached / sticking out from that
-// If child(1) 
+// Typically use parts.scad for various well known parts on a PCV
+// If child(1) exists it is the extra parts for cut adding to the base
+// If child(2) exists it is the extra parts for cut removing from the base and adding to the top
 // Origin for all items is bottom left of PCB, box sticks out around it
 
 module case(width=20,length=20,height=20,base=2.5,top=2.5,clear=0.5,side=2.5,sidet=0.1)
@@ -17,8 +18,15 @@ module case(width=20,length=20,height=20,base=2.5,top=2.5,clear=0.5,side=2.5,sid
 		casebox(width,length,height,base,top,clear,side)children(0);
 		translate([0,0,base])
 		{
-			casecut(width,length,height,base,top,side,-sidet);
-			if($children>0)children(1);
+			difference()
+			{
+				union()
+				{
+					casecut(width,length,height,base,top,side,-sidet);
+					if($children>1)children(1);
+				}
+				if($children>2)children(2);
+			}
 		}
 	}
 	translate([width+side*3,length/2+side,(base+height+top)/2])
@@ -29,8 +37,15 @@ module case(width=20,length=20,height=20,base=2.5,top=2.5,clear=0.5,side=2.5,sid
 		casebox(width,length,height,base,top,clear,side)children(0);
 		translate([0,0,base])
 		{
-			casecut(width,length,height,base,top,side,sidet);
-			if($children>0)children(1);
+			difference()
+			{
+				union()
+				{
+					casecut(width,length,height,base,top,side,sidet);
+					if($children>1)children(1);
+				}
+				if($children>2)children(2);
+			}
 		}
 	}
 }
