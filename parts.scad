@@ -121,6 +121,21 @@ module milligrid(x,y,r=0,n=2,pcb=1.6)
 	}
 }
 
+
+module molex(x,y,r=0,nx=1,ny=1,pcb=1.6)
+{
+	posn(x,y,2.54*nx,2.54*ny,r)
+	{
+		translate([0,0,-pcb-2.54])
+		cube([nx*2.54,ny*2.54,2.5401]);
+		for(px=[0:1:nx-1])
+		for(py=[0:1:ny-1])
+		translate([px*nx+2.54/2-0.5,py*ny+2.54/2-0.5,-9]);
+		cube([1,1,9.001]);
+		pads(x+2.54/2,y+2.54/2,1,3.5-1.6,nx,2.54,ny,2.54);
+	}
+}
+
 module smd1206(x,y,r=0)
 {
 	posn(x,y,3.2,1.6,r)
