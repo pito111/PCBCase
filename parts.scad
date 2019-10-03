@@ -92,7 +92,7 @@ module screw3mm5a(stage,x,y,r,n=2)
 
 module screw3mm5(stage,x,y,r,n=2)
 { // 7.2mm wide, 8.75mm high, 3.5mm spacing, low profile screw terminals, e.g. RS 790-1149
-	screw(stage,x,y,r,n,3.5,7.2,8.75,3.7,3.2);
+	screw(stage,x,y,r,n,3.5,7.2,8.75,3.7,3);
 }
 
 
