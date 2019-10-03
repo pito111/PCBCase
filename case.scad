@@ -74,8 +74,10 @@ module casecut(width,length,height,base,top,clear,side,sidet)
 			cube([side*2+width+2,side*2+length+2,base+1+height/2-side/2]);
 			translate([side/2-sidet,side/2-sidet,base+height/2-1.001-side/2])
 			cube([width+side+sidet*2,length+side+sidet*2,side/2+1.001]);
-			if($children>1)translate([side,side,base])casegrow(clear)children(0);
+			if($children>0)translate([side,side,base])children(0);
 		}
-		if($children>1)translate([side,side,base])casegrow(clear)children(1);
+		if($children>1)translate([side,side,base])children(1);
+		if(sidet<0)translate([side-clear/2,side-clear/2,base])cube([width+clear,length+clear,height+top+1]);
 	}
+	if(sidet>0)translate([side-clear/2,side-clear/2,-1])cube([width+clear,length+clear,height+base+1]);
 }

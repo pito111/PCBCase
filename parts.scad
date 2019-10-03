@@ -22,7 +22,7 @@ module pads(x,y,d=1.2,h=2.5,nx=1,dx=2.54,ny=1,dy=2.54)
 	for(px=[0:1:nx-1])
 	for(py=[0:1:ny-1])
 	translate([x+px*dx,y+py*dy,-0.001])
-	cylinder(d1=3,d2=d,h=h+0.001,$fn=12);
+	cylinder(d1=3,d2=d,h=h+0.001,$fn=8);
 }
 
 module esp32(stage,x,y,r=0)
@@ -37,13 +37,13 @@ module esp32(stage,x,y,r=0)
     			translate([-1,1,0])
     			cube([20,18,2]); // Solder
 		}else{ // Cut
-			translate([0,15.5,0])
+			translate([-1,15.5,0])
 			hull()
 			{
-				translate([0,0,stage])
-				cube([18,10,1]);	// Base PCB
-				translate([-4,0,stage*20])
-				cube([18+8,10,1]);
+				translate([0,0,stage/2])
+				cube([20,10,1]);	// Base PCB
+				translate([-10,0,stage*20])
+				cube([20+20,10,1]);
 			}
 		}
 	}
@@ -68,13 +68,13 @@ module screw(stage,x,y,r,n=2,d,w,h,s=3,pcb=1.6)
 			translate([d/2+d*px-(d-1)/2,-20,-pcb-1-(d-1)])
 			cube([d-1,20.001,d-1]);
 		}else{ // Cut
-			translate([0,-10,-pcb-1-(d-1)/2-0.5])
+			translate([0,-20,-pcb-1-(d-1)/2-0.5])
 			hull()
 			{
 				translate([0,0,stage/2])
 				cube([d*n,20,1]);
-				translate([-4,0,stage*20])
-				cube([d*n+8,20,1]);
+				translate([-10,0,stage*20])
+				cube([d*n+20,20,1]);
 			}
 		}
 	}
