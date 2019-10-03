@@ -108,7 +108,7 @@ module d24v5f3(x,y,r=0,pcb=1.6)
 }
 
 module milligrid(x,y,r=0,n=2,pcb=1.6)
-{
+{ // eg RS part 6700927
 	posn(x,y,2.6+n*2,6.4,r)
 	{
 		translate([0,0,-pcb-6.3])
@@ -147,7 +147,7 @@ module smd1206(x,y,r=0)
 }
 
 module smdrelay(x,y,r=0)
-{
+{ // RS part 6839012
 	posn(x,y,4.4,3.9,r)
 	{
 		cube([4.4,3.9,3]);
