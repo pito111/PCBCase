@@ -43,7 +43,7 @@ module casegrow(clear)
 	minkowski()
 	{
 		children();
-		cube(clear,center=true);
+		if(clear)cube(clear,center=true);
 	}
 }
 

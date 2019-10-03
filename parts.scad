@@ -55,7 +55,7 @@ module screw(stage,x,y,r,n=2,d,w,h,s=3,pcb=1.6)
 	{
 		if(!stage)
 		{
-			pads(w/2,d/2,1.2,3.5-pcb,n,d);
+			pads(d/2,w/2,1.2,3.5-pcb,n,d);
 			// Body
 			translate([0,0,-pcb-h])
 			cube([d*n,w,h+0.001]);
