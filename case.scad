@@ -60,7 +60,11 @@ module casebox(width,length,height,base,top,clear,side)
 			cube([side*2+width,side*2+length,height+base+top-side]); // Case
 		}
 		translate([side,side,base])
-		casegrow(clear)children();
+		casegrow(clear)
+		{
+			cube([width,length,height]);
+			children();
+		}
 	}
 }
 
