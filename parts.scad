@@ -37,31 +37,31 @@ module esp32(stage,x,y,r=0)
     			translate([-1,1,0])
     			cube([20,18,2]); // Solder
 		}else{ // Cut
-			translate([-1,15.5,0])
+			translate([-0.2,15.5,0])
 			hull()
 			{
 				translate([0,0,stage/2])
-				cube([20,10,1]);	// Base PCB
+				cube([18.4,10,1]);	// Base PCB
 				translate([-10,0,stage*20])
-				cube([20+20,10,1]);
+				cube([18.4+20,10,1]);
 			}
 		}
 	}
 }
 
-module screw(stage,x,y,r,n=2,d,w,h,s=3,pcb=1.6)
+module screw(stage,x,y,r,n=2,d,w,h,yp,ys,s=3,pcb=1.6)
 { // Corner of outline
 	posn(x,y,d*n,w,r)
 	{
 		if(!stage)
 		{
-			pads(d/2,w/2,1.2,3.5-pcb,n,d);
+			pads(d/2,yp?yp:w/2,1.2,3.5-pcb,n,d);
 			// Body
 			translate([0,0,-pcb-h])
 			cube([d*n,w,h+0.001]);
 			// Screws
 			for(px=[0:1:n-1])
-			translate([d/2+d*px,w/2,-pcb-20-h])
+			translate([d/2+d*px,ys?ys:w/2,-pcb-20-h])
 			cylinder(d=s,h=20.001);
 			// Wires
 			for(px=[0:1:n-1])
@@ -73,8 +73,8 @@ module screw(stage,x,y,r,n=2,d,w,h,s=3,pcb=1.6)
 			{
 				translate([0,0,stage/2])
 				cube([d*n,20,1]);
-				translate([-10,0,stage*20])
-				cube([d*n+20,20,1]);
+				translate([0,0,stage*20])
+				cube([d*n,20,1]);
 			}
 		}
 	}
@@ -85,10 +85,16 @@ module screw5mm(stage,x,y,r,n=2)
 	screw(stage,x,y,r,n,5,8.1,10);
 }
 
-module screw3mm5(stage,x,y,r,n=2)
+module screw3mm5a(stage,x,y,r,n=2)
 { // 7mm wide, 8.5mm high, 3.5mm spacing, low profile screw terminals, e.g. RS 144-4314
 	screw(stage,x,y,r,n,3.5,7,8.5);
 }
+
+module screw3mm5(stage,x,y,r,n=2)
+{ // 7.2mm wide, 8.75mm high, 3.5mm spacing, low profile screw terminals, e.g. RS 790-1149
+	screw(stage,x,y,r,n,3.5,7.2,8.75,3.7,3.2);
+}
+
 
 module d24v5f3(x,y,r=0,pcb=1.6)
 { // Pololu regulator using only 3 pins
