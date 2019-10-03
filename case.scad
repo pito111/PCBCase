@@ -17,7 +17,7 @@ module case(width=20,length=20,height=20,base=2.5,top=2.5,clear=0.5,side=2.5,sid
 	intersection()
 	{
 		casebox(width,length,height,base,top,clear,side)children(0);
-		casecut(width,length,height,base,top,clear,side,-sidet)
+		casecut(width,length,height,base,top,clear,side,-sidet/2)
 		{
 			if($children>1)children(1);
 			if($children>2)children(2);
@@ -30,7 +30,7 @@ module case(width=20,length=20,height=20,base=2.5,top=2.5,clear=0.5,side=2.5,sid
 	difference()
 	{
 		casebox(width,length,height,base,top,clear,side)children(0);
-		casecut(width,length,height,base,top,clear,side,sidet)
+		casecut(width,length,height,base,top,clear,side,sidet/2)
 		{
 			if($children>1)children(1);
 			if($children>2)children(2);
@@ -76,8 +76,8 @@ module casecut(width,length,height,base,top,clear,side,sidet)
 		{
 			translate([-1,-1,-1])
 			cube([side*2+width+2,side*2+length+2,base+1+height/2-side/2]);
-			translate([side/2-sidet,side/2-sidet,base+height/2-1.001-side/2])
-			cube([width+side+sidet*2,length+side+sidet*2,side/2+1.001]);
+			translate([side/2-sidet/2,side/2-sidet/2,base+height/2-1.001-side/2])
+			cube([width+side+sidet,length+side+sidet,side/2+1.001]);
 			if($children>0)translate([side,side,base])children(0);
 		}
 		if($children>1)translate([side,side,base])children(1);
