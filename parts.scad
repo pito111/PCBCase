@@ -156,20 +156,66 @@ module smdrelay(x,y,r=0)
 	}
 }
 
-module spox(x,y,r=0,n=2)
+module spox(stage,x,y,r=0,n=2,pcb=1.6,leads=1)
 {
-	posn(x,y,(n-1)*2.5+4.9,4.9,r)
+	posn(x,y,(n-1)*2.5+4.9,7.9,r)
+	translate([0,0,-pcb])
+	mirror([0,0,1])
 	{
-    		cube([(n-1)*2.5+4.9,4.9,4.9]);
-    		cube([(n-1)*2.5+4.9,5.9,3.9]);
-    		hull()
-    		{
-        		cube([(n-1)*2.5+4.9,7.9,0.5]);
-        		cube([(n-1)*2.5+4.9,7.4,1]);
-    		}
-    		translate([4.9/2-0.3,0,0])
-    		cube([(n-1)*2.5+0.6,6.6+0.3,2.38+0.3]);
-    		translate([0,-20,0])
-    		cube([(n-1)*2.5+4.9,20,4.9]);
+		if(!stage)
+		{
+			cube([(n-1)*2.5+4.9,4.9,4.9]);
+    			cube([(n-1)*2.5+4.9,5.9,3.9]);
+    			hull()
+    			{
+        			cube([(n-1)*2.5+4.9,7.9,0.5]);
+        			cube([(n-1)*2.5+4.9,7.4,1]);
+    			}
+			translate([4.9/2-0.3,0,0])
+    			cube([(n-1)*2.5+0.6,6.6+0.3,2.38+0.3]);
+			if(leads)
+			{
+				translate([0,-20,0])
+    				cube([(n-1)*2.5+4.9,20,4.9]);
+			}
+		}else{ // Cut
+			translate([0,-20,2])
+			hull()
+			{
+				translate([-0.1,0,-stage/2])
+				cube([(n-1)*2.5+4.9+0.2,20,1]);
+				translate([-0.1,0,-stage*20])
+				cube([(n-1)*2.5+4.9+0.2,20,1]);
+			}
+		}
+	}
+}
+
+module usbc(stage,x,y,r=0)
+{
+	posn(x,y,8.94,7.35,r)
+	{
+		if(!stage)
+		{
+			cube([8.94,7.35,3.26]);
+			cube([8.94,8,1]);	// Solder
+			translate([3.26/2,-20,3.26/2])
+			rotate([-90,0,0])
+			hull()
+			{
+				cylinder(d=3.26,h=20);
+				translate([8.94-3.26,0,0])
+				cylinder(d=3.26,h=20);
+			}
+		}else{ // Cut
+			translate([0,-20,3.2/2])
+			hull()
+			{
+				translate([-1,0,stage/2])
+				cube([8.94+2,20,1]);
+				translate([-5,0,stage*20])
+				cube([8.94+10,20,1]);
+			}
+		}
 	}
 }
