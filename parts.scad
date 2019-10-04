@@ -159,32 +159,35 @@ module smdrelay(x,y,r=0)
 module spox(stage,x,y,r=0,n=2,pcb=1.6,leads=1)
 {
 	posn(x,y,(n-1)*2.5+4.9,7.9,r)
-	translate([0,0,-pcb])
-	mirror([0,0,1])
 	{
 		if(!stage)
 		{
+			pads(2.45,7.5,1.2,2.5,n,2.5);
+			translate([0,0,-pcb-4.9])
 			cube([(n-1)*2.5+4.9,4.9,4.9]);
+			translate([0,0,-pcb-3.9])
     			cube([(n-1)*2.5+4.9,5.9,3.9]);
     			hull()
     			{
+				translate([0,0,-pcb-0.5])
         			cube([(n-1)*2.5+4.9,7.9,0.5]);
+				translate([0,0,-pcb-1])
         			cube([(n-1)*2.5+4.9,7.4,1]);
     			}
-			translate([4.9/2-0.3,0,0])
+			translate([4.9/2-0.3,0,-pcb-2.38-0.3])
     			cube([(n-1)*2.5+0.6,6.6+0.3,2.38+0.3]);
 			if(leads)
 			{
-				translate([0,-20,0])
+				translate([0,-20,-pcb-4.9])
     				cube([(n-1)*2.5+4.9,20,4.9]);
 			}
 		}else{ // Cut
-			translate([0,-20,2])
+			translate([0,-20,-pcb-2])
 			hull()
 			{
-				translate([-0.1,0,-stage/2])
+				translate([-0.1,0,stage/2])
 				cube([(n-1)*2.5+4.9+0.2,20,1]);
-				translate([-0.1,0,-stage*20])
+				translate([-0.1,0,stage*20])
 				cube([(n-1)*2.5+4.9+0.2,20,1]);
 			}
 		}
