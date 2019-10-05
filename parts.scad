@@ -202,6 +202,22 @@ module usbc(stage,x,y,r=0)
 		{
 			cube([8.94,7.35,3.26]);
 			cube([8.94,8,1]);	// Solder
+			translate([-1,1.88-1,0])
+			cube([8.94+2,1.4+2,1]); // Solder
+			translate([-1,5.91-1,0])
+			cube([8.94+2,1.7+2,1]); // Solder
+			// Posts
+			for(px=[-0.155,8.495])
+			{
+				translate([px,1.88,-1])
+				cube([0.9,1.4,1]);
+				translate([px,5.91,-1])
+				cube([0.9,1.7,1]);
+			}
+			for(px=[1.28+.3,7.06+0.3])
+			translate([px,5.98+.3,-1])
+			cylinder(d=0.6,h=1);
+			// lead
 			translate([3.26/2,-20,3.26/2])
 			rotate([-90,0,0])
 			hull()
