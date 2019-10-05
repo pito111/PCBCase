@@ -152,7 +152,7 @@ module smdrelay(x,y,r=0)
 	{
 		cube([4.4,3.9,3]);
 		translate([-1.5,0,0])
-		cube([4.4+3,3.9,1]);	// Solder
+		cube([4.4+3,3.9,2]);	// Solder and tags
 	}
 }
 
