@@ -165,7 +165,7 @@ module smdrelay(x,y,r=0)
 	}
 }
 
-module spox(stage,x,y,r=0,n=2,pcb=1.6,leads=false)
+module spox(stage,x,y,r=0,n=2,pcb=1.6,leads=true)
 {
 	w=(n-1)*2.5+4.9;
 	posn(x,y,w,7.9,r)
