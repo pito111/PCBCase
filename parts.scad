@@ -8,13 +8,22 @@
 // Stage=-1 cuts in to box base
 // Only parts that expect to "stick out" from the case do anything for the cut stages
 
-module posn(x,y,w,h,r)
+module posn(x,y,w,h,r,vx=0.2,vy=0.2,vz=0)
 { // Positioning for 90 degree angles as bottom left still
 	s=sin(r);
 	c=cos(r);
 	translate([x+(s>0?h*s:0)+(c<0?-w*c:0),y+(c<0?-h*c:0)+(s<0?-w*s:0),0])
 	rotate([0,0,r])
-	children();
+	{
+		if(vx||vy||vz)
+		{
+			minkowski()
+			{
+				children();
+				cube([vx?vx:0.001,vy?vy:0.001,vz?vz:0.001],center=true);
+			}
+		}else children();
+	}
 }
 
 module pads(x,y,d=1.2,h=2.5,nx=1,dx=2.54,ny=1,dy=2.54)
@@ -27,7 +36,7 @@ module pads(x,y,d=1.2,h=2.5,nx=1,dx=2.54,ny=1,dy=2.54)
 
 module esp32(stage,x,y,r=0)
 { // Corner of main board of ESP32 18mm by 25.5mm
-	posn(x,y,18,25.5,r)
+	posn(x,y,18,25.5,r,1,0.25,0) // Note left/right margin for placement
 	{
 		if(!stage)
 		{
@@ -37,13 +46,13 @@ module esp32(stage,x,y,r=0)
     			translate([-1,1,0])
     			cube([20,18,2]); // Solder
 		}else{ // Cut
-			translate([-0.2,15.5,0])
+			translate([0,15.5,0])
 			hull()
 			{
-				translate([0,0,stage/2])
-				cube([18.4,10,1]);	// Base PCB
+				translate([0,0,stage])
+				cube([18,10,1]);	// Base PCB
 				translate([-10,0,stage*20])
-				cube([18.4+20,10,1]);
+				cube([18+20,10,1]);
 			}
 		}
 	}
@@ -138,7 +147,7 @@ module molex(x,y,r=0,nx=1,ny=1,pcb=1.6)
 
 module smd1206(x,y,r=0)
 {
-	posn(x,y,3.2,1.6,r)
+	posn(x,y,3.2,1.6,r,0.6,0.6)
 	{
 		cube([3.2,1.6,1]);
 		translate([-0.5,-0.5,0])
@@ -148,7 +157,7 @@ module smd1206(x,y,r=0)
 
 module smdrelay(x,y,r=0)
 { // RS part 6839012
-	posn(x,y,4.4,3.9,r)
+	posn(x,y,4.4,3.9,r,0.6,0.6)
 	{
 		cube([4.4,3.9,3]);
 		translate([-1.5,0,0])
@@ -156,39 +165,40 @@ module smdrelay(x,y,r=0)
 	}
 }
 
-module spox(stage,x,y,r=0,n=2,pcb=1.6,leads=1)
+module spox(stage,x,y,r=0,n=2,pcb=1.6,leads=false)
 {
-	posn(x,y,(n-1)*2.5+4.9,7.9,r)
+	w=(n-1)*2.5+4.9;
+	posn(x,y,w,7.9,r)
 	{
 		if(!stage)
 		{
 			pads(2.45,7.5,1.2,2.5,n,2.5);
 			translate([0,0,-pcb-4.9])
-			cube([(n-1)*2.5+4.9,4.9,4.9]);
+			cube([w,4.9,4.9]);
 			translate([0,0,-pcb-3.9])
-    			cube([(n-1)*2.5+4.9,5.9,3.9]);
+    			cube([w,5.9,3.9]);
     			hull()
     			{
 				translate([0,0,-pcb-0.5])
-        			cube([(n-1)*2.5+4.9,7.9,0.5]);
+        			cube([w,7.9,0.5]);
 				translate([0,0,-pcb-1])
-        			cube([(n-1)*2.5+4.9,7.4,1]);
+        			cube([w,7.4,1]);
     			}
 			translate([4.9/2-0.3,0,-pcb-2.38-0.3])
-    			cube([(n-1)*2.5+0.6,6.6+0.3,2.38+0.3]);
+    			cube([w-4.9+0.6,6.6+0.3,2.38+0.3]);
 			if(leads)
 			{
 				translate([0,-20,-pcb-4.9])
-    				cube([(n-1)*2.5+4.9,20,4.9]);
+    				cube([w,20,4.9]);
 			}
 		}else{ // Cut
 			translate([0,-20,-pcb-2])
 			hull()
 			{
-				translate([-0.1,0,stage/2])
-				cube([(n-1)*2.5+4.9+0.2,20,1]);
-				translate([-0.1,0,stage*20])
-				cube([(n-1)*2.5+4.9+0.2,20,1]);
+				translate([0,0,stage/2])
+				cube([w,20,1]);
+				translate([0,0,stage*20])
+				cube([w+20,1]);
 			}
 		}
 	}
@@ -201,11 +211,21 @@ module usbc(stage,x,y,r=0)
 		if(!stage)
 		{
 			cube([8.94,7.35,3.26/2]);
-			cube([8.94,8,1]);	// Solder
-			translate([-1,1.88-1,0])
-			cube([8.94+2,1.4+2,1]); // Solder
-			translate([-1,5.91-1,0])
-			cube([8.94+2,1.7+2,1]); // Solder
+			cube([8.94,8,0.5]);	// Solder
+			hull()
+			{
+				translate([-1,1.88-1,0])
+				cube([8.94+2,1.4+2,0.5]); // Solder
+				translate([-0.4,1.88-0.4,0])
+				cube([8.94+0.8,1.4+0.8,1.5]); // Solder
+			}
+			hull()
+			{
+				translate([-1,5.91-1,0])
+				cube([8.94+2,1.7+2,0.5]); // Solder
+				translate([-0.4,5.91-0.4,0])
+				cube([8.94+0.8,1.7+0.8,1.5]); // Solder
+			}
 			// Posts
 			for(px=[-0.155,8.495])
 			{
@@ -231,9 +251,9 @@ module usbc(stage,x,y,r=0)
 				translate([0,0,-20])
 				hull()
 				{
-					cylinder(d=2*3.26,h=20);
+					cylinder(d=7,h=20);
 					translate([8.94-3.26,0,0])
-					cylinder(d=2*3.26,h=20);
+					cylinder(d=7,h=20);
 				}
 			}
 		}else{ // Cut

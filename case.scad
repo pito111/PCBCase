@@ -11,13 +11,13 @@
 // If child(2) exists it is the extra parts for cut added to base (e.g. parts stage 1)
 // Origin for all items is bottom left of PCB, box sticks out around it
 
-module case(width=20,length=20,height=20,base=2.5,top=2.5,clear=0.5,side=2.5,sidet=0.1)
+module case(width=20,length=20,height=20,base=2.5,top=2.5,side=2.5,sidet=0.1)
 {
 	// Base
 	intersection()
 	{
-		casebox(width,length,height,base,top,clear,side)children(0);
-		casecut(width,length,height,base,top,clear,side,-sidet/2)
+		casebox(width,length,height,base,top,side)children(0);
+		casecut(width,length,height,base,top,side,-sidet/2)
 		{
 			if($children>1)children(1);
 			if($children>2)children(2);
@@ -29,8 +29,8 @@ module case(width=20,length=20,height=20,base=2.5,top=2.5,clear=0.5,side=2.5,sid
 	translate([0,-length/2-side,-(base+height+top)/2])
 	difference()
 	{
-		casebox(width,length,height,base,top,clear,side)children(0);
-		casecut(width,length,height,base,top,clear,side,sidet/2)
+		casebox(width,length,height,base,top,side)children(0);
+		casecut(width,length,height,base,top,side,sidet/2)
 		{
 			if($children>1)children(1);
 			if($children>2)children(2);
@@ -38,17 +38,7 @@ module case(width=20,length=20,height=20,base=2.5,top=2.5,clear=0.5,side=2.5,sid
 	}
 }
 
-module casegrow(clear)
-{
-	minkowski()
-	{
-		children();
-		if(clear)cube(clear,center=true);
-	}
-}
-
-
-module casebox(width,length,height,base,top,clear,side)
+module casebox(width,length,height,base,top,side)
 { // The box
 	difference()
 	{
@@ -60,7 +50,6 @@ module casebox(width,length,height,base,top,clear,side)
 			cube([side*2+width,side*2+length,height+base+top-side]); // Case
 		}
 		translate([side,side,base])
-		casegrow(clear)
 		{
 			cube([width,length,height]);
 			children();
@@ -68,20 +57,21 @@ module casebox(width,length,height,base,top,clear,side)
 	}
 }
 
-module casecut(width,length,height,base,top,clear,side,sidet)
+module casecut(width,length,height,base,top,side,sidet)
 { // The base cut
 	difference()
 	{
+		offset=height/2+0.8;
 		union()
 		{
 			translate([-1,-1,-1])
-			cube([side*2+width+2,side*2+length+2,base+1+height/2-side/2]);
-			translate([side/2-sidet/2,side/2-sidet/2,base+height/2-1.001-side/2])
+			cube([side*2+width+2,side*2+length+2,base+1+offset-side/2]);
+			translate([side/2-sidet/2,side/2-sidet/2,base+offset-1.001-side/2])
 			cube([width+side+sidet,length+side+sidet,side/2+1.001]);
 			if($children>0)translate([side,side,base])children(0);
 		}
 		if($children>1)translate([side,side,base])children(1);
-		if(sidet<0)translate([side-clear/2,side-clear/2,base])cube([width+clear,length+clear,height+top+1]);
+		if(sidet<0)translate([side,side,base])cube([width,length,height+top+1]);
 	}
-	if(sidet>0)translate([side-clear/2,side-clear/2,-1])cube([width+clear,length+clear,height+base+1]);
+	if(sidet>0)translate([side,side,-1])cube([width,length,height+base+1]);
 }
