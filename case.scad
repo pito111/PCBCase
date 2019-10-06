@@ -51,7 +51,7 @@ module casebox(width,length,height,base,top,side)
 		}
 		translate([side,side,base])
 		{
-			cube([width,length,height]);
+			cube([width,length,height]); // PCB
 			children();
 		}
 	}
