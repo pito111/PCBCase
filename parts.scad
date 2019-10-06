@@ -191,7 +191,8 @@ module spox(stage,x,y,r=0,n=2,pcb=1.6,leads=true)
 				translate([0,-20,-pcb-4.9])
     				cube([w,20,4.9]);
 			}
-		}else{ // Cut
+		}else if(leads)
+		{ // Cut
 			translate([0,-20,-pcb-2])
 			hull()
 			{
