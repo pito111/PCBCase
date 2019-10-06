@@ -199,7 +199,7 @@ module spox(stage,x,y,r=0,n=2,pcb=1.6,leads=true)
 				translate([0,0,stage/2])
 				cube([w,20,1]);
 				translate([0,0,stage*20])
-				cube([w+20,1]);
+				cube([w,20,1]);
 			}
 		}
 	}
