@@ -200,7 +200,7 @@ module usbc(stage,x,y,r=0)
 	{
 		if(!stage)
 		{
-			cube([8.94,7.35,3.26]);
+			cube([8.94,7.35,3.26/2]);
 			cube([8.94,8,1]);	// Solder
 			translate([-1,1.88-1,0])
 			cube([8.94+2,1.4+2,1]); // Solder
@@ -217,23 +217,33 @@ module usbc(stage,x,y,r=0)
 			for(px=[1.28+.3,7.06+0.3])
 			translate([px,5.98+.3,-1])
 			cylinder(d=0.6,h=1);
-			// lead
-			translate([3.26/2,-20,3.26/2])
+			// lead and body
+			translate([3.26/2,-2,3.26/2])
 			rotate([-90,0,0])
-			hull()
 			{
-				cylinder(d=3.26,h=20);
-				translate([8.94-3.26,0,0])
-				cylinder(d=3.26,h=20);
+				hull()
+				{
+					cylinder(d=3.26,h=2+7.35);
+					translate([8.94-3.26,0,0])
+					cylinder(d=3.26,h=2+7.35);
+				}
+				// Body of plug
+				translate([0,0,-20])
+				hull()
+				{
+					cylinder(d=2*3.26,h=20);
+					translate([8.94-3.26,0,0])
+					cylinder(d=2*3.26,h=20);
+				}
 			}
 		}else{ // Cut
 			translate([0,-20,3.2/2])
 			hull()
 			{
 				translate([-1,0,stage/2])
-				cube([8.94+2,20,1]);
+				cube([8.94+2,20.49,1]);
 				translate([-5,0,stage*20])
-				cube([8.94+10,20,1]);
+				cube([8.94+10,20.49,1]);
 			}
 		}
 	}
