@@ -258,7 +258,7 @@ module usbc(stage,x,y,r=0)
 				}
 			}
 		}else{ // Cut
-			translate([0,-20,3.2/2])
+			translate([0,-20,3.26/2-0.5])
 			hull()
 			{
 				translate([-1,0,stage/2])
