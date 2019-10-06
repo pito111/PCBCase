@@ -36,7 +36,7 @@ module pads(x,y,d=1.2,h=2.5,nx=1,dx=2.54,ny=1,dy=2.54)
 
 module esp32(stage,x,y,r=0)
 { // Corner of main board of ESP32 18mm by 25.5mm
-	posn(x,y,18,25.5,r,1,0.25,0) // Note left/right margin for placement
+	posn(x,y,18,25.5,r,1,0.5,0) // Note left/right margin for placement
 	{
 		if(!stage)
 		{
