@@ -11,7 +11,7 @@
 // If child(2) exists it is the extra parts for cut added to base (e.g. parts stage 1)
 // Origin for all items is bottom left of PCB, box sticks out around it
 
-module case(width=20,length=20,base=2.5,top=2.5,side=2.5,sidet=0.15,pcb=1.6)
+module case(width=20,length=20,base=2.5,top=2.5,side=2.5,sidet=0.2,pcb=1.6)
 {
 	// Base
 	intersection()
@@ -67,18 +67,23 @@ module casecut(width,length,base,top,side,sidet,pcb)
 		{
 			translate([-1,-1,-1])
 			cube([side*2+width+2,side*2+length+2,base+1+offset-side]);
-			translate([side/2-sidet/2,side/2-sidet/2,base+offset-1.001-side])
-			cube([width+side+sidet,length+side+sidet,side+1.001]);
+			hull()
+			{
+				translate([side/2-sidet/2,side/2-sidet/2,base+offset-0.001-side])
+				cube([width+side+sidet,length+side+sidet,0.001]);
+				translate([side/2,side/2,base+offset-0.001])
+				cube([width+side,length+side,0.001]);
+			}
 			if($children>0)translate([side,side,base+pcb])minkowski()
 			{
 				children(0);
-				if(sidet>0)cube([sidet,sidet,0.001],center=true);
+				if(sidet>0)cube([sidet/2,sidet/2,0.001],center=true);
 			}
 		}
 		if($children>1)translate([side,side,base+pcb])minkowski()
 		{
 			children(1);
-			if(sidet>0)cube([sidet,sidet,0.001],center=true);
+			if(sidet<0)cube([-sidet/2,-sidet/2,0.001],center=true);
 		}
 		if(sidet<0)translate([side,side,base])cube([width,length,pcb+top+1]);
 	}
