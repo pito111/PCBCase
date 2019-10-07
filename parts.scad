@@ -299,6 +299,7 @@ module oled(stage,x=0,y=0,r=0,d=5,h=6)
             			if(d>5)cylinder(d=d,h=h); // Pillar
 				translate([0,0,-1.6-2])
 				cylinder(d=5,h=2); // Screws
+				cylinder(d=5,h=2); // Screws
 			}
 		        translate([5,0,-h-1.6-2])
         		cube([35,37,2]); // Glass
