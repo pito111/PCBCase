@@ -298,18 +298,16 @@ module oled(stage,x=0,y=0,r=0,d=5,h=6)
 			{
             			if(d>5)cylinder(d=d,h=h); // Pillar
 				translate([0,0,-1.6-2])
-				cylinder(d=5,h=2); // Screws
-				translate([0,0,h])
-				cylinder(d=5,h=2); // Screws
+				cylinder(d=4.99,h=2+1.6+h+2); // Screws (4.99 to avoid silly in OpenSCAD clashing with cube)
 			}
 		        translate([5,0,-h-1.6-2])
-        		cube([35,37,2]); // Glass
+        		cube([35,37,2.001]); // Glass
 		}else{ // cut
         		hull()
         		{ // Window for view
-            			translate([6.5,1.5,-h-1.6-2-1])
+            			translate([7.5,1.5,-h-1.6-2-1])
             			cube([30,28,1]);
-            			translate([6.5-5,2-5,-h-1.6-2-1-20])
+            			translate([7.5-5,2-5,-h-1.6-2-1-20])
             			cube([30+10,28+10,1]);
         		}
 		}
