@@ -69,9 +69,17 @@ module casecut(width,length,base,top,side,sidet,pcb)
 			cube([side*2+width+2,side*2+length+2,base+1+offset-side]);
 			translate([side/2-sidet/2,side/2-sidet/2,base+offset-1.001-side])
 			cube([width+side+sidet,length+side+sidet,side+1.001]);
-			if($children>0)translate([side,side,base+pcb])children(0);
+			if($children>0)translate([side,side,base+pcb])minkowski()
+			{
+				children(0);
+				if(sidet>0)cube([sidet,sidet,0.001],center=true);
+			}
 		}
-		if($children>1)translate([side,side,base+pcb])children(1);
+		if($children>1)translate([side,side,base+pcb])minkowski()
+		{
+			children(1);
+			if(sidet>0)cube([sidet,sidet,0.001],center=true);
+		}
 		if(sidet<0)translate([side,side,base])cube([width,length,pcb+top+1]);
 	}
 	if(sidet>0)translate([side,side,-1])cube([width,length,pcb+base+1]);
