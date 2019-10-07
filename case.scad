@@ -71,19 +71,19 @@ module casecut(width,length,base,top,side,sidet,pcb)
 			{
 				translate([side/2-sidet/2,side/2-sidet/2,base+offset-0.001-side])
 				cube([width+side+sidet,length+side+sidet,0.001]);
-				translate([side/2,side/2,base+offset-0.001])
+				translate([side/2,side/2,base+offset-0.001+sidet/2])
 				cube([width+side,length+side,0.001]);
 			}
 			if($children>0)translate([side,side,base+pcb])minkowski()
 			{
 				children(0);
-				if(sidet>0)cube([sidet/2,sidet/2,0.001],center=true);
+				if(sidet>0)cube([sidet/2,sidet/2,sidet/2],center=true);
 			}
 		}
 		if($children>1)translate([side,side,base+pcb])minkowski()
 		{
 			children(1);
-			if(sidet<0)cube([-sidet/2,-sidet/2,0.001],center=true);
+			if(sidet<0)cube([-sidet/2,-sidet/2,-sidet/2],center=true);
 		}
 		if(sidet<0)translate([side,side,base])cube([width,length,pcb+top+1]);
 	}
