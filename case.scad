@@ -16,7 +16,7 @@ module case(width=20,length=20,base=2.5,top=2.5,side=2.5,sidet=0.2,pcb=1.6)
 	// Base
 	intersection()
 	{
-		casebox(width,length,base,top,side,pcb)children(0);
+		casebox(width,length,base,top,side,-sidet/2,pcb)children(0);
 		casecut(width,length,base,top,side,-sidet/2,pcb)
 		{
 			if($children>1)children(1);
@@ -29,7 +29,7 @@ module case(width=20,length=20,base=2.5,top=2.5,side=2.5,sidet=0.2,pcb=1.6)
 	translate([0,-length/2-side,-(base+pcb+top)/2])
 	difference()
 	{
-		casebox(width,length,base,top,side,pcb)children(0);
+		casebox(width,length,base,top,side,sidet/2,pcb)children(0);
 		casecut(width,length,base,top,side,sidet/2,pcb)
 		{
 			if($children>1)children(1);
@@ -38,7 +38,7 @@ module case(width=20,length=20,base=2.5,top=2.5,side=2.5,sidet=0.2,pcb=1.6)
 	}
 }
 
-module casebox(width,length,base,top,side,pcb)
+module casebox(width,length,base,top,side,sidet,pcb)
 { // The box
 	difference()
 	{
@@ -74,7 +74,7 @@ module casecut(width,length,base,top,side,sidet,pcb)
 				translate([side/2,side/2,base+offset-0.001])
 				cube([width+side,length+side,0.001]);
 			}
-			if($children>0)translate([side,side,base+pcb+sidet])minkowski()
+			if($children>0)translate([side,side,base+pcb])minkowski()
 			{
 				children(0);
 				if(sidet>0)cube([sidet/2,sidet/2,0.01],center=true);

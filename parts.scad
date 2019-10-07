@@ -287,8 +287,8 @@ module oled(stage,x=0,y=0,r=0,d=5,h=6)
 			translate([0,0,-h-1.6])
 			mirror([0,0,1])
 			{
-				pads(1.637,9.71,0.9,2.5,1,2.54,2,2.54);
-				pads(1.637,9.71+3*2.54,0.9,2.5,1,2.54,2,2.54);
+				pads(3,9.71,0.9,2.5,1,2.54,2,2.54);
+				pads(3,9.71+3*2.54,0.9,2.5,1,2.54,2,2.54);
 			}
 			translate([0,0,-h-1.6])
 			cube([45,37,h+1.6]);
@@ -301,8 +301,8 @@ module oled(stage,x=0,y=0,r=0,d=5,h=6)
 				cylinder(d=5,h=2); // Screws
 			}
 		        translate([5,0,-h-1.6-2])
-        		cube([35,37,2]);
-		}else if(stage==-1){ // cut
+        		cube([35,37,2]); // Glass
+		}else{ // cut
         		hull()
         		{ // Window for view
             			translate([6.5,1.5,-h-1.6-2-1])
