@@ -11,26 +11,26 @@
 // If child(2) exists it is the extra parts for cut added to base (e.g. parts stage 1)
 // Origin for all items is bottom left of PCB, box sticks out around it
 
-module case(width=20,length=20,height=20,base=2.5,top=2.5,side=2.5,sidet=0.1)
+module case(width=20,length=20,base=2.5,top=2.5,side=2.5,sidet=0.15,pcb=1.6)
 {
 	// Base
 	intersection()
 	{
-		casebox(width,length,height,base,top,side)children(0);
-		casecut(width,length,height,base,top,side,-sidet/2)
+		casebox(width,length,base,top,side,pcb)children(0);
+		casecut(width,length,base,top,side,-sidet/2,pcb)
 		{
 			if($children>1)children(1);
 			if($children>2)children(2);
 		}
 	}
 	// Lid
-	translate([width+side*3,length/2+side,(base+height+top)/2])
+	translate([width+side*3,length/2+side,(base+pcb+top)/2])
 	rotate([180,0,0])
-	translate([0,-length/2-side,-(base+height+top)/2])
+	translate([0,-length/2-side,-(base+pcb+top)/2])
 	difference()
 	{
-		casebox(width,length,height,base,top,side)children(0);
-		casecut(width,length,height,base,top,side,sidet/2)
+		casebox(width,length,base,top,side,pcb)children(0);
+		casecut(width,length,base,top,side,sidet/2,pcb)
 		{
 			if($children>1)children(1);
 			if($children>2)children(2);
@@ -38,40 +38,41 @@ module case(width=20,length=20,height=20,base=2.5,top=2.5,side=2.5,sidet=0.1)
 	}
 }
 
-module casebox(width,length,height,base,top,side)
+module casebox(width,length,base,top,side,pcb)
 { // The box
 	difference()
 	{
 		hull()
 		{
 			translate([side/2,side/2,0])
-			cube([side+width,side+length,height+base+top]); // Case
+			cube([side+width,side+length,pcb+base+top]); // Case
 			translate([0,0,side/2])
-			cube([side*2+width,side*2+length,height+base+top-side]); // Case
+			cube([side*2+width,side*2+length,pcb+base+top-side]); // Case
 		}
 		translate([side,side,base])
 		{
-			cube([width,length,height]); // PCB
+			cube([width,length,pcb]); // PCB
+			translate([0,0,pcb])
 			children();
 		}
 	}
 }
 
-module casecut(width,length,height,base,top,side,sidet)
+module casecut(width,length,base,top,side,sidet,pcb)
 { // The base cut
 	difference()
 	{
-		offset=height/2+0.8;
+		offset=pcb/2+0.8;
 		union()
 		{
 			translate([-1,-1,-1])
-			cube([side*2+width+2,side*2+length+2,base+1+offset-side/2]);
-			translate([side/2-sidet/2,side/2-sidet/2,base+offset-1.001-side/2])
-			cube([width+side+sidet,length+side+sidet,side/2+1.001]);
-			if($children>0)translate([side,side,base])children(0);
+			cube([side*2+width+2,side*2+length+2,base+1+offset-side]);
+			translate([side/2-sidet/2,side/2-sidet/2,base+offset-1.001-side])
+			cube([width+side+sidet,length+side+sidet,side+1.001]);
+			if($children>0)translate([side,side,base+pcb])children(0);
 		}
-		if($children>1)translate([side,side,base])children(1);
-		if(sidet<0)translate([side,side,base])cube([width,length,height+top+1]);
+		if($children>1)translate([side,side,base+pcb])children(1);
+		if(sidet<0)translate([side,side,base])cube([width,length,pcb+top+1]);
 	}
-	if(sidet>0)translate([side,side,-1])cube([width,length,height+base+1]);
+	if(sidet>0)translate([side,side,-1])cube([width,length,pcb+base+1]);
 }

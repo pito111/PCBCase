@@ -9,7 +9,7 @@
 // Only parts that expect to "stick out" from the case do anything for the cut stages
 
 module posn(x,y,w,h,r,vx=0.2,vy=0.2,vz=0)
-{ // Positioning for 90 degree angles as bottom left still
+{ // Positioning and rotation and growing for placement errors
 	s=sin(r);
 	c=cos(r);
 	translate([x+(s>0?h*s:0)+(c<0?-w*c:0),y+(c<0?-h*c:0)+(s<0?-w*s:0),0])
@@ -105,8 +105,9 @@ module screw3mm5(stage,x,y,r,n=2)
 }
 
 
-module d24v5f3(x,y,r=0,pcb=1.6)
+module d24v5f3(stage,x,y,r=0,pcb=1.6)
 { // Pololu regulator using only 3 pins
+	if(!stage)
 	posn(x,y,25.4*0.4,25.4*0.5,r)
 	{
 		translate([0,0,-pcb-2.8])
@@ -116,8 +117,9 @@ module d24v5f3(x,y,r=0,pcb=1.6)
 	}
 }
 
-module milligrid(x,y,r=0,n=2,pcb=1.6)
+module milligrid(stage,x,y,r=0,n=2,pcb=1.6)
 { // eg RS part 6700927
+	if(!stage)
 	posn(x,y,2.6+n*2,6.4,r)
 	{
 		translate([0,0,-pcb-6.3])
@@ -131,8 +133,9 @@ module milligrid(x,y,r=0,n=2,pcb=1.6)
 }
 
 
-module molex(x,y,r=0,nx=1,ny=1,pcb=1.6)
-{
+module molex(stage,x,y,r=0,nx=1,ny=1,pcb=1.6)
+{ // Simple molex pins
+	if(!stage)
 	posn(x,y,2.54*nx,2.54*ny,r)
 	{
 		translate([0,0,-pcb-2.54])
@@ -145,8 +148,9 @@ module molex(x,y,r=0,nx=1,ny=1,pcb=1.6)
 	}
 }
 
-module smd1206(x,y,r=0)
-{
+module smd1206(stage,x,y,r=0)
+{ // Simple 1206
+	if(!stage)
 	posn(x,y,3.2,1.6,r,0.6,0.6)
 	{
 		cube([3.2,1.6,1]);
@@ -155,8 +159,9 @@ module smd1206(x,y,r=0)
 	}
 }
 
-module smdrelay(x,y,r=0)
-{ // RS part 6839012
+module smdrelay(stage,x,y,r=0)
+{ // Solid state relay RS part 6839012
+	if(!stage)
 	posn(x,y,4.4,3.9,r,0.6,0.6)
 	{
 		cube([4.4,3.9,3]);
@@ -165,7 +170,7 @@ module smdrelay(x,y,r=0)
 	}
 }
 
-module spox(stage,x,y,r=0,n=2,pcb=1.6,leads=true)
+module spox(stage,x,y,r=0,n=2,pcb=1.6,hidden=false)
 {
 	w=(n-1)*2.5+4.9;
 	posn(x,y,w,7.9,r)
@@ -186,12 +191,12 @@ module spox(stage,x,y,r=0,n=2,pcb=1.6,leads=true)
     			}
 			translate([4.9/2-0.3,0,-pcb-2.38-0.3])
     			cube([w-4.9+0.6,6.6+0.3,2.38+0.3]);
-			if(leads)
+			if(!hidden)
 			{
 				translate([0,-20,-pcb-4.9])
     				cube([w,20,4.9]);
 			}
-		}else if(leads)
+		}else if(!hidden)
 		{ // Cut
 			translate([0,-20,-pcb-2])
 			hull()
