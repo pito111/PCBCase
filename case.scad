@@ -70,11 +70,11 @@ module casecut(width,length,base,top,side,sidet,pcb)
 			hull()
 			{
 				translate([side/2-sidet/2,side/2-sidet/2,base+offset-0.001-side+(sidet>0?-sidet:0)])
-				#cube([width+side+sidet,length+side+sidet,0.001]);
+				cube([width+side+sidet,length+side+sidet,0.001]);
 				translate([side/2,side/2,base+offset-0.001])
 				cube([width+side,length+side,0.001]);
 			}
-			if($children>0)translate([side,side,base+pcb])minkowski()
+			if($children>0)translate([side,side,base+pcb+sidet])minkowski()
 			{
 				children(0);
 				if(sidet>0)cube([sidet/2,sidet/2,0.01],center=true);

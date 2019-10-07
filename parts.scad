@@ -274,3 +274,42 @@ module usbc(stage,x,y,r=0)
 		}
 	}
 }
+
+module oled(stage,x=0,y=0,r=0,d=5,h=6)
+{ // OLED module e.g. https://www.amazon.co.uk/gp/product/B07BDMG2DK
+	// d / h are the pillars
+	posn(x,y,45,37,r)
+	{
+		if(!stage)
+		{
+			pads(3,9.71,0.9,2.5,1,2.54,2,2.54);
+			pads(3,9.71+3*2.54,0.9,2.5,1,2.54,2,2.54);
+			translate([0,0,-h-1.6])
+			mirror([0,0,1])
+			{
+				pads(1.637,9.71,0.9,2.5,1,2.54,2,2.54);
+				pads(1.637,9.71+3*2.54,0.9,2.5,1,2.54,2,2.54);
+			}
+			translate([0,0,-h-1.6])
+			cube([45,37,h+1.6]);
+			for(px=[2.75,42.25])
+            		for(py=[2.5,34.5])
+            		translate([px,py,-h])
+			{
+            			if(d>5)cylinder(d=d,h=h); // Pillar
+				translate([0,0,-1.6-2])
+				cylinder(d=5,h=2); // Screws
+			}
+		        translate([5,0,-h-1.6-2])
+        		cube([35,37,2]);
+		}else if(stage==-1){ // cut
+        		hull()
+        		{ // Window for view
+            			translate([6.5,1.5,-h-1.6-2-1])
+            			cube([30,28,1]);
+            			translate([6.5-5,2-5,-h-1.6-2-1-20])
+            			cube([30+10,28+10,1]);
+        		}
+		}
+	}
+}
