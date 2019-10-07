@@ -266,8 +266,8 @@ module usbc(stage,x,y,r=0)
 			translate([0,-20,3.26/2-0.5])
 			hull()
 			{
-				translate([-1,0,stage/2])
-				cube([8.94+2,20.49,1]);
+				translate([-1.5,0,stage/2])
+				cube([8.94+3,20.49,1]);
 				translate([-5,0,stage*20])
 				cube([8.94+10,20.49,1]);
 			}

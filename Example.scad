@@ -8,13 +8,12 @@
 use <case.scad>
 use <parts.scad>
 
-compw=20;
-comph=31;
+width=20;
+height=31;
 
 // Box thickness reference to component cube
 base=6;
 top=5;
-side=2.2;
 
 $fn=48;
 
@@ -29,4 +28,4 @@ module pcb(s=0)
     }
 }
 
-case(compw,comph,base,top,side){pcb(0);pcb(-1);pcb(1);};
+case(width,height,base,top){pcb(0);pcb(-1);pcb(1);};
