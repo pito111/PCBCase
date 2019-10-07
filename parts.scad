@@ -120,7 +120,7 @@ module d24v5f3(stage,x,y,r=0,pcb=1.6)
 module milligrid(stage,x,y,r=0,n=2,pcb=1.6)
 { // eg RS part 6700927
 	if(!stage)
-	posn(x,y,2.6+n*2,6.4,r)
+	posn(x,y,2.6+n*2,6.4,r,0.4,0.4)
 	{
 		translate([0,0,-pcb-6.3])
 		cube([2.6+n*2,6.4,6.3001]);
