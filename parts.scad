@@ -275,7 +275,7 @@ module usbc(stage,x,y,r=0)
 	}
 }
 
-module oled(stage,x=0,y=0,r=0,d=4.9,h=6,pcb=1.6)
+module oled(stage,x=0,y=0,r=0,d=5,h=6,pcb=1.6)
 { // OLED module e.g. https://www.amazon.co.uk/gp/product/B07BDMG2DK
 	// d / h are the pillars
 	posn(x,y,45,37,r)
@@ -298,7 +298,7 @@ module oled(stage,x=0,y=0,r=0,d=4.9,h=6,pcb=1.6)
 			{
             			if(d>5)cylinder(d=d,h=h); // Pillar
 				translate([0,0,-1.6-2])
-				cylinder(d=4.99,h=2+pcb+h+1.6+2); // Screws (4.99 to avoid silly in OpenSCAD clashing with cube)
+				cylinder(d=4.99,h=2+pcb+h+1.6+2); // Screws (smaller to avoid silly in OpenSCAD clashing with cube)
 			}
 		        translate([5,0,-pcb-h-1.6-2])
         		cube([35,37,2.001]); // Glass
