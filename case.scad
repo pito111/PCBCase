@@ -392,15 +392,12 @@ module oled(stage,x=0,y=0,r=0,d=5,h=6,pcb=1.6,nopads=false)
 			}
 		        translate([5,0,-pcb-h-1.6-2])
         		cube([35,37,2.001]); // Glass
+			// Window for view
+            		translate([7.5,1.5,-pcb-h-1.6-2-1])
+            		cube([30,28,1]);
+            		translate([7.5-5,2-5,-h-pcb-1.6-2-1-20])
+            		cube([30+10,28+10,1]);
 		}else{ // cut
-			if(stage<0)
-        		hull()
-        		{ // Window for view
-            			translate([7.5,1.5,-pcb-h-1.6-2-1])
-            			cube([30,28,1]);
-            			translate([7.5-5,2-5,-h-pcb-1.6-2-1-20])
-            			cube([30+10,28+10,1]);
-        		}
 			if(d>5)
 			{ // Allow larger pillars to slide in!
 				for(px=[2.75,42.25])
