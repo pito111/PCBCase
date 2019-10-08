@@ -3,10 +3,8 @@
 
 // PCBCase is normally a submodule so needs the directoy
 //use <PCBCase/case.scad>
-//use <PCBCase/parts.scad>
 //For this example the files are in the same directory
 use <case.scad>
-use <parts.scad>
 
 width=20;
 height=31;
