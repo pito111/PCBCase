@@ -275,20 +275,23 @@ module usbc(stage,x,y,r=0)
 	}
 }
 
-module oled(stage,x=0,y=0,r=0,d=5,h=6,pcb=1.6)
+module oled(stage,x=0,y=0,r=0,d=5,h=6,pcb=1.6,nopads=false)
 { // OLED module e.g. https://www.amazon.co.uk/gp/product/B07BDMG2DK
 	// d / h are the pillars
 	posn(x,y,45,37,r)
 	{
 		if(!stage)
 		{
-			pads(3,9.71,0.9,2,1,2.54,2,2.54);
-			pads(3,9.71+3*2.54,0.9,2,1,2.54,2,2.54);
+			if(!nopads)
+			{
+				pads(3,9.71,0.9,2,ny=2);
+				pads(3,9.71+3*2.54,0.9,2,ny=2);
+			}
 			translate([0,0,-pcb-h-1.6])
 			mirror([0,0,1])
 			{
-				pads(3,9.71,0.9,2,1,2.54,2,2.54);
-				pads(3,9.71+3*2.54,0.9,2,1,2.54,2,2.54);
+				pads(3,9.71,0.9,2,ny=2);
+				pads(3,9.71+3*2.54,0.9,2,ny=2);
 			}
 			translate([0,0,-pcb-h-1.6])
 			cube([45,37,h+1.6]);
@@ -319,5 +322,19 @@ module oled(stage,x=0,y=0,r=0,d=5,h=6,pcb=1.6)
 				cylinder(d=d+0.001,h=20); // 0.001 is to fix issue with OpenSCAD
 			}
 		}
+	}
+}
+
+module co2(stage,x,y,r=0,pcb=1.6)
+{
+	if(!stage);
+	posn(x,y,23,35,r)
+	{
+		translate([0,0,-pcb-7])
+                cube([23,35,7]); // Main CO2
+		pads(1.27,1.27,4);
+		// Hole
+		translate([12,-20,-pcb-5.6])
+                cube([3,25,1]); // Air hole
 	}
 }
