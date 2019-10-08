@@ -49,7 +49,7 @@ module casebox(width,length,base,top,side,sidet,pcb)
 			translate([0,0,side/2])
 			cube([side*2+width,side*2+length,pcb+base+top-side]); // Case
 		}
-		translate([side,side,base])
+		translate([side,side,base+sidet])
 		{
 			cube([width,length,pcb]); // PCB
 			translate([0,0,pcb])
@@ -85,7 +85,7 @@ module casecut(width,length,base,top,side,sidet,pcb)
 			children(1);
 			if(sidet<0)cube([-sidet/2,-sidet/2,0.001],center=true);
 		}
-		if(sidet<0)translate([side,side,base])cube([width,length,pcb+top+1]);
+		if(sidet<0)translate([side,side,base+sidet])cube([width,length,pcb+top+1]);
 	}
-	if(sidet>0)translate([side,side,-1])cube([width,length,pcb+base+1]);
+	if(sidet>0)translate([side,side,-1])cube([width,length,pcb+base+1+sidet]);
 }

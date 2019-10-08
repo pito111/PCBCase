@@ -275,7 +275,7 @@ module usbc(stage,x,y,r=0)
 	}
 }
 
-module oled(stage,x=0,y=0,r=0,d=5,h=6,pcb=1.6)
+module oled(stage,x=0,y=0,r=0,d=4.9,h=6,pcb=1.6)
 { // OLED module e.g. https://www.amazon.co.uk/gp/product/B07BDMG2DK
 	// d / h are the pillars
 	posn(x,y,45,37,r)
@@ -316,7 +316,7 @@ module oled(stage,x=0,y=0,r=0,d=5,h=6,pcb=1.6)
 				for(px=[2.75,42.25])
             			for(py=[2.5,34.5])
             			translate([px,py,-pcb-h/2-10+(10+h/2)*stage])
-				cylinder(d=d,h=20);
+				cylinder(d=d+0.001,h=20); // 0.001 is to fix issue with OpenSCAD
 			}
 		}
 	}
