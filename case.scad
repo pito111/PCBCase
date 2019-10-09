@@ -236,7 +236,7 @@ module molex(stage,x,y,r=0,nx=1,ny=1,pcb=1.6)
 }
 
 module smd1206(stage,x,y,r=0)
-{ // Simple 1206
+{ // Simple 1206, e.g RS part 866-2729
 	if(!stage)
 	posn(x,y,3.2,1.6,r,0.6,0.6)
 	{
@@ -413,7 +413,7 @@ module oled(stage,x=0,y=0,r=0,d=5,h=6,pcb=1.6,nopads=false)
 }
 
 module co2(stage,x,y,r=0,pcb=1.6)
-{
+{ // E.g. RS part 172-0552
 	if(!stage);
 	posn(x,y,23,35,r)
 	{
