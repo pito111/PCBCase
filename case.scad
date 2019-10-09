@@ -298,7 +298,7 @@ module spox(stage,x,y,r=0,n=2,pcb=1.6,hidden=false)
 }
 
 module usbc(stage,x,y,r=0)
-{
+{ // https://www.toby.co.uk/signal-to-board-connectors/usb-connectors/csp-usc16-tr/
 	posn(x,y,8.94,7.35,r)
 	{
 		if(!stage)
