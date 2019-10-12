@@ -88,11 +88,11 @@ module casecut(width,length,base,top,side,sidet,pcb)
 				cube([width+side,length+side,0.001]);
 			}
 			if($children>0)translate([side,side,base+pcb+sidet])grow(sidet/2,sidet/2,0)children(0);
+			if(sidet>0)translate([side,side,-1])cube([width,length,pcb+base+1+sidet]);
 		}
 		if($children>1)translate([side,side,base+pcb+sidet])grow(-sidet/2,-sidet/2,0)children(1);
 		if(sidet<0)translate([side,side,base+sidet])cube([width,length,pcb+top+1]);
 	}
-	if(sidet>0)translate([side,side,-1])cube([width,length,pcb+base+1+sidet]);
 }
 
 // Functions for parts attached to PCB
