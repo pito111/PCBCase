@@ -11,13 +11,13 @@
 // If child(2) exists it is the extra parts for cut added to base (e.g. parts stage 1)
 // Origin for all items is bottom left of PCB, box sticks out around it
 
-module case(width=20,length=20,base=2.5,top=2.5,side=2.5,sidet=0.2,pcb=1.6)
+module case(width=20,length=20,base=2.5,top=2.5,side=2.5,sidet=0.2,pcb=1.6,cutoffset=0)
 {
 	// Base
 	intersection()
 	{
 		casebox(width,length,base,top,side,-sidet/2,pcb)children(0);
-		casecut(width,length,base,top,side,-sidet/2,pcb)
+		casecut(width,length,base,top,side,-sidet/2,pcb,cutoffset)
 		{
 			if($children>1)children(1);
 			if($children>2)children(2);
@@ -30,7 +30,7 @@ module case(width=20,length=20,base=2.5,top=2.5,side=2.5,sidet=0.2,pcb=1.6)
 	difference()
 	{
 		casebox(width,length,base,top,side,sidet/2,pcb)children(0);
-		casecut(width,length,base,top,side,sidet/2,pcb)
+		casecut(width,length,base,top,side,sidet/2,pcb,cutoffset)
 		{
 			if($children>1)children(1);
 			if($children>2)children(2);
@@ -71,11 +71,11 @@ module casebox(width,length,base,top,side,sidet,pcb)
 	}
 }
 
-module casecut(width,length,base,top,side,sidet,pcb)
+module casecut(width,length,base,top,side,sidet,pcb,cutoffset)
 { // The base cut
 	difference()
 	{
-		offset=pcb/2+0.8;
+		offset=pcb/2+0.8+cutoffset;
 		union()
 		{
 			translate([-1,-1,-1])
