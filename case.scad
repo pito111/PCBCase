@@ -11,13 +11,13 @@
 // If child(2) exists it is the extra parts for cut added to base (e.g. parts stage 1)
 // Origin for all items is bottom left of PCB, box sticks out around it
 
-module case(width=20,length=20,base=2.5,top=2.5,side=2.5,sidet=0.2,pcb=1.6,cutoffset=0)
+module case(width=20,length=20,base=2.5,top=2.5,side=2.5,sidet=0.2,pcb=1.6)
 {
 	// Base
 	intersection()
 	{
 		casebox(width,length,base,top,side,-sidet/2,pcb)children(0);
-		casecut(width,length,base,top,side,-sidet/2,pcb,cutoffset)
+		casecut(width,length,base,top,side,-sidet/2,pcb)
 		{
 			if($children>1)children(1);
 			if($children>2)children(2);
@@ -30,7 +30,7 @@ module case(width=20,length=20,base=2.5,top=2.5,side=2.5,sidet=0.2,pcb=1.6,cutof
 	difference()
 	{
 		casebox(width,length,base,top,side,sidet/2,pcb)children(0);
-		casecut(width,length,base,top,side,sidet/2,pcb,cutoffset)
+		casecut(width,length,base,top,side,sidet/2,pcb)
 		{
 			if($children>1)children(1);
 			if($children>2)children(2);
@@ -71,11 +71,11 @@ module casebox(width,length,base,top,side,sidet,pcb)
 	}
 }
 
-module casecut(width,length,base,top,side,sidet,pcb,cutoffset)
+module casecut(width,length,base,top,side,sidet,pcb)
 { // The base cut
 	difference()
 	{
-		offset=pcb/2+0.8+cutoffset;
+		offset=pcb/2+0.8;
 		union()
 		{
 			translate([-1,-1,-1])
@@ -236,7 +236,7 @@ module molex(stage,x,y,r=0,nx=1,ny=1,pcb=1.6)
 }
 
 module smd1206(stage,x,y,r=0)
-{ // Simple 1206
+{ // Simple 1206, e.g RS part 866-2729
 	if(!stage)
 	posn(x,y,3.2,1.6,r,0.6,0.6)
 	{
@@ -298,7 +298,7 @@ module spox(stage,x,y,r=0,n=2,pcb=1.6,hidden=false)
 }
 
 module usbc(stage,x,y,r=0)
-{
+{ // https://www.toby.co.uk/signal-to-board-connectors/usb-connectors/csp-usc16-tr/
 	posn(x,y,8.94,7.35,r)
 	{
 		if(!stage)
@@ -344,9 +344,9 @@ module usbc(stage,x,y,r=0)
 				translate([0,0,-20])
 				hull()
 				{
-					cylinder(d=7,h=20.5);
+					cylinder(d=7,h=20);
 					translate([8.94-3.26,0,0])
-					cylinder(d=7,h=20.5);
+					cylinder(d=7,h=20);
 				}
 			}
 		}else{ // Cut
@@ -413,15 +413,30 @@ module oled(stage,x=0,y=0,r=0,d=5,h=6,pcb=1.6,nopads=false)
 }
 
 module co2(stage,x,y,r=0,pcb=1.6)
-{
-	if(!stage);
+{ // E.g. RS part 172-0552
+	if(!stage)
 	posn(x,y,23,35,r)
 	{
 		translate([0,0,-pcb-7])
                 cube([23,35,7]); // Main CO2
-		pads(1.27,1.27,ny=4);
+		pads(1.27,1.27,4);
 		// Hole
 		translate([12,-20,-pcb-5.6])
                 cube([3,20,1]); // Air hole
+	}
+}
+
+module switch66(stage,x,y,r,pcb=1.6,height=5)
+{
+	if(!stage)
+	posn(x,y,6,6,r)
+	{
+		cube([6,6,4]); // Body
+		translate([-2,0,0])
+		cube([10,6,2]);	// Leads
+		translate([3,3,0])
+		cylinder(d=3.5,h=height); // Button
+		translate([3,3,0])
+		cylinder(d=3,h=20);	// Poke hole
 	}
 }
