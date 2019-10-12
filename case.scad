@@ -344,9 +344,9 @@ module usbc(stage,x,y,r=0)
 				translate([0,0,-20])
 				hull()
 				{
-					cylinder(d=7,h=20);
+					cylinder(d=7,h=20.5);
 					translate([8.94-3.26,0,0])
-					cylinder(d=7,h=20);
+					cylinder(d=7,h=20.5);
 				}
 			}
 		}else{ // Cut
