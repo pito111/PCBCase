@@ -118,7 +118,7 @@ module pads(x,y,d=1.2,h=2.5,nx=1,dx=2.54,ny=1,dy=2.54)
 	for(px=[0:1:nx-1])
 	for(py=[0:1:ny-1])
 	translate([x+px*dx,y+py*dy,-0.001])
-	cylinder(d1=3,d2=d,h=h+0.001,$fn=8);
+	cylinder(d1=4,d2=d,h=h+0.001,$fn=8);
 }
 
 module esp32(stage,x,y,r=0)
@@ -419,7 +419,7 @@ module co2(stage,x,y,r=0,pcb=1.6)
 	{
 		translate([0,0,-pcb-7])
                 cube([23,35,7]); // Main CO2
-		pads(1.27,1.27,4);
+		pads(1.27,1.27,ny=4);
 		// Hole
 		translate([12,-20,-pcb-5.6])
                 cube([3,20,1]); // Air hole
