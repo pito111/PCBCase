@@ -435,7 +435,7 @@ module switch66(stage,x,y,r,pcb=1.6,height=5)
 		translate([-2,0,0])
 		cube([10,6,2]);	// Leads
 		translate([3,3,0])
-		cylinder(d=3.5,h=height); // Button
+		cylinder(d=4,h=height); // Button
 		translate([3,3,0])
 		cylinder(d=2,h=20);	// Poke hole
 	}
