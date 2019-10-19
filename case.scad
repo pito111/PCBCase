@@ -24,7 +24,7 @@ module case(width=20,length=20,base=2.5,top=2.5,side=2.5,sidet=0.2,pcb=1.6,cutof
 		}
 	}
 	// Lid
-	translate([width+side*3,length/2+side,(base+pcb+top)/2])
+	translate([width>length?0:width+side*3,(width>length?length+side*3:0)+length/2+side,(base+pcb+top)/2])
 	rotate([180,0,0])
 	translate([0,-length/2-side,-(base+pcb+top)/2])
 	difference()
