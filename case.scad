@@ -440,3 +440,16 @@ module switch66(stage,x,y,r,pcb=1.6,height=5)
 		cylinder(d=2,h=20);	// Poke hole
 	}
 }
+
+module adagps(stage,x,y,r,pcb=1.6)
+{
+	if(!stage)
+	posn(x,y,34.5,25.4,r)
+	{
+		translate([0,0,-pcb-6.4])
+		cube([34.5,25.4,6.4]);	// Main board (allowing for button cell)
+		translate([10.5,5.5,-pcb-10.7])
+		cube([15,15,10.7]);	// Antenna
+		pads(1,2.54,ny=9);
+	}
+}
