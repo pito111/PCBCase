@@ -448,7 +448,7 @@ module adagps(stage,x,y,r,pcb=1.6)
 	{
 		translate([0,0,-pcb-6.4])
 		cube([34.5,25.4,6.4]);	// Main board (allowing for button cell)
-		translate([10,5,-pcb-10.7])
+		translate([10,4.5,-pcb-10.7])
 		cube([15.5,15.5,10.7]);	// Antenna
 		pads(2,2.54,ny=9);
 	}
