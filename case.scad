@@ -289,9 +289,9 @@ module spox(stage,x,y,r=0,n=2,pcb=1.6,hidden=false,smd=0)
 			translate([0,-20,-pcb-2])
 			hull()
 			{
-				translate([0,0,stage/2])
+				translate([0,0,(smd?-1:1)*stage/2])
 				cube([w,20,1]);
-				translate([0,0,stage*20])
+				translate([0,0,(smd?-1:1)*stage*20])
 				cube([w,20,1]);
 			}
 		}
