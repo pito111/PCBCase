@@ -89,7 +89,7 @@ module casecut(width,length,base,top,side,sidet,pcb,cutoffset)
 					translate([side/2,side/2,base+offset-0.001])
 					cube([width+side,length+side,0.001]);
 				}
-				translate([side,side,0])cube([width,length,base+pcb+top]);
+				translate([side+sidet,side+sidet,0])cube([width-sidet*2,length-sidet*2,base+pcb+top]);
 			}
 			if($children>0)translate([side,side,base+pcb+sidet])grow(sidet/2,sidet/2,0)children(0);
 			if(sidet>0)translate([side,side,-1])cube([width,length,pcb+base+1+sidet]);
