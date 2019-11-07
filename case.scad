@@ -136,8 +136,8 @@ module esp32(stage,x,y,r=0)
 			cube([18,25.5,1]);	// Base PCB
     			translate([1,1,0])
     			cube([16,18,3]);		// Can
-    			translate([-1,1,0])
-    			cube([20,18,2]); // Solder
+    			translate([-0.5,1,0])
+    			cube([19,18,2]); // Solder
 		}else{ // Cut
 			translate([0,15.5,0])
 			hull()
