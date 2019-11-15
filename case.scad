@@ -376,14 +376,14 @@ module oled(stage,x=0,y=0,r=0,d=5,h=6,pcb=1.6,nopads=false,screw=2,smd=0)
 		{
 			if(!nopads&&!smd)
 			{
-				pads(3,9.71,0.9,2,ny=2);
-				pads(3,9.71+3*2.54,0.9,2,ny=2);
+				pads(2.75,9.61,0.9,2,ny=2);
+				pads(2.75,9.61+3*2.54,0.9,2,ny=2);
 			}
 			translate([0,0,-pcb-h-1.6])
 			mirror([0,0,1])
 			{
-				pads(3,9.71,0.9,2,ny=2);
-				pads(3,9.71+3*2.54,0.9,2,ny=2);
+				pads(2.75,9.61,0.9,2,ny=2);
+				pads(2.75,9.61+3*2.54,0.9,2,ny=2);
 			}
 			translate([0,0,-pcb-h-1.6])
 			cube([45,37,h+1.6]);
