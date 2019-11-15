@@ -447,3 +447,23 @@ module switch66(stage,x,y,r,pcb=1.6,height=5,nohole=false)
 		cylinder(d=2,h=20);	// Poke hole
 	}
 }
+
+module l80(stage,x,y,r)
+{ // L80 GPS (RS 908-4085)
+	if(!stage)
+	posn(x,y,16,16,r)
+	{
+		cube([16,16,2.3]);
+		translate([0.5,0.5,0])
+		cube([15,15,7]);
+	}
+}
+
+module l86(stage,x,y,r)
+{ // L86 GPS (RS 908-4114)
+	if(!stage)
+	posn(x,y,18.4,18.4,r)
+	{
+		cube([18.4,18.4,7]);
+	}
+}
