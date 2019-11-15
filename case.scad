@@ -432,19 +432,33 @@ module co2(stage,x,y,r=0,pcb=1.6)
 	}
 }
 
-module switch66(stage,x,y,r,pcb=1.6,height=5,nohole=false)
+module switch66(stage,x,y,r,pcb=1.6,height=5,nohole=false,smd=0)
 {
 	if(!stage)
-	posn(x,y,6,6,r)
+	posn(x,y,6,6,r,smd=smd?pcb:0)
 	{
-		cube([6,6,4]); // Body
-		translate([-2,0,0])
-		cube([10,6,2]);	// Leads
-		translate([3,3,0])
-		cylinder(d=4,h=height); // Button
-		if(!nohole)
-		translate([3,3,0])
-		cylinder(d=2,h=20);	// Poke hole
+		if(smd)
+		{
+			translate([0,0,-5-pcb])
+			{
+				cube([6,6,5]);
+				translate([-2,0,0])
+				cube([10,6,4]);	// Leads
+				if(!nohole)
+				translate([3,3,0])
+				cylinder(d=2,h=20);	// Poke hole
+			}
+		}else
+		{
+				cube([6,6,4]); // Body
+				translate([-2,0,0])
+				cube([10,6,2]);	// Leads
+				translate([3,3,0])
+				cylinder(d=4,h=height); // Button
+				if(!nohole)
+				translate([3,3,0])
+				cylinder(d=2,h=20);	// Poke hole
+		}
 	}
 }
 
@@ -465,5 +479,16 @@ module l86(stage,x,y,r)
 	posn(x,y,18.4,18.4,r)
 	{
 		cube([18.4,18.4,7]);
+	}
+}
+
+module bat1220(stage,x,y,r)
+{ // 1220 battery holder
+	if(!stage)
+	posn(x,y,13.5,13.5,r)
+	{
+		cube([13.5,13.5,4]);
+		translate([-2,3,0])
+		cube([13.5+4,9,2]); // Solder
 	}
 }
