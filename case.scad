@@ -446,7 +446,7 @@ module switch66(stage,x,y,r,pcb=1.6,height=5,nohole=false,smd=0)
 				cube([10,6,4]);	// Leads
 				if(!nohole)
 				translate([3,3,0])
-				cylinder(d=2,h=20);	// Poke hole
+				cylinder(d=4,h=20);	// Poke hole
 			}
 		}else
 		{
