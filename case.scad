@@ -11,7 +11,7 @@
 // If child(2) exists it is the extra parts for cut added to base (e.g. parts stage 1)
 // Origin for all items is bottom left of PCB, box sticks out around it
 
-module case(width=20,length=20,base=2.5,top=2.5,side=2.5,sidet=0.2,pcb=1.6,cutoffset=0)
+module case(width=20,length=20,base=2.5,top=2.5,side=2.5,sidet=0.25,pcb=1.6,cutoffset=0)
 {
 	// Base
 	intersection()
@@ -63,8 +63,8 @@ module casebox(width,length,base,top,side,sidet,pcb)
 		}
 		translate([side,side,base+sidet])
 		{
-			translate([-0.1,-0.1,0])
-			cube([width+0.2,length+0.2,pcb]); // PCB
+			translate([-abs(sidet/2),-abs(sidet/2),0])
+			cube([width+abs(sidet),length+abs(sidet),pcb]); // PCB
 			translate([0,0,pcb])
 			children();
 		}
@@ -82,20 +82,16 @@ module casecut(width,length,base,top,side,sidet,pcb,cutoffset)
 			cube([side*2+width+2,side*2+length+2,base+1+offset-side+(sidet>0?-sidet:0)]);
 			difference()
 			{
-				hull()
-				{
-					translate([side/2-sidet/2,side/2-sidet/2,base+offset-0.001-side+(sidet>0?-sidet:0)])
-					cube([width+side+sidet,length+side+sidet,0.001]);
-					translate([side/2,side/2,base+offset-0.001])
-					cube([width+side,length+side,0.001]);
-				}
-				translate([side+sidet,side+sidet,0])cube([width-sidet*2,length-sidet*2,base+pcb+top]);
+				translate([side/2-sidet/2,side/2-sidet/2,base+offset-side+(sidet>0?-sidet:0)])
+				cube([width+side+sidet,length+side+sidet,side]);
+				translate([side+sidet,side+sidet,0])
+				cube([width-sidet*2,length-sidet*2,base+pcb+top]);
 			}
 			if($children>0)translate([side,side,base+pcb+sidet])grow(sidet/2,sidet/2,0)children(0);
-			if(sidet>0)translate([side,side,-1])cube([width,length,pcb+base+1+sidet]);
+			if(sidet>0)translate([side-sidet/2,side-sidet/2,-1])cube([width+sidet,length+sidet,pcb+base+1+sidet]);
 		}
 		if($children>1)translate([side,side,base+pcb+sidet])grow(-sidet/2,-sidet/2,0)children(1);
-		if(sidet<0)translate([side,side,base+sidet])cube([width,length,pcb+top+1]);
+		if(sidet<0)translate([side+sidet/2,side+sidet/2,base+sidet])cube([width-sidet,length-sidet,pcb+top+1]);
 	}
 }
 
