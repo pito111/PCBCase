@@ -82,8 +82,13 @@ module casecut(width,length,base,top,side,sidet,pcb,cutoffset)
 			cube([side*2+width+2,side*2+length+2,base+1+offset-side+(sidet>0?-sidet:0)]);
 			difference()
 			{
-				translate([side/2-sidet/2,side/2-sidet/2,base+offset-side+(sidet>0?-sidet:0)])
-				cube([width+side+sidet,length+side+sidet,side]);
+				hull()
+				{
+					translate([side/2-sidet/2,side/2-sidet/2,base+offset-side+(sidet>0?-sidet:0)])
+					cube([width+side+sidet,length+side+sidet,side-side/4]);
+					translate([side/2-sidet/2+side/4,side/2-sidet/2+side/4,base+offset-side+(sidet>0?-sidet:0)])
+					cube([width+side+sidet-side/2,length+side+sidet-side/2,side]);
+				}
 				translate([side+sidet,side+sidet,0])
 				cube([width-sidet*2,length-sidet*2,base+pcb+top]);
 			}
