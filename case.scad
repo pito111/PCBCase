@@ -11,13 +11,13 @@
 // If child(2) exists it is the extra parts for cut added to base (e.g. parts stage 1)
 // Origin for all items is bottom left of PCB, box sticks out around it
 
-module case(width=20,length=20,base=2.5,top=2.5,side=2.5,sidet=0.25,pcb=1.6,cutoffset=0)
+module case(width=20,length=20,base=2.5,top=2.5,side=2.5,sidet=0.25,margin=0.5,pcb=1.6,cutoffset=0)
 {
 	// Base
 	intersection()
 	{
-		casebox(width,length,base,top,side,-sidet/2,pcb)children(0);
-		casecut(width,length,base,top,side,-sidet/2,pcb,cutoffset)
+		casebox(width,length,base,top,side,-sidet/2,margin,pcb)children(0);
+		casecut(width,length,base,top,side,-sidet/2,margin,pcb,cutoffset)
 		{
 			if($children>1)children(1);
 			if($children>2)children(2);
@@ -29,8 +29,8 @@ module case(width=20,length=20,base=2.5,top=2.5,side=2.5,sidet=0.25,pcb=1.6,cuto
 	translate([0,-length/2-side,-(base+pcb+top)/2])
 	difference()
 	{
-		casebox(width,length,base,top,side,sidet/2,pcb)children(0);
-		casecut(width,length,base,top,side,sidet/2,pcb,cutoffset)
+		casebox(width,length,base,top,side,sidet/2,margin,pcb)children(0);
+		casecut(width,length,base,top,side,sidet/2,margin,pcb,cutoffset)
 		{
 			if($children>1)children(1);
 			if($children>2)children(2);
@@ -50,7 +50,7 @@ module grow(x,y,z)
 	}else children();
 }
 
-module casebox(width,length,base,top,side,sidet,pcb)
+module casebox(width,length,base,top,side,sidet,margin,pcb)
 { // The box
 	difference()
 	{
@@ -63,15 +63,15 @@ module casebox(width,length,base,top,side,sidet,pcb)
 		}
 		translate([side,side,base+sidet])
 		{
-			translate([-abs(sidet),-abs(sidet),0])
-			cube([width+abs(sidet)*2,length+abs(sidet)*2,pcb]); // PCB
+			translate([-margin,-margin,0])
+			cube([width+margin,length+margin,pcb]); // PCB
 			translate([0,0,pcb])
 			children();
 		}
 	}
 }
 
-module casecut(width,length,base,top,side,sidet,pcb,cutoffset)
+module casecut(width,length,base,top,side,sidet,margin,pcb,cutoffset)
 { // The base cut
 	difference()
 	{
@@ -84,19 +84,19 @@ module casecut(width,length,base,top,side,sidet,pcb,cutoffset)
 			{
 				hull()
 				{
-					translate([side/2-sidet/2,side/2-sidet/2,base+offset-side+(sidet>0?-sidet:0)])
-					cube([width+side+sidet,length+side+sidet,side-side/4]);
-					translate([side/2-sidet/2+side/4,side/2-sidet/2+side/4,base+offset-side+(sidet>0?-sidet:0)])
-					cube([width+side+sidet-side/2,length+side+sidet-side/2,side]);
+					translate([side/2-margin/2-sidet/2,side/2-margin/2-sidet/2,base+offset-side+(sidet>0?-sidet:0)])
+					cube([width+side+margin+sidet,length+side+margin+sidet,side-side/4]);
+					translate([side/2-margin/2-sidet/2+side/4,side/2-margin/2-sidet/2+side/4,base+offset-side+(sidet>0?-sidet:0)])
+					cube([width+side+margin+sidet-side/2,length+side+margin+sidet-side/2,side]);
 				}
-				translate([side+sidet,side+sidet,0])
-				cube([width-sidet*2,length-sidet*2,base+pcb+top]);
+				translate([side+margin,side+margin,0])
+				cube([width-margin*2,length-margin*2,base+pcb+top]);
 			}
 			if($children>0)translate([side,side,base+pcb+sidet])grow(sidet/2,sidet/2,0)children(0);
-			if(sidet>0)translate([side-sidet,side-sidet,-1])cube([width+sidet*2,length+sidet*2,pcb+base+1+sidet]);
+			if(sidet>0)translate([side-margin,side-margin,-1])cube([width+margin*2,length+margin*2,pcb+base+1+sidet]);
 		}
 		if($children>1)translate([side,side,base+pcb+sidet])grow(-sidet/2,-sidet/2,0)children(1);
-		if(sidet<0)translate([side+sidet,side+sidet,base+sidet])cube([width-sidet*2,length-sidet*2,pcb+top+1]);
+		if(sidet<0)translate([side-margin,side-margin,base+sidet])cube([width+margin*2,length+margin*2,pcb+top+1]);
 	}
 }
 
