@@ -456,7 +456,7 @@ module switch66(stage,x,y,r,pcb=1.6,height=5,nohole=false,smd=0)
 				translate([-2,0,0])
 				cube([10,6,4]);	// Leads
 				if(!nohole)
-				translate([3,3,0])
+				translate([2,2,0])
 				cylinder(d=4,h=20);	// Poke hole
 			}
 		}else
@@ -464,7 +464,7 @@ module switch66(stage,x,y,r,pcb=1.6,height=5,nohole=false,smd=0)
 				cube([6,6,4]); // Body
 				translate([-2,0,0])
 				cube([10,6,2]);	// Leads
-				translate([3,3,0])
+				translate([2,2,0])
 				cylinder(d=4,h=height); // Button
 				if(!nohole)
 				translate([3,3,0])
