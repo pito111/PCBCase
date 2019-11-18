@@ -79,24 +79,34 @@ module casecut(width,length,base,top,side,sidet,margin,pcb,cutoffset)
 		union()
 		{
 			translate([-1,-1,-1])
-			cube([side*2+width+2,side*2+length+2,base+1+offset-side+(sidet>0?-sidet:0)]);
+			cube([side*2+width+2,side*2+length+2,base+1+offset-side]);
 			difference()
 			{
-				hull()
+				union()
 				{
-					translate([side/2-margin/2-sidet/2,side/2-margin/2-sidet/2,base+offset-side+(sidet>0?-sidet:0)])
-					cube([width+side+margin+sidet,length+side+margin+sidet,side-side/4]);
-					translate([side/2-margin/2-sidet/2+side/4,side/2-margin/2-sidet/2+side/4,base+offset-side+(sidet>0?-sidet:0)])
-					cube([width+side+margin+sidet-side/2,length+side+margin+sidet-side/2,side]);
+					hull()
+					{
+						translate([side/2-margin/2-sidet/2,side/2-margin/2-sidet/2,base+offset-side])
+						cube([width+side+margin+sidet,length+side+margin+sidet,side-side/4]);
+						translate([side/2-margin/2-sidet/2+side/4,side/2-margin/2-sidet/2+side/4,base+offset-side])
+						cube([width+side+margin+sidet-side/2,length+side+margin+sidet-side/2,side]);
+					}
+					hull()
+					{
+						translate([side/2-margin/2-sidet/2-side/4,side/2-margin/2-sidet/2-side/4,base+offset-side])
+						cube([width+side+margin+sidet+side/2,length+side+margin+sidet+side/2,0.001]);
+						translate([side/2-margin/2-sidet/2+side/4,side/2-margin/2-sidet/2+side/4,base+offset-side])
+						cube([width+side+margin+sidet-side/2,length+side+margin+sidet-side/2,side/4]);
+					}
 				}
 				translate([side+margin,side+margin,0])
 				cube([width-margin*2,length-margin*2,base+pcb+top]);
 			}
-			if($children>0)translate([side,side,base+pcb+sidet])grow(sidet/2,sidet/2,0)children(0);
-			if(sidet>0)translate([side-margin,side-margin,-1])cube([width+margin*2,length+margin*2,pcb+base+1+sidet]);
+			if($children>0)translate([side,side,base+pcb])grow(sidet/2,sidet/2,0)children(0);
+			if(sidet>0)translate([side-margin,side-margin,-1])cube([width+margin*2,length+margin*2,pcb+base+1]);
 		}
-		if($children>1)translate([side,side,base+pcb+sidet])grow(-sidet/2,-sidet/2,0)children(1);
-		if(sidet<0)translate([side-margin,side-margin,base+sidet])cube([width+margin*2,length+margin*2,pcb+top+1]);
+		if($children>1)translate([side,side,base+pcb])grow(-sidet/2,-sidet/2,0)children(1);
+		if(sidet<0)translate([side-margin,side-margin,base])cube([width+margin*2,length+margin*2,pcb+top+1]);
 	}
 }
 
@@ -143,8 +153,8 @@ module esp32(stage,x,y,r=0)
 			translate([0,15.5,0])
 			hull()
 			{
-				translate([0,0,stage])
-				cube([18,10,1]);	// Base PCB
+				translate([0,0,stage/4+0.5])
+				cube([18,10,0.001]);	// Base PCB
 				translate([-10,0,stage*20])
 				cube([18+20,10,1]);
 			}
