@@ -102,10 +102,10 @@ module casecut(width,length,base,top,side,sidet,margin,pcb,cutoffset)
 				translate([side+margin,side+margin,0])
 				cube([width-margin*2,length-margin*2,base+pcb+top]);
 			}
-			if($children>0)translate([side,side,base+pcb])grow(sidet/2,sidet/2,0)children(0);
+			if($children>0)translate([side,side,base+pcb])grow(margin,margin,0)children(0);
 			if(sidet>0)translate([side-margin,side-margin,-1])cube([width+margin*2,length+margin*2,pcb+base+1]);
 		}
-		if($children>1)translate([side,side,base+pcb])grow(-sidet/2,-sidet/2,0)children(1);
+		if($children>1)translate([side,side,base+pcb])grow(margin,margin,0)children(1);
 		if(sidet<0)translate([side-margin,side-margin,base])cube([width+margin*2,length+margin*2,pcb+top+1]);
 	}
 }
