@@ -78,8 +78,13 @@ module casecut(width,length,base,top,side,sidet,margin,pcb,cutoffset)
 		offset=pcb/2+0.8+cutoffset;
 		union()
 		{
-			translate([-1,-1,-1])
-			cube([side*2+width+2,side*2+length+2,base+1+offset-side]);
+			difference()
+			{
+				translate([-1,-1,-1])
+				cube([side*2+width+2,side*2+length+2,base+1+offset-side]);
+				if(sidet>0)translate([side+margin,side+margin,base])cube([width-margin*2,length-margin*2,pcb+top+1]);
+			}
+			if(sidet<0)translate([side+margin,side+margin,-1])cube([width-margin*2,length-margin*2,pcb+base+1]);
 			difference()
 			{
 				union()
@@ -337,8 +342,8 @@ module spox(stage,x,y,r=0,n=2,pcb=1.6,hidden=false,smd=0)
 			{
 				translate([0,0,(smd?-1:1)*stage/2])
 				cube([6,51,1]);
-				translate([0,0,(smd?-1:1)*stage*20])
-				cube([6,51,1]);
+				translate([-3,0,(smd?-1:1)*stage*20])
+				cube([12,51,1]);
 			}
 		}
 	}
