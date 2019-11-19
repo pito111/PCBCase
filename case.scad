@@ -11,7 +11,7 @@
 // If child(2) exists it is the extra parts for cut added to base (e.g. parts stage 1)
 // Origin for all items is bottom left of PCB, box sticks out around it
 
-module case(width=20,length=20,base=2.5,top=2.5,side=3,sidet=0.25,margin=0.5,pcb=1.6,cutoffset=0)
+module case(width=20,length=20,base=2.5,top=2.5,side=3,sidet=0.3,margin=0.4,pcb=1.6,cutoffset=0)
 {
 	// Base
 	intersection()
