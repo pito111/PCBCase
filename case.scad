@@ -78,13 +78,8 @@ module casecut(width,length,base,top,side,sidet,margin,pcb,cutoffset)
 		offset=pcb/2+0.8+cutoffset;
 		union()
 		{
-			difference()
-			{
-				translate([-1,-1,-1])
-				cube([side*2+width+2,side*2+length+2,base+1+offset-side]);
-				translate([side+margin,side+margin,0])
-				cube([width-margin*2,length-margin*2,base+pcb+top]);
-			}
+			translate([-1,-1,-1])
+			cube([side*2+width+2,side*2+length+2,base+1+offset-side]);
 			difference()
 			{
 				union()
