@@ -105,7 +105,13 @@ module casecut(width,length,base,top,side,sidet,margin,pcb,cutoffset)
 			if($children>0)translate([side,side,base+pcb])grow(margin,margin,0)children(0);
 			if(sidet>0)translate([side-margin,side-margin,-1])cube([width+margin*2,length+margin*2,pcb+base+1]);
 		}
-		if($children>1)translate([side,side,base+pcb])grow(margin,margin,0)children(1);
+		if($children>1)
+		difference()
+		{
+			translate([side,side,base+pcb])grow(margin,margin,0)children(1);
+			translate([side-margin,side-margin,0])
+			cube([width+margin*2,length+margin*2,base+pcb+top]);
+		}
 		if(sidet<0)translate([side-margin,side-margin,base])cube([width+margin*2,length+margin*2,pcb+top+1]);
 	}
 }
@@ -310,21 +316,21 @@ module spox(stage,x,y,r=0,n=2,pcb=1.6,hidden=false,smd=0)
 			}
 		}else if(!hidden)
 		{ // Cut
-			translate([0,-10,-pcb-2])
+			translate([0,-15,-pcb-2])
 			hull()
 			{
 				translate([0,0,(smd?-1:1)*stage/2])
-				cube([w,18,1]);
+				cube([w,23,1]);
 				translate([0,0,(smd?-1:1)*stage*20])
-				cube([w,18,1]);
+				cube([w,23,1]);
 			}
-			translate([w/2-5,-50,-pcb-2])
+			translate([w/2-3,-50,-pcb-2])
 			hull()
 			{
 				translate([0,0,(smd?-1:1)*stage/2])
-				cube([10,50,1]);
+				cube([6,51,1]);
 				translate([0,0,(smd?-1:1)*stage*20])
-				cube([10,50,1]);
+				cube([6,51,1]);
 			}
 		}
 	}
