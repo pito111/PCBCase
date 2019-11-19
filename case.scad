@@ -296,18 +296,35 @@ module spox(stage,x,y,r=0,n=2,pcb=1.6,hidden=false,smd=0)
     			cube([w-4.9+0.6,6.6+0.3,2.38+0.3]);
 			if(!hidden)
 			{
-				translate([0,-20,-pcb-4.9])
-    				cube([w,20,4.9]);
+				hull()
+				{ // Plug to cable
+					translate([0,-5,-pcb-4.9])
+    					cube([w,5,4.9]);
+					translate([w/2,0,-2.45-pcb])
+					rotate([90,0,0])
+					cylinder(d=4.9,h=15,$fn=12);
+				}
+				translate([w/2,0,-2.45-pcb])
+				rotate([90,0,0])
+				cylinder(d=4.9,h=50,$fn=12); // Cable
 			}
 		}else if(!hidden)
 		{ // Cut
-			translate([0,-20,-pcb-2])
+			translate([0,-10,-pcb-2])
 			hull()
 			{
 				translate([0,0,(smd?-1:1)*stage/2])
-				cube([w,28,1]);
+				cube([w,18,1]);
 				translate([0,0,(smd?-1:1)*stage*20])
-				cube([w,28,1]);
+				cube([w,18,1]);
+			}
+			translate([w/2-5,-50,-pcb-2])
+			hull()
+			{
+				translate([0,0,(smd?-1:1)*stage/2])
+				cube([10,50,1]);
+				translate([0,0,(smd?-1:1)*stage*20])
+				cube([10,50,1]);
 			}
 		}
 	}
