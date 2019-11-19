@@ -16,7 +16,7 @@ module case(width=20, // Main PCB width
 		base=2.5,	// Base below PCB
 		top=2.5,	// Top above PCB
 		side=3,		// Side around PCB
-		sidet=0.3,	// Tolerance for size to fit - depends a bit on printer
+		sidet=0.4,	// Tolerance for size to fit - depends a bit on printer
 		margin=0.4,	// Margin around PCB and parts x/y - depends a bit on printer
 		pcb=1.6,	// PCB thickness
 		cutoffset=0	// Adjust level at which case is cut in half
@@ -51,6 +51,7 @@ module grow(x,y,z)
 { // Simple grow
 	if(x>0||y>0||z>0)
 	{
+		render()
 		minkowski()
 		{
 			children();
@@ -75,7 +76,6 @@ module casebox(width,length,base,top,side,sidet,margin,pcb)
 			translate([-margin,-margin,0])
 			cube([width+margin*2,length+margin*2,pcb]); // PCB
 			translate([0,0,pcb])
-			grow(margin,margin,0)
 			children();
 		}
 	}
@@ -148,7 +148,7 @@ module casecut(width,length,base,top,side,sidet,margin,pcb,cutoffset)
 // Stage=-1 cuts in to box base
 // Only parts that expect to "stick out" from the case do anything for the cut stages
 
-module posn(x,y,w,h,r,vx=0.2,vy=0.2,vz=0,smd=0)
+module posn(x,y,w,h,r,vx=0.4,vy=0.4,vz=0,smd=0)
 { // Positioning and rotation and growing for placement errors
 	s=sin(r);
 	c=cos(r);
