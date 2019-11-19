@@ -507,7 +507,7 @@ module switch66(stage,x,y,r,pcb=1.6,height=5,nohole=false,smd=0)
 module l80(stage,x,y,r)
 { // L80 GPS (RS 908-4085)
 	if(!stage)
-	posn(x,y,16,16,r,0.5,0.5)
+	posn(x,y,16,16,r,1,1)
 	{
 		cube([16,16,2.3]);
 		translate([0.5,0.5,0])
