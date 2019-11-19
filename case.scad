@@ -109,6 +109,7 @@ module casecut(width,length,base,top,side,sidet,margin,pcb,cutoffset)
 		difference()
 		{
 			translate([side,side,base+pcb])grow(margin,margin,0)children(1);
+			if(sidet>0)
 			translate([side-margin,side-margin,0])
 			cube([width+margin*2,length+margin*2,base+pcb+top]);
 		}
@@ -316,7 +317,7 @@ module spox(stage,x,y,r=0,n=2,pcb=1.6,hidden=false,smd=0)
 			}
 		}else if(!hidden)
 		{ // Cut
-			translate([0,-15,-pcb-2])
+			translate([0,-15,-pcb-2.45])
 			hull()
 			{
 				translate([0,0,(smd?-1:1)*stage/2])
@@ -324,7 +325,7 @@ module spox(stage,x,y,r=0,n=2,pcb=1.6,hidden=false,smd=0)
 				translate([0,0,(smd?-1:1)*stage*20])
 				cube([w,23,1]);
 			}
-			translate([w/2-3,-50,-pcb-2])
+			translate([w/2-3,-50,-pcb-2.45])
 			hull()
 			{
 				translate([0,0,(smd?-1:1)*stage/2])
