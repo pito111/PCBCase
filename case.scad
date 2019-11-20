@@ -73,9 +73,10 @@ module casebox(width,length,base,top,side,sidet,margin,pcb)
 		}
 		translate([side,side,base+sidet])
 		{
-			translate([-margin,-margin,0])
-			cube([width+margin*2,length+margin*2,pcb]); // PCB
+			grow(margin*2,margin*2,0)
+			cube([width,length,pcb]); // PCB
 			translate([0,0,pcb])
+			grow(margin*2,margin*2,0)
 			children();
 		}
 	}
@@ -148,10 +149,11 @@ module casecut(width,length,base,top,side,sidet,margin,pcb,cutoffset)
 // Stage=-1 cuts in to box base
 // Only parts that expect to "stick out" from the case do anything for the cut stages
 
-module posn(x,y,w,h,r,vx=0.4,vy=0.4,vz=0,smd=0)
+module posn(x,y,w,h,r,vx=0.2,vy=0.2,vz=0,smd=0)
 { // Positioning and rotation and growing for placement errors
 	s=sin(r);
 	c=cos(r);
+	render()
 	translate([x+(s>0?h*s:0)+(c<0?-w*c:0),y+(c<0?-h*c:0)+(s<0?-w*s:0),0])
 	rotate([0,0,r])
 	translate([smd?w:0,0,-smd])
@@ -443,7 +445,7 @@ module oled(stage,x=0,y=0,r=0,d=5,h=6,pcb=1.6,nopads=false,screw=2,smd=0)
 				pads(2.75,9.61+3*2.54,0.9,2,ny=2);
 			}
 			translate([0,0,-pcb-h-1.6])
-			cube([45,37,h+1.6]);
+			cube([45,37,h+1.6]); // Main board
 			for(px=[2.75,42.25])
             		for(py=[2.5,34.5])
             		translate([px,py,-h-pcb])
@@ -455,6 +457,8 @@ module oled(stage,x=0,y=0,r=0,d=5,h=6,pcb=1.6,nopads=false,screw=2,smd=0)
 			}
 		        translate([5,0,-pcb-h-1.6-2])
         		cube([35,37,2.001]); // Glass
+			translate([4,-1,-pcb-h-1.6-2.2])
+			cube([37,4,2.2]);	// The bit that breaks far too easily
 			// Window for view
 			hull()
 			{
