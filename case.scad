@@ -76,7 +76,7 @@ module casebox(width,length,base,top,side,sidet,margin,pcb)
 			grow(margin*2,margin*2,0)
 			cube([width,length,pcb]); // PCB
 			translate([0,0,pcb])
-			grow(margin*2,margin*2,0)
+			//grow(margin*2,margin*2,0)
 			children();
 		}
 	}
@@ -429,7 +429,7 @@ module usbc(stage,x,y,r=0)
 module oled(stage,x=0,y=0,r=0,d=5,h=6,pcb=1.6,nopads=false,screw=2,smd=0)
 { // OLED module e.g. https://www.amazon.co.uk/gp/product/B07BDMG2DK
 	// d / h are the pillars
-	posn(x,y,45,37,r,smd=smd?pcb:0)
+	posn(x,y,45,37,r,0.5,0.5,smd=smd?pcb:0)
 	{
 		if(!stage)
 		{
@@ -457,8 +457,12 @@ module oled(stage,x=0,y=0,r=0,d=5,h=6,pcb=1.6,nopads=false,screw=2,smd=0)
 			}
 		        translate([5,0,-pcb-h-1.6-2])
         		cube([35,37,2.001]); // Glass
-			translate([4,-1,-pcb-h-1.6-2.2])
-			cube([37,4,2.2]);	// The bit that breaks far too easily
+			translate([4,35,-pcb-h-1.6-2.2])
+			cube([37,3,h+pcb+1.6+2.2]);	// The bit that breaks far too easily
+			translate([4,30,-pcb-h-1.6-2.2])
+			cube([2,8,h+pcb+1.6+2.2]);	// The bit that breaks far too easily
+			translate([39,30,-pcb-h-1.6-2.2])
+			cube([2,8,h+pcb+1.6+2.2]);	// The bit that breaks far too easily
 			// Window for view
 			hull()
 			{
