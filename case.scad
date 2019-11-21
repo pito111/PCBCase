@@ -69,14 +69,14 @@ module casebox(width,length,base,top,side,sidet,margin,pcb,baseedge,topedge,side
 	{
 		hull()
 		{	// Case
-			translate([baseedge,baseedge,0])
-			cube([side*2+width-baseedge*2,side*2+length-baseedge*2,baseedge]);
+			translate([baseedge/2,baseedge/2,0])
+			cube([side*2+width-baseedge,side*2+length-baseedge,baseedge]);
 			translate([sideedge,0,baseedge])
 			cube([side*2+width-sideedge*2,side*2+length,pcb+base+top-baseedge-topedge]);
 			translate([0,sideedge,baseedge])
 			cube([side*2+width,side*2+length-sideedge*2,pcb+base+top-baseedge-topedge]);
-			translate([topedge,topedge,pcb+base+top-topedge])
-			cube([side*2+width-topedge*2,side*2+length-topedge*2,topedge]);
+			translate([topedge/2,topedge/2,pcb+base+top-topedge])
+			cube([side*2+width-topedge,side*2+length-topedge,topedge]);
 		}
 		translate([side,side,base+sidet])
 		{
