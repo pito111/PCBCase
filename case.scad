@@ -19,13 +19,15 @@ module case(width=20, // Main PCB width
 		sidet=0.4,	// Tolerance for size to fit - depends a bit on printer
 		margin=0.4,	// Margin around PCB and parts x/y - depends a bit on printer
 		pcb=1.6,	// PCB thickness
-		cutoffset=0	// Adjust level at which case is cut in half
+		cutoffset=0,	// Adjust level at which case is cut in half
+		baseedge=1,	// Corner cut off base
+		topedge=1	// Corner cut off top
 		)
 {
 	// Base
 	intersection()
 	{
-		casebox(width,length,base,top,side,-sidet/2,margin,pcb)children(0);
+		casebox(width,length,base,top,side,-sidet/2,margin,pcb,baseedge,topedge)children(0);
 		casecut(width,length,base,top,side,-sidet/2,margin,pcb,cutoffset)
 		{
 			if($children>1)children(1);
@@ -38,7 +40,7 @@ module case(width=20, // Main PCB width
 	translate([0,-length/2-side,-(base+pcb+top)/2])
 	difference()
 	{
-		casebox(width,length,base,top,side,sidet/2,margin,pcb)children(0);
+		casebox(width,length,base,top,side,sidet/2,margin,pcb,baseedge,topedge)children(0);
 		casecut(width,length,base,top,side,sidet/2,margin,pcb,cutoffset)
 		{
 			if($children>1)children(1);
@@ -60,16 +62,18 @@ module grow(x,y,z)
 	}else children();
 }
 
-module casebox(width,length,base,top,side,sidet,margin,pcb)
+module casebox(width,length,base,top,side,sidet,margin,pcb,baseedge,topedge)
 { // The box
 	difference()
 	{
 		hull()
-		{
-			translate([side/2,side/2,0])
-			cube([side+width,side+length,pcb+base+top]); // Case
-			translate([0,0,side/2])
-			cube([side*2+width,side*2+length,pcb+base+top-side]); // Case
+		{	// Case
+			translate([baseedge,baseedge,0])
+			cube([side*2+width-baseedge*2,side*2+length-baseedge*2,baseedge]);
+			translate([0,0,baseedge])
+			cube([side*2+width,side*2+length,pcb+base+top-baseedge-topedge]);
+			translate([topedge,topedge,pcb+base+top-topedge])
+			cube([side*2+width-topedge*2,side*2+length-topedge*2,topedge]);
 		}
 		translate([side,side,base+sidet])
 		{
