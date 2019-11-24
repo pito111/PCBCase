@@ -29,7 +29,7 @@ module case(width=20, // Main PCB width
 	intersection()
 	{
 		casebox(width,length,base,top,side,-sidet/2,margin,pcb,baseedge,topedge,sideedge)children(0);
-		casecut(width,length,base,top,side,-sidet/2,margin,pcb,cutoffset)
+		casecut(width,length,base,top,side,-sidet/2,margin,pcb,baseedge,topedge,sideedge,cutoffset)
 		{
 			if($children>1)children(1);
 			if($children>2)children(2);
@@ -42,7 +42,7 @@ module case(width=20, // Main PCB width
 	difference()
 	{
 		casebox(width,length,base,top,side,sidet/2,margin,pcb,baseedge,topedge,sideedge)children(0);
-		casecut(width,length,base,top,side,sidet/2,margin,pcb,cutoffset)
+		casecut(width,length,base,top,side,sidet/2,margin,pcb,baseedge,topedge,sideedge,cutoffset)
 		{
 			if($children>1)children(1);
 			if($children>2)children(2);
@@ -93,7 +93,7 @@ module casebox(width,length,base,top,side,sidet,margin,pcb,baseedge,topedge,side
 	}
 }
 
-module casecut(width,length,base,top,side,sidet,margin,pcb,cutoffset)
+module casecut(width,length,base,top,side,sidet,margin,pcb,baseedge,topedge,sideedge,cutoffset)
 { // The base cut
 	difference()
 	{
@@ -113,17 +113,25 @@ module casecut(width,length,base,top,side,sidet,margin,pcb,cutoffset)
 				{
 					hull()
 					{
-						translate([side/2-margin/2-sidet/2,side/2-margin/2-sidet/2,base+offset-side])
-						cube([width+side+margin+sidet,length+side+margin+sidet,side-side/4]);
-						translate([side/2-margin/2-sidet/2+side/4,side/2-margin/2-sidet/2+side/4,base+offset-side])
-						cube([width+side+margin+sidet-side/2,length+side+margin+sidet-side/2,side]);
+						translate([side/2-margin/2-sidet/2+sideedge,side/2-margin/2-sidet/2,base+offset-side])
+						cube([width+side+margin+sidet-sideedge*2,length+side+margin+sidet,side-side/4]);
+						translate([side/2-margin/2-sidet/2,side/2-margin/2-sidet/2+sideedge,base+offset-side])
+						cube([width+side+margin+sidet,length+side+margin+sidet-sideedge*2,side-side/4]);
+						translate([side/2-margin/2-sidet/2+side/4+sideedge,side/2-margin/2-sidet/2+side/4,base+offset-side])
+						cube([width+side+margin+sidet-side/2-sideedge*2,length+side+margin+sidet-side/2,side]);
+						translate([side/2-margin/2-sidet/2+side/4,side/2-margin/2-sidet/2+side/4+sideedge,base+offset-side])
+						cube([width+side+margin+sidet-side/2,length+side+margin+sidet-side/2-sideedge*2,side]);
 					}
 					hull()
 					{
-						translate([side/2-margin/2-sidet/2-side/4,side/2-margin/2-sidet/2-side/4,base+offset-side])
-						cube([width+side+margin+sidet+side/2,length+side+margin+sidet+side/2,0.001]);
-						translate([side/2-margin/2-sidet/2+side/4,side/2-margin/2-sidet/2+side/4,base+offset-side])
-						cube([width+side+margin+sidet-side/2,length+side+margin+sidet-side/2,side/4]);
+						translate([side/2-margin/2-sidet/2-side/4+sideedge,side/2-margin/2-sidet/2-side/4,base+offset-side])
+						cube([width+side+margin+sidet+side/2-sideedge*2,length+side+margin+sidet+side/2,0.001]);
+						translate([side/2-margin/2-sidet/2-side/4,side/2-margin/2-sidet/2-side/4+sideedge,base+offset-side])
+						cube([width+side+margin+sidet+side/2,length+side+margin+sidet+side/2-sideedge*2,0.001]);
+						translate([side/2-margin/2-sidet/2+side/4+sideedge,side/2-margin/2-sidet/2+side/4,base+offset-side])
+						cube([width+side+margin+sidet-side/2-sideedge*2,length+side+margin+sidet-side/2,side/4]);
+						translate([side/2-margin/2-sidet/2+side/4,side/2-margin/2-sidet/2+side/4+sideedge,base+offset-side])
+						cube([width+side+margin+sidet-side/2,length+side+margin+sidet-side/2-sideedge*2,side/4]);
 					}
 				}
 				translate([side+margin,side+margin,0])
