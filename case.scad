@@ -69,14 +69,18 @@ module casebox(width,length,base,top,side,sidet,margin,pcb,baseedge,topedge,side
 	{
 		hull()
 		{	// Case
-			translate([baseedge/2,baseedge/2,0])
-			cube([side*2+width-baseedge,side*2+length-baseedge,baseedge]);
+			translate([baseedge/2+sideedge,baseedge/2,0])
+			cube([side*2+width-baseedge-sideedge*2,side*2+length-baseedge,baseedge]);
+			translate([baseedge/2,baseedge/2+sideedge,0])
+			cube([side*2+width-baseedge,side*2+length-baseedge-sideedge*2,baseedge]);
 			translate([sideedge,0,baseedge])
 			cube([side*2+width-sideedge*2,side*2+length,pcb+base+top-baseedge-topedge]);
 			translate([0,sideedge,baseedge])
 			cube([side*2+width,side*2+length-sideedge*2,pcb+base+top-baseedge-topedge]);
-			translate([topedge/2,topedge/2,pcb+base+top-topedge])
-			cube([side*2+width-topedge,side*2+length-topedge,topedge]);
+			translate([topedge/2+sideedge,topedge/2,pcb+base+top-topedge])
+			cube([side*2+width-topedge-sideedge*2,side*2+length-topedge,topedge]);
+			translate([topedge/2,topedge/2+sideedge,pcb+base+top-topedge])
+			cube([side*2+width-topedge,side*2+length-topedge-sideedge*2,topedge]);
 		}
 		translate([side,side,base+sidet])
 		{
@@ -531,6 +535,15 @@ module switch66(stage,x,y,r,pcb=1.6,height=5,nohole=false,smd=0)
 				translate([3,3,0])
 				cylinder(d=2,h=20);	// Poke hole
 		}
+	}
+}
+
+module l96(stage,x,y,r)
+{ // L96 GPS
+	if(!stage)
+	posn(x,y,9.6,14,r,1,1)
+	{
+		cube([9.6,14,2]);
 	}
 }
 
