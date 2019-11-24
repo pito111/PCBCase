@@ -466,20 +466,21 @@ module oled(stage,x=0,y=0,r=0,d=5,h=6,pcb=1.6,nopads=false,screw=2,smd=0)
 				translate([0,0,-1.6-screw])
 				cylinder(d=4.99,h=screw+pcb+h+1.6+screw); // Screws (smaller to avoid silly in OpenSCAD clashing with cube)
 			}
-		        translate([5,0,-pcb-h-1.6-2])
-        		cube([35,37,2.001]); // Glass
-			translate([4,35,-pcb-h-1.6-2.2])
-			cube([37,3,h+pcb+1.6+2.2]);	// The bit that breaks far too easily
-			translate([4,30,-pcb-h-1.6-2.2])
-			cube([2,8,h+pcb+1.6+2.2]);	// The bit that breaks far too easily
-			translate([39,30,-pcb-h-1.6-2.2])
-			cube([2,8,h+pcb+1.6+2.2]);	// The bit that breaks far too easily
+			g=1.6;
+		        translate([5,0,-pcb-h-1.6-g])
+        		cube([35,37,g+0.001]); // Glass
+			translate([4,35,-pcb-h-1.6-g-0.2])
+			cube([37,3,h+pcb+1.6+g+0.2]);	// The bit that breaks far too easily
+			translate([4,30,-pcb-h-1.6-g-0.2])
+			cube([2,8,h+pcb+1.6+g+0.2]);	// The bit that breaks far too easily
+			translate([39,30,-pcb-h-1.6-g-0.2])
+			cube([2,8,h+pcb+1.6+g+0.2]);	// The bit that breaks far too easily
 			// Window for view
 			hull()
 			{
-            			translate([7.5,1.5,-pcb-h-1.6-2-1])
+            			translate([7.5,1.5,-pcb-h-1.6-g-1])
             			cube([30,28,1]);
-            			translate([7.5-5,2-5,-h-pcb-1.6-2-1-20])
+            			translate([7.5-5,2-5,-h-pcb-1.6-g-1-20])
             			cube([30+10,28+10,1]);
 			}
 		}else{ // cut
