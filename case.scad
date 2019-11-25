@@ -168,7 +168,7 @@ module casecut(width,length,base,top,side,sidet,margin,pcb,baseedge,topedge,side
 // Stage=-1 cuts in to box base
 // Only parts that expect to "stick out" from the case do anything for the cut stages
 
-module posn(x,y,w,h,r,vx=0.2,vy=0.2,vz=0,smd=0)
+module posn(x,y,w,h,r=0,vx=0.2,vy=0.2,vz=0,smd=0)
 { // Positioning and rotation and growing for placement errors
 	s=sin(r);
 	c=cos(r);
@@ -212,7 +212,7 @@ module esp32(stage,x,y,r=0)
 	}
 }
 
-module screw(stage,x,y,r,n=2,d,w,h,yp,ys,s=3,pcb=1.6)
+module screw(stage,x,y,r=0,n=2,d,w,h,yp,ys,s=3,pcb=1.6)
 { // Corner of outline
 	posn(x,y,d*n,w,r)
 	{
@@ -517,7 +517,7 @@ module co2(stage,x,y,r=0,pcb=1.6)
 	}
 }
 
-module switch66(stage,x,y,r,pcb=1.6,height=5,nohole=false,smd=0)
+module switch66(stage,x,y,r=0,pcb=1.6,height=5,nohole=false,smd=0)
 {
 	if(!stage)
 	posn(x,y,6,6,r,smd=smd?pcb:0)
@@ -547,7 +547,7 @@ module switch66(stage,x,y,r,pcb=1.6,height=5,nohole=false,smd=0)
 	}
 }
 
-module l96(stage,x,y,r)
+module l96(stage,x,y,r=0)
 { // L96 GPS
 	if(!stage)
 	posn(x,y,9.6,14,r,1,1)
@@ -556,7 +556,7 @@ module l96(stage,x,y,r)
 	}
 }
 
-module l80(stage,x,y,r)
+module l80(stage,x,y,r=0)
 { // L80 GPS (RS 908-4085)
 	if(!stage)
 	posn(x,y,16,16,r,1,1)
@@ -567,7 +567,7 @@ module l80(stage,x,y,r)
 	}
 }
 
-module l86(stage,x,y,r)
+module l86(stage,x,y,r=0)
 { // L86 GPS (RS 908-4114)
 	if(!stage)
 	posn(x,y,18.4,18.4,r,1,1)
@@ -576,7 +576,7 @@ module l86(stage,x,y,r)
 	}
 }
 
-module bat1220(stage,x,y,r)
+module bat1220(stage,x,y,r=0)
 { // 1220 battery holder
 	if(!stage)
 	posn(x,y,13.2,12.5,r)
