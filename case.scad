@@ -589,18 +589,28 @@ module bat1220(stage,x,y,r=0)
 
 module gsm2click(stage,x,y,r=0)
 { // GSM 2 Click nodule
-	if(!stage)
 	posn(x,y,26,57,r)
 	{
-		translate([0,0,-7])
-		cube([26,37,7]);
-		translate([0,37,-10])
-		cube([26,20,10]);
-		translate([3,50,0])
-		cube([6,6,10]);
-		translate([6,50,6])
-		rotate([-90,0,0])
-		cylinder(d=6,h=15);
-
+		if(!stage)
+		{
+			translate([0,0,-7])
+			cube([26,37,7]);
+			translate([0,37,-10])
+			cube([26,20,10]);
+			translate([3,50,0])
+			cube([6,6,10]);
+			translate([6,50,6])
+			rotate([-90,0,0])
+			cylinder(d=6,h=15);
+		}else{
+			translate([3,50,6])
+                        hull()
+                        {
+                                translate([0,0,stage/4+0.5])
+                                cube([6,15,0.001]);    // Base PCB
+                                translate([-10,0,stage*20])
+                                cube([6+20,15,1]);
+                        }
+		}
 	}
 }
