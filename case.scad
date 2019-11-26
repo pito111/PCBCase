@@ -586,3 +586,21 @@ module bat1220(stage,x,y,r=0)
 		cube([13.2+4,9,2]); // Solder
 	}
 }
+
+module gsm2click(stage,x,y,r=0)
+{ // GSM 2 Click nodule
+	if(!stage)
+	posn(x,y,26,57,r)
+	{
+		translate([0,0,-7])
+		cube([26,37,7]);
+		translate([0,37,-10])
+		cube([26,20,10]);
+		translate([3,50,0])
+		cube([6,6,10]);
+		translate([3,50,6])
+		rotate([0,90,0])
+		cylinder(d=6,h=15);
+
+	}
+}
