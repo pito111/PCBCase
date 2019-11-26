@@ -598,8 +598,8 @@ module gsm2click(stage,x,y,r=0)
 		cube([26,20,10]);
 		translate([3,50,0])
 		cube([6,6,10]);
-		translate([3,50,6])
-		rotate([0,90,0])
+		translate([6,50,6])
+		rotate([-90,0,0])
 		cylinder(d=6,h=15);
 
 	}
