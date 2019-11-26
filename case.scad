@@ -589,14 +589,14 @@ module bat1220(stage,x,y,r=0)
 
 module gsm2click(stage,x,y,r=0)
 { // GSM 2 Click nodule
-	posn(x,y,25.4,57,r)
+	posn(x,y,25.4,57.15,r,0.5,0.5)
 	{
 		if(!stage)
 		{
 			translate([0,0,-7])
 			cube([25.4,37,7]);
 			translate([0,37,-11])
-			cube([25.4,20,11]);
+			cube([25.4,20.15,11]);
 			translate([3,50,-5])
 			cube([6,6,10]); // SMA block
 			translate([6,50,6-5])
