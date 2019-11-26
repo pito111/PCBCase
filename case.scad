@@ -582,26 +582,30 @@ module bat1220(stage,x,y,r=0)
 	posn(x,y,13.2,12.5,r)
 	{
 		cube([13.2,12.5,4]);
-		translate([-2,3,0])
-		cube([13.2+4,9,2]); // Solder
+		translate([-2,1.25,0])
+		cube([13.2+4,10,2]); // Solder
 	}
 }
 
 module gsm2click(stage,x,y,r=0)
 { // GSM 2 Click nodule
-	posn(x,y,26,57,r)
+	posn(x,y,25.4,57,r)
 	{
 		if(!stage)
 		{
 			translate([0,0,-7])
-			cube([26,37,7]);
+			cube([25.4,37,7]);
 			translate([0,37,-11])
-			cube([26,20,11]);
+			cube([25.4,20,11]);
 			translate([3,50,-5])
-			cube([6,6,10]); // SMA
+			cube([6,6,10]); // SMA block
 			translate([6,50,6-5])
 			rotate([-90,0,0])
-			cylinder(d=6,h=15); // SMA
+			{
+				cylinder(d=6,h=15); // SMA
+				translate([0,0,9])
+				cylinder(d=9.5,h=20); // SMA
+			}
 			translate([15+3,57,-11+3])
 			rotate([-90,0,0])
 			{
