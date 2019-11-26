@@ -595,19 +595,30 @@ module gsm2click(stage,x,y,r=0)
 		{
 			translate([0,0,-7])
 			cube([26,37,7]);
-			translate([0,37,-10])
-			cube([26,20,10]);
+			translate([0,37,-11])
+			cube([26,20,11]);
 			translate([3,50,-5])
 			cube([6,6,10]); // SMA
 			translate([6,50,6-5])
 			rotate([-90,0,0])
 			cylinder(d=6,h=15); // SMA
+			translate([15,57,-11])
+			cube([6,6,3]); // Audio
+
 		}else{
 			translate([3,50,6-5])
                         hull()
                         {
                                 translate([0,0,stage/4+0.5])
-                                cube([6,15,0.001]);    // Base PCB
+                                cube([6,15,0.001]);
+                                translate([-10,0,stage*20])
+                                cube([6+20,15,1]);
+                        }
+			translate([15,57,-8])
+                        hull()
+                        {
+                                translate([0,0,stage/4+0.5])
+                                cube([6,15,0.001]);
                                 translate([-10,0,stage*20])
                                 cube([6+20,15,1]);
                         }
