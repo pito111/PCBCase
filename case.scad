@@ -184,8 +184,8 @@ module pads(x,y,d=1.2,h=2.5,nx=1,dx=2.54,ny=1,dy=2.54)
 { // PCB pad, x/y are centre of pin
 	for(px=[0:1:nx-1])
 	for(py=[0:1:ny-1])
-	translate([x+px*dx,y+py*dy,-0.0001])
-	cylinder(d1=4,d2=d,h=h+0.0001,$fn=8);
+	translate([x+px*dx,y+py*dy,-0.001])
+	cylinder(d1=4,d2=d,h=h+0.001,$fn=8);
 }
 
 module esp32(stage,x,y,r=0)
