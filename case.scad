@@ -589,7 +589,7 @@ module bat1220(stage,x,y,r=0)
 
 module gsm2click(stage,x,y,r=0)
 { // GSM 2 Click nodule
-	posn(x,y,25.4,57.15,r,0.5,0.5)
+	posn(x,y,25.4,57.15,r,1,1)
 	{
 		if(!stage)
 		{
