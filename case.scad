@@ -542,15 +542,15 @@ module switch66(stage,x,y,r=0,pcb=1.6,height=5,nohole=false,smd=0)
 		{
 			translate([0,0,-5-pcb])
 			{
-				cube([6,6,5]);
+				cube([6,6,4]);
 				translate([-2,-2,0])
-				cube([4,4,4]); // Leads/solder
-				translate([6-2,-2,0])
-				cube([4,4,4]);
+				cube([3,3,2]); // Leads/solder
+				translate([6-1,-1,0])
+				cube([3,3,2]);
 				translate([-2,6-2,0])
-				cube([4,4,4]);
-				translate([6-2,6-2,0])
-				cube([4,4,4]);
+				cube([3,3,2]);
+				translate([6-1,6-2,0])
+				cube([3,3,2]);
 				if(!nohole)
 				translate([3,3,0])
 				cylinder(d=4,h=20);	// Poke hole
@@ -558,8 +558,14 @@ module switch66(stage,x,y,r=0,pcb=1.6,height=5,nohole=false,smd=0)
 		}else
 		{
 				cube([6,6,4]); // Body
-				translate([-2,0,0])
-				cube([10,6,2]);	// Leads
+				translate([-2,-1,0])
+				cube([3,3,2]); // Leads/solder
+				translate([6-1,-1,0])
+				cube([3,3,2]);
+				translate([-2,6-2,0])
+				cube([3,3,2]);
+				translate([6-1,6-2,0])
+				cube([3,3,2]);
 				translate([3,3,0])
 				cylinder(d=4,h=height); // Button
 				if(!nohole)
