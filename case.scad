@@ -609,10 +609,20 @@ module gsm2click(stage,x,y,r=0)
 	{
 		if(!stage)
 		{
-			translate([0,0,-9.5])
-			cube([25.4,37,9.5]);
-			translate([0,37,-11.5])
-			cube([25.4,20.15,11.5]);
+			translate([0,0,-6.5])
+			cube([25.4,57.5,6.5]); // Board
+			translate([0,1,-9.5])
+			cube([25.4,20,9.5]); // Contacts
+			translate([4,1,-9.5])
+			cube([17.4,34,9.5]); // SIM
+			translate([0,35,-9.5])
+			cube([25.4,15,9.5]); // components
+			translate([1,35,-9.5])
+			cube([24.4,22.15,9.5]); // components
+			translate([5,37,-11.5])
+			cube([10,12,11.5]); // Thicker components(caps)
+			translate([14,39,-11.5])
+			cube([8,18.15,11.5]); // Thicker components (audio)
 			translate([3,50,-5])
 			cube([6,6,10]); // SMA block
 			translate([6,50,6-5])
