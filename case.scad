@@ -593,10 +593,10 @@ module gsm2click(stage,x,y,r=0)
 	{
 		if(!stage)
 		{
-			translate([0,0,-9])
-			cube([25.4,37,9]);
-			translate([0,37,-11])
-			cube([25.4,20.15,11]);
+			translate([0,0,-9.5])
+			cube([25.4,37,9.5]);
+			translate([0,37,-11.5])
+			cube([25.4,20.15,11.5]);
 			translate([3,50,-5])
 			cube([6,6,10]); // SMA block
 			translate([6,50,6-5])
