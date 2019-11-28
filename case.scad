@@ -159,14 +159,7 @@ module casecut(width,length,base,top,side,sidet,margin,pcb,baseedge,topedge,side
 	}
 }
 
-// Functions for parts attached to PCB
-
-// Origins are top left of PCB, so typically translated -1,-1,1.6 from pcb() to allow for 1 mm margin on SVGs
-// The stage parameter is used to allow these functions to be called for pcb(), and cut()
-// Stage=0 is the PCB part
-// Stage=1 adds to box base
-// Stage=-1 cuts in to box base
-// Only parts that expect to "stick out" from the case do anything for the cut stages
+// Support for parts
 
 module posn(x,y,w,h,r=0,vx=0.2,vy=0.2,vz=0,smd=0)
 { // Positioning and rotation and growing for placement errors
@@ -187,6 +180,28 @@ module pads(x,y,d=1.2,h=2.5,nx=1,dx=2.54,ny=1,dy=2.54)
 	translate([x+px*dx,y+py*dy,-0.001])
 	cylinder(d1=4,d2=d,h=h+0.001,$fn=8);
 }
+
+module cutin(stage,x,y,z=0,w=0,l=0,t=0,a=25)
+{ // Do simple cut in at x/y/z with width and length
+	if(stage)
+	{
+		translate([x,y,z])
+		hull()
+		{
+			cube([w,l,0.001+t*stage/2]);
+			translate([-a,0,stage*100])
+			cube([w+a*2,l,0.001]);
+		}
+	}
+}
+
+// Parts
+// Origins are top left of PCB, so typically translated -1,-1,1.6 from pcb() to allow for 1 mm margin on SVGs
+// The stage parameter is used to allow these functions to be called for pcb(), and cut()
+// Stage=0 is the PCB part
+// Stage=1 adds to box base
+// Stage=-1 cuts in to box base
+// Only parts that expect to "stick out" from the case do anything for the cut stages
 
 module esp32(stage,x,y,r=0)
 { // Corner of main board of ESP32 18mm by 25.5mm
@@ -432,7 +447,8 @@ module usbc(stage,x,y,r=0)
 					cylinder(d=7,h=20.5);
 				}
 			}
-		}else{ // Cut
+		}
+		else{ // Cut
 			translate([0,-20,3.26/2-0.5])
 			hull()
 			{
@@ -614,21 +630,8 @@ module gsm2click(stage,x,y,r=0)
 				cylinder(d=10,h=10);
 			}
 
-		}else{
-			translate([3,50,6-5])
-                        hull()
-                        {
-                                cube([6,15,0.001]);
-                                translate([-10,0,stage*20])
-                                cube([6+20,15,1]);
-                        }
-			translate([15,57,-8])
-                        hull()
-                        {
-                                cube([6,15,0.001]);
-                                translate([-10,0,stage*20])
-                                cube([6+20,15,1]);
-                        }
 		}
+		cutin(stage,6-4,50,6-5,8,15);
+		cutin(stage,18-4,57,-8,8,15);
 	}
 }
