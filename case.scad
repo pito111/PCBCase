@@ -615,45 +615,45 @@ module bat1220(stage,x,y,r=0)
 	}
 }
 
-module gsm2click(stage,x,y,r=0)
+module gsm2click(stage,x,y,r=0,gap=3)
 { // GSM 2 Click nodule
 	posn(x,y,25.4,57.15,r,0.5,0.5)
 	{
 		if(!stage)
 		{
-			translate([0,0,-6.5])
-			cube([25.4,57.5,6.5]); // Board
-			translate([0,1,-9.5])
-			cube([25.4,20,9.5]); // Contacts
-			translate([4,1,-9.5])
-			cube([17.4,34,9.5]); // SIM
-			translate([0,35,-9.5])
-			cube([25.4,15,9.5]); // components
-			translate([1,35,-9.5])
-			cube([24.4,22.15,9.5]); // components
-			translate([5,37,-11.5])
-			cube([10,12,11.5]); // Thicker components(caps)
-			translate([14,39,-11.5])
-			cube([8,18.15,11.5]); // Thicker components (audio)
-			translate([3,50,-5])
+			translate([0,0,-gap-4])
+			cube([25.4,57.5,gap+4]); // Board
+			translate([0,1,-gap-7])
+			cube([25.4,20,gap+7]); // Contacts
+			translate([4,1,-gap-7])
+			cube([17.4,34,gap+7]); // SIM
+			translate([0,35,-gap-7])
+			cube([25.4,15,gap+7]); // components
+			translate([1,35,-gap-7])
+			cube([24.4,22.15,gap+7]); // components
+			translate([5,37,-gap-9])
+			cube([10,12,gap+9]); // Thicker components(caps)
+			translate([14,39,-gap-9])
+			cube([8,18.15,gap+9]); // Thicker components (audio)
+			translate([3,50,-gap-2.5])
 			cube([6,6,10]); // SMA block
-			translate([6,50,6-5])
+			translate([6,50,6-gap-2.5])
 			rotate([-90,0,0])
 			{
 				cylinder(d=6,h=15); // SMA
 				translate([0,0,9])
 				cylinder(d=9.5,h=20); // SMA
 			}
-			translate([15+3,57,-11+3])
+			translate([15+3,57,-gap-8.5+3])
 			rotate([-90,0,0])
-			{
+			{ // Audio
 				cylinder(d=6,h=2);
 				translate([0,0,2])
 				cylinder(d=10,h=10);
 			}
 
 		}
-		cutin(stage,6-4,50,6-5,8,15);
-		cutin(stage,18-4,57,-8,8,15);
+		cutin(stage,6-4,50,6-gap-2.5,8,15);
+		cutin(stage,18-4,57,-gap-5.5,8,15);
 	}
 }
