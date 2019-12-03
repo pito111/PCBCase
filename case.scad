@@ -607,10 +607,10 @@ module l86(stage,x,y,r=0)
 module bat1220(stage,x,y,r=0)
 { // 1220 battery holder
 	if(!stage)
-	posn(x,y,13.2,12.5,r)
+	posn(x,y,13.2,13,r)
 	{
-		cube([13.2,12.5,4]);
-		translate([-2,1.25,0])
+		cube([13.2,13,4]);
+		translate([-2,1.5,0])
 		cube([13.2+4,10,2]); // Solder
 	}
 }
