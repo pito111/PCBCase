@@ -543,7 +543,7 @@ module switch66(stage,x,y,r=0,pcb=1.6,height=5,nohole=false,smd=0)
 			translate([0,0,-5-pcb])
 			{
 				cube([6,6,4]);
-				translate([-2,-2,0])
+				translate([-2,-1,0])
 				cube([3,3,2]); // Leads/solder
 				translate([6-1,-1,0])
 				cube([3,3,2]);
