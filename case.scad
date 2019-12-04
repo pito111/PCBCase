@@ -341,7 +341,7 @@ module smdrelay(stage,x,y,r=0)
 module spox(stage,x,y,r=0,n=2,pcb=1.6,hidden=false,smd=0)
 {
 	w=(n-1)*2.5+4.9;
-	posn(x,y,w,7.9,r,smd=smd?pcb:0,vz=0.5)
+	posn(x,y,w,7.9,r,0.5,0.5,0.5,smd=smd?pcb:0)
 	{
 		if(!stage)
 		{
