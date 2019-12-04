@@ -536,7 +536,7 @@ module co2(stage,x,y,r=0,pcb=1.6)
 module switch66(stage,x,y,r=0,pcb=1.6,height=5,nohole=false,smd=0)
 {
 	if(!stage)
-	posn(x,y,6,6,r,smd=smd?pcb:0)
+	posn(x,y,6,6,r,1,1,smd=smd?pcb:0)
 	{
 		if(smd)
 		{
@@ -607,11 +607,16 @@ module l86(stage,x,y,r=0)
 module bat1220(stage,x,y,r=0)
 { // 1220 battery holder
 	if(!stage)
-	posn(x,y,13.2,13,r)
+	posn(x,y,13.5,13.5,r)
 	{
-		cube([13.2,13,4]);
+		cube([13.5,13.5,4]);
+		hull()
+		{
 		translate([-2,1.5,0])
-		cube([13.2+4,10,2]); // Solder
+		cube([13.5+4,10.5,2]); // Solder
+		translate([0,1.5,0])
+		cube([13.5,10.5,4]); // Solder
+		}
 	}
 }
 
