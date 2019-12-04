@@ -601,6 +601,8 @@ module l86(stage,x,y,r=0)
 	posn(x,y,18.4,18.4,r,1,1)
 	{
 		cube([18.4,18.4,7]);
+		translate([-2,-2,0])
+		cube([18.4+4,18.4+4,3]); // Glue gun
 	}
 }
 
