@@ -20,12 +20,13 @@ const char     *pcbfile = NULL;
 char           *scadfile = NULL;
 const char     *modeldir = "PCBCase/models";
 double          pcbthickness = 0;
-double          casewall = 3;
 double          pcbwidth = 0;
 double          pcblength = 0;
 double          casebase = 10;
 double          casetop = 10;
-double 	margin=1;
+double          casewall = 3;
+double          fit = 0.2;
+double          margin = 0.8;
 
 /* strings from file, lots of common, so make a table */
 int             strn = 0;
@@ -291,13 +292,14 @@ write_scad(void)
    fprintf(f, "casebase=%lf;\n", casebase);
    fprintf(f, "casetop=%lf;\n", casetop);
    fprintf(f, "casewall=%lf;\n", casewall);
+   fprintf(f, "fit=%lf;\n", fit);
    fprintf(f, "pcbthickness=%lf;\n", pcbthickness);
 
    double          lx = DBL_MAX,
                    hx = -DBL_MAX,
                    ly = DBL_MAX,
                    hy = -DBL_MAX;
-	 double ry; /* reference for Y, as it is flipped! */
+   double          ry;          /* reference for Y, as it is flipped! */
    /* sanity */
    if (!pcbthickness)
       errx(1, "Specify pcb thickness");
@@ -353,10 +355,10 @@ write_scad(void)
          pcbwidth = hx - lx;
       if (ly < DBL_MAX)
          pcblength = hy - ly;
-      ry=hy;
-      fprintf(f,"pcbwidth=%lf;\n",pcbwidth);
-      fprintf(f,"pcblength=%lf;\n",pcblength);
-      fprintf(f,"\n");
+      ry = hy;
+      fprintf(f, "pcbwidth=%lf;\n", pcbwidth);
+      fprintf(f, "pcblength=%lf;\n", pcblength);
+      fprintf(f, "\n");
       fprintf(f, "// PCB\nmodule pcb(){");
       if (cutn)
       {                         /* Edge cut */
@@ -385,7 +387,7 @@ write_scad(void)
                y = cuts[n].y1;
             }
             cuts[n].used = 1;
-            fprintf(f, "[%lf,%lf]", x - lx, ry-y);
+            fprintf(f, "[%lf,%lf]", x - lx, ry - y);
             if (todo)
                fprintf(f, ",");
          }
@@ -463,13 +465,14 @@ write_scad(void)
          {
             if ((o3 = find_obj(o, "at", NULL)) && o3->valuen >= 2 && o3->values[0].isnum && o3->values[1].isnum)
             {
-               fprintf(f, "translate([%lf,%lf,%lf])", o3->values[0].num - lx, ry-o3->values[1].num , back ? 0 : pcbthickness);
+               fprintf(f, "translate([%lf,%lf,%lf])", o3->values[0].num - lx, ry - o3->values[1].num, back ? 0 : pcbthickness);
                if (o3->valuen >= 3 && o2->values[2].num)
                   fprintf(f, "rotate([0,0,%lf])", o3->values[2].num);
             }
             if (back)
                fprintf(f, "rotate([180,0,0])");
-	    /* we assume 3D model is aligned, not using the offset/scale/etc of the footprint model */
+            /* we assume 3D model is aligned, not using the offset/scale/etc of the footprint model */
+            /* if we do pick up offset, remember y is negative */
             fprintf(f, "m%d(); // %s\n", n, modules[n].desc);
          } else
             fprintf(f, "// Missing %s\n", modules[n].desc);
@@ -508,6 +511,7 @@ main(int argc, const char *argv[])
          {"base", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &casebase, 0, "Case base", "mm"},
          {"top", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &casetop, 0, "Case top", "mm"},
          {"wall", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &casewall, 0, "Case wall", "mm"},
+         {"fit", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &fit, 0, "Case fit", "mm"},
          {"margin", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &margin, 0, "margin", "mm"},
          {"debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug"},
          POPT_AUTOHELP {}
