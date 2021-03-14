@@ -75,12 +75,12 @@ module case()
 {
 	hull()
 	{
-		translate([margin,0,margin])
-		cube([pcbwidth+casewall*2-margin*2,pcblength+casewall*2,casebase+pcbthickness+casetop-margin*2]);
-		translate([0,margin,margin])
-		cube([pcbwidth+casewall*2,pcblength+casewall*2-margin*2,casebase+pcbthickness+casetop-margin*2]);
-		translate([margin,margin,0])
-		cube([pcbwidth+casewall*2-margin*2,pcblength+casewall*2-margin*2,casebase+pcbthickness+casetop]);
+		translate([casewall,0,casewall])
+		cube([pcbwidth+casewall*2-casewall*2,pcblength+casewall*2,casebase+pcbthickness+casetop-casewall*2]);
+		translate([0,casewall,casewall])
+		cube([pcbwidth+casewall*2,pcblength+casewall*2-casewall*2,casebase+pcbthickness+casetop-casewall*2]);
+		translate([casewall,casewall,0])
+		cube([pcbwidth+casewall*2-casewall*2,pcblength+casewall*2-casewall*2,casebase+pcbthickness+casetop]);
 	}
 }
 
