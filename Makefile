@@ -1,2 +1,2 @@
-case:	case.c models.h
+case:	case.c models models/final.scad
 	cc -O -o $@ $< -lpopt

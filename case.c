@@ -12,14 +12,13 @@
 #include <sys/mman.h>
 #include <stdlib.h>
 #include <ctype.h>
-
-#include "models.h"             /* the 3D models */
-
+#include <unistd.h>
 
 /* yet, all globals, what the hell */
 int             debug = 0;
 const char     *pcbfile = NULL;
 char           *scadfile = NULL;
+const char     *modeldir = "PCBCase/models";
 double          pcbthickness = 0;
 double          casethickness = 3;
 double          pcbwidth = 0;
@@ -231,19 +230,42 @@ load_pcb(void)
    const char     *p = data;
    pcb = parse_obj(&p, data + s.st_size);
    munmap(data, s.st_size);
+   close(f);
+}
+
+void
+copy_file(FILE * o, const char *fn)
+{
+   int             f = open(fn, O_RDONLY);
+   if (f < 0)
+      err(1, "Cannot open %s", fn);
+   struct stat     s;
+   if (fstat(f, &s))
+      err(1, "Cannot stat %s", fn);
+   char           *data = mmap(NULL, s.st_size, PROT_READ, MAP_PRIVATE, f, 0);
+   if (!data)
+      errx(1, "Cannot access %s", fn);
+   fwrite(data, s.st_size, 1, o);
+   munmap(data, s.st_size);
+   close(f);
 }
 
 void
 write_scad(void)
 {
    obj_t          *o,
-                  *o2;
+                  *o2,
+                  *o3;
    /* making scad file */
    FILE           *f = stdout;
    if (strcmp(scadfile, "-"))
       f = fopen(scadfile, "w");
    if (!f)
       err(1, "Cannot open %s", scadfile);
+
+   if (chdir(modeldir))
+      errx(1, "Cannot access model dir %s", modeldir);
+
    fprintf(f, "// Generated case design for %s\n", pcbfile);
    fprintf(f, "// By https://github.com/revk/PCBCase\n");
    if ((o = find_obj(pcb, "title_block", NULL)))
@@ -255,6 +277,11 @@ write_scad(void)
             else if (o2->values[0].isnum)
                fprintf(f, "// %s:\t%lf\n", o2->tag, o2->values[0].num);
          }
+   fprintf(f, "//\n\n");
+   fprintf(f, "// Globals\n");
+   fprintf(f, "casebase=%lf;\n", casebase);
+   fprintf(f, "casetop=%lf;\n", casetop);
+   fprintf(f, "casethickness=%lf;\n", casethickness);
    fprintf(f, "//\n\n");
 
    /* some basic settings */
@@ -367,8 +394,96 @@ write_scad(void)
    if (!pcbwidth || !pcblength)
       errx(1, "Specify pcb size");
 
-   /* TODO */
-   fprintf(f, "pcb();\n");      /* TODO */
+   struct
+   {
+      char           *filename;
+      char           *desc;
+      unsigned char   ok:1;
+   }              *modules = NULL;
+   int             modulen = 0;
+
+   /* The main PCB */
+   fprintf(f, "// Populated PCB\nmodule board(){\n	pcb();\n");
+   o = NULL;
+   while ((o = find_obj(pcb, "module", o)))
+   {
+      char            back = 0; /* back of board */
+      if (!(o2 = find_obj(o, "layer", NULL)) || o2->valuen != 1 || !o2->values[0].istxt)
+         continue;
+      if (!strcmp(o2->values[0].txt, "B.Cu"))
+         back = 1;
+      else if (strcmp(o2->values[0].txt, "F.Cu"))
+         continue;
+      if (!(o2 = find_obj(o, "model", NULL)) || o2->valuen < 1 || !o2->values[0].istxt)
+         continue;              /* Not 3D model */
+      char           *model = strdup(o2->values[0].txt);
+      if (!model)
+         errx(1, "malloc");
+      char           *leaf = strrchr(model, '/');
+      if (leaf)
+         leaf++;
+      else
+         leaf = model;
+      char           *e = strrchr(model, '.');
+      if (e)
+         *e = 0;
+      char           *fn;
+      if (asprintf(&fn, "%s.scad", leaf) < 0)
+         errx(1, "malloc");
+      int             n;
+      for (n = 0; n < modulen; n++)
+         if (!strcmp(modules[n].filename, fn))
+            break;
+      if (n == modulen)
+      {
+         modules = realloc(modules, (++modulen) * sizeof(*modules));
+         if (!modules)
+            errx(1, "malloc");
+         memset(modules + n, 0, sizeof(*modules));
+         modules[n].filename = fn;
+         if (o->valuen >= 1 && o->values[0].istxt)
+            modules[n].desc = strdup(o->values[0].txt);
+         else
+            modules[n].desc = strdup(leaf);
+         if (access(modules[n].filename, R_OK))
+            warnx("Cannot find model for %s", leaf);
+         else
+            modules[n].ok = 1;
+      } else
+         free(fn);
+      if (modules[n].ok)
+      {
+         if ((o3 = find_obj(o, "at", NULL)) && o3->valuen >= 2 && o3->values[0].isnum && o3->values[1].isnum)
+         {
+            fprintf(f, "translate([%lf,%lf,%lf])", o3->values[0].num - lx, o3->values[1].num - ly, back ? 0 : pcbthickness);
+            if (o3->valuen >= 3 && o2->values[2].num)
+               fprintf(f, "rotate([0,0,%lf])", o3->values[2].num);
+         }
+         if (back)
+            fprintf(f, "rotate([0,180,0])");
+         if ((o3 = find_obj(o2, "at", NULL)) && (o3 = find_obj(o3, "xyz", NULL)) && o3->valuen == 3 && o3->values[0].isnum && o3->values[1].isnum && o3->values[2].isnum && (o3->values[0].num || o3->values[1].num || o3->values[2].num))
+            fprintf(f, "translate([%lf,%lf,%lf])", o3->values[0].num, o3->values[1].num, o3->values[2].num);
+         if ((o3 = find_obj(o2, "scale", NULL)) && (o3 = find_obj(o3, "xyz", NULL)) && o3->valuen == 3 && o3->values[0].isnum && o3->values[1].isnum && o3->values[2].isnum && (o3->values[0].num != 1 || o3->values[1].num != 1 || o3->values[2].num != 1))
+            fprintf(f, "scale([%lf,%lf,%lf])", o3->values[0].num, o3->values[1].num, o3->values[2].num);
+         if ((o3 = find_obj(o2, "rotate", NULL)) && (o3 = find_obj(o3, "xyz", NULL)) && o3->valuen == 3 && o3->values[0].isnum && o3->values[1].isnum && o3->values[2].isnum && (o3->values[0].num || o3->values[1].num || o3->values[2].num))
+            fprintf(f, "rotate([%lf,%lf,%lf])", o3->values[0].num, o3->values[1].num, o3->values[2].num);
+         fprintf(f, "m%d(); // %s\n", n, modules[n].desc);
+      } else
+         fprintf(f, "// Missing %s\n", modules[n].desc);
+      free(model);
+   }
+   fprintf(f, "}\n\n");
+
+   /* Used models */
+   for (int n = 0; n < modulen; n++)
+      if (modules[n].ok)
+      {
+         fprintf(f, "module m%d() // %s\n{\n", n, modules[n].desc);
+         copy_file(f, modules[n].filename);
+         fprintf(f, "}\n\n");
+      }
+   /* Final SCAD */
+   copy_file(f, "final.scad");
 
    if (f != stdout)
       fclose(f);
@@ -382,6 +497,7 @@ main(int argc, const char *argv[])
       const struct poptOption optionsTable[] = {
          {"pcb-file", 'f', POPT_ARG_STRING, &pcbfile, 0, "PCB file", "filename"},
          {"scad-file", 'o', POPT_ARG_STRING, &scadfile, 0, "Openscad file", "filename"},
+         {"model-dir", 'm', POPT_ARG_STRING | POPT_ARGFLAG_SHOW_DEFAULT, &modeldir, 0, "Model directory", "dir"},
          {"width", 0, POPT_ARG_DOUBLE, &pcbwidth, 0, "PCB width (default: auto)", "mm"},
          {"length", 0, POPT_ARG_DOUBLE, &pcblength, 0, "PCB length (default: auto)", "mm"},
          {"pcb-thickness", 0, POPT_ARG_DOUBLE, &pcbthickness, 0, "PCB thickness (default: auto)", "mm"},
