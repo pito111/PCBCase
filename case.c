@@ -20,7 +20,8 @@ const char     *pcbfile = NULL;
 char           *scadfile = NULL;
 const char     *modeldir = "PCBCase/models";
 double          pcbthickness = 0;
-double          casethickness = 3;
+double          casethickness = 2;
+double          casewall = 3;
 double          pcbwidth = 0;
 double          pcblength = 0;
 double          casebase = 10;
@@ -266,6 +267,15 @@ write_scad(void)
    if (chdir(modeldir))
       errx(1, "Cannot access model dir %s", modeldir);
 
+   if (strcmp(pcb->tag, "kicad_pcb"))
+      errx(1, "Not a kicad_pcb (%s)", pcb->tag);
+   obj_t          *general = find_obj(pcb, "general", NULL);
+   if (general)
+   {
+      if ((o = find_obj(general, "thickness", NULL)) && o->valuen == 1 && o->values[0].isnum)
+         pcbthickness = o->values[0].num;
+   }
+
    fprintf(f, "// Generated case design for %s\n", pcbfile);
    fprintf(f, "// By https://github.com/revk/PCBCase\n");
    if ((o = find_obj(pcb, "title_block", NULL)))
@@ -281,18 +291,11 @@ write_scad(void)
    fprintf(f, "// Globals\n");
    fprintf(f, "casebase=%lf;\n", casebase);
    fprintf(f, "casetop=%lf;\n", casetop);
+   fprintf(f, "casewall=%lf;\n", casewall);
    fprintf(f, "casethickness=%lf;\n", casethickness);
+   fprintf(f, "pcbthickness=%lf;\n", pcbthickness);
    fprintf(f, "//\n\n");
 
-   /* some basic settings */
-   if (strcmp(pcb->tag, "kicad_pcb"))
-      errx(1, "Not a kicad_pcb (%s)", pcb->tag);
-   obj_t          *general = find_obj(pcb, "general", NULL);
-   if (general)
-   {
-      if ((o = find_obj(general, "thickness", NULL)) && o->valuen == 1 && o->values[0].isnum)
-         pcbthickness = o->values[0].num;
-   }
    double          lx = DBL_MAX,
                    hx = -DBL_MAX,
                    ly = DBL_MAX,
@@ -460,7 +463,7 @@ write_scad(void)
                fprintf(f, "rotate([0,0,%lf])", o3->values[2].num);
          }
          if (back)
-            fprintf(f, "rotate([0,180,0])");
+            fprintf(f, "rotate([180,0,0])");
          if ((o3 = find_obj(o2, "at", NULL)) && (o3 = find_obj(o3, "xyz", NULL)) && o3->valuen == 3 && o3->values[0].isnum && o3->values[1].isnum && o3->values[2].isnum && (o3->values[0].num || o3->values[1].num || o3->values[2].num))
             fprintf(f, "translate([%lf,%lf,%lf])", o3->values[0].num, o3->values[1].num, o3->values[2].num);
          if ((o3 = find_obj(o2, "scale", NULL)) && (o3 = find_obj(o3, "xyz", NULL)) && o3->valuen == 3 && o3->values[0].isnum && o3->values[1].isnum && o3->values[2].isnum && (o3->values[0].num != 1 || o3->values[1].num != 1 || o3->values[2].num != 1))
@@ -504,6 +507,7 @@ main(int argc, const char *argv[])
          {"base", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &casebase, 0, "Case base", "mm"},
          {"top", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &casetop, 0, "Case top", "mm"},
          {"thickness", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &casethickness, 0, "Case thickness", "mm"},
+         {"wall", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &casewall, 0, "Case wall", "mm"},
          {"debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug"},
          POPT_AUTOHELP {}
       };
