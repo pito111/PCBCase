@@ -142,12 +142,27 @@ parse_obj(const char **pp, const char *e)
          value->isbool = 1;
          continue;;
       }
-      double          v = 0;
-      if (sscanf(t, "%lf", &v) == 1)
-      {                         /* safe as we know followed by space or close bracket and not EOF */
-         value->isnum = 1;
-         value->num = v;
-         continue;
+      /* does it look like a value number */
+      const char     *q = t;
+      if (q < p && *q == '-')
+         q++;
+      while (q < p && isdigit(*q))
+         q++;
+      if (q < p && *q == '.')
+      {
+         q++;
+         while (q < p && isdigit(*q))
+            q++;
+      }
+      if (q == p)
+      {                         /* seems legit */
+         double          v = 0;
+         if (sscanf(t, "%lf", &v) == 1)
+         {                      /* safe as we know followed by space or close bracket and not EOF */
+            value->isnum = 1;
+            value->num = v;
+            continue;
+         }
       }
       /* assume string */
       value->istxt = 1;
@@ -253,9 +268,14 @@ write_scad(void)
    fprintf(f, "// By https://github.com/revk/PCBCase\n");
    if ((o = find_obj(pcb, "title_block", NULL)))
       for (int n = 0; n < o->valuen; n++)
-         if (o->values[n].isobj && (o2 = o->values[n].obj)->valuen == 1 && o2->values[0].istxt)
-            fprintf(f, "// %s:\t%s\n", o2->tag, o2->values[0].txt);
-
+         if (o->values[n].isobj && (o2 = o->values[n].obj)->valuen >= 1)
+         {
+            if (o2->values[o2->valuen - 1].istxt)
+               fprintf(f, "// %s:\t%s\n", o2->tag, o2->values[o2->valuen - 1].txt);
+            else if (o2->values[0].isnum)
+               fprintf(f, "// %s:\t%lf\n", o2->tag, o2->values[0].num);
+         }
+   fprintf(f, "//\n\n");
    if (f != stdout)
       fclose(f);
 }
