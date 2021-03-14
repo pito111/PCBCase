@@ -6,7 +6,7 @@
 #include <time.h>
 #include <popt.h>
 #include <err.h>
-#include <math.h>
+#include <float.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/mman.h>
@@ -14,6 +14,7 @@
 #include <ctype.h>
 
 #include "models.h"             /* the 3D models */
+
 
 /* yet, all globals, what the hell */
 int             debug = 0;
@@ -233,27 +234,6 @@ load_pcb(void)
 }
 
 void
-process_pcb(void)
-{
-   /* some basic settings */
-   obj_t          *o;
-   if (strcmp(pcb->tag, "kicad_pcb"))
-      errx(1, "Not a kicad_pcb (%s)", pcb->tag);
-   obj_t          *general = find_obj(pcb, "general", NULL);
-   if (general)
-   {
-      if ((o = find_obj(general, "thickness", NULL)) && o->valuen == 1 && o->values[0].isnum)
-         pcbthickness = o->values[0].num;
-   }
-   /* sanity */
-   if (!pcbthickness)
-      errx(1, "Specify pcb thickness");
-   /*
-    * if (!pcbwidth || !pcblength) errx(1, "Specify pcb size");
-    */
-}
-
-void
 write_scad(void)
 {
    obj_t          *o,
@@ -276,6 +256,120 @@ write_scad(void)
                fprintf(f, "// %s:\t%lf\n", o2->tag, o2->values[0].num);
          }
    fprintf(f, "//\n\n");
+
+   /* some basic settings */
+   if (strcmp(pcb->tag, "kicad_pcb"))
+      errx(1, "Not a kicad_pcb (%s)", pcb->tag);
+   obj_t          *general = find_obj(pcb, "general", NULL);
+   if (general)
+   {
+      if ((o = find_obj(general, "thickness", NULL)) && o->valuen == 1 && o->values[0].isnum)
+         pcbthickness = o->values[0].num;
+   }
+   double          lx = DBL_MAX,
+                   hx = -DBL_MAX,
+                   ly = DBL_MAX,
+                   hy = -DBL_MAX;
+   /* sanity */
+   if (!pcbthickness)
+      errx(1, "Specify pcb thickness");
+   {                            /* Edge cuts */
+      struct
+      {
+         double          x1,
+                         y1;
+         double          x2,
+                         y2;
+         unsigned char   used:1;
+      }              *cuts = NULL;
+      int             cutn = 0;
+      o = NULL;
+      while ((o = find_obj(pcb, "gr_line", o)))
+         if ((o2 = find_obj(o, "layer", NULL)) && o2->valuen == 1 && o2->values[0].istxt && !strcmp(o2->values[0].txt, "Edge.Cuts"))
+         {                      /* scan the edge cuts */
+            if (!(o2 = find_obj(o, "start", NULL)) || !o2->values[0].isnum || !o2->values[1].isnum)
+               continue;
+            double          x1 = o2->values[0].num,
+                            y1 = o2->values[1].num;
+            if (!(o2 = find_obj(o, "end", NULL)) || !o2->values[0].isnum || !o2->values[1].isnum)
+               continue;
+            double          x2 = o2->values[0].num,
+                            y2 = o2->values[1].num;
+            if (x1 < lx)
+               lx = x1;
+            if (x1 > hx)
+               hx = x1;
+            if (y1 < ly)
+               ly = y1;
+            if (y1 > hy)
+               hy = y1;
+            if (x2 < lx)
+               lx = x2;
+            if (x2 > hx)
+               hx = x2;
+            if (y2 < ly)
+               ly = y2;
+            if (y2 > hy)
+               hy = y2;
+            cuts = realloc(cuts, (cutn + 1) * sizeof(*cuts));
+            if (!cuts)
+               errx(1, "malloc");
+            cuts[cutn].used = 0;
+            cuts[cutn].x1 = x1;
+            cuts[cutn].y1 = y1;
+            cuts[cutn].x2 = x2;
+            cuts[cutn].y2 = y2;
+            cutn++;
+         }
+      if (lx < DBL_MAX)
+         pcbwidth = hx - lx;
+      if (ly < DBL_MAX)
+         pcblength = hy - ly;
+      fprintf(f, "// PCB\nmodule pcb(){");
+      if (cutn)
+      {                         /* Edge cut */
+         double          x = cuts[0].x2,
+                         y = cuts[0].y2;
+         fprintf(f, "linear_extrude(height=%lf)polygon([", pcbthickness);
+         int             todo = cutn;
+         while (todo--)
+         {
+            int             n;
+            for (n = 0; n < cutn; n++)
+               if (!cuts[n].used && cuts[n].x1 == x && cuts[n].y1 == y)
+                  break;
+            if (n < cutn)
+            {
+               x = cuts[n].x2;
+               y = cuts[n].y2;
+            } else
+            {
+               for (n = 0; n < cutn; n++)
+                  if (!cuts[n].used && cuts[n].x2 == x && cuts[n].y2 == y)
+                     break;
+               if (n == cutn)
+                  break;
+               x = cuts[n].x1;
+               y = cuts[n].y1;
+            }
+            cuts[n].used = 1;
+            fprintf(f, "[%lf,%lf]", x - lx, y - ly);
+            if (todo)
+               fprintf(f, ",");
+         }
+         fprintf(f, "]);");
+
+      } else if (pcbwidth && pcblength)
+         fprintf(f, "cube([%lf,%lf,%lf]);", pcbwidth, pcblength, pcbthickness); /* cuboid */
+      fprintf(f, "}\n\n");
+      free(cuts);
+   }
+   if (!pcbwidth || !pcblength)
+      errx(1, "Specify pcb size");
+
+   /* TODO */
+   fprintf(f, "pcb();\n");      /* TODO */
+
    if (f != stdout)
       fclose(f);
 }
@@ -329,7 +423,6 @@ main(int argc, const char *argv[])
          errx(1, "malloc");
    }
    load_pcb();
-   process_pcb();
    write_scad();
 
    return 0;
