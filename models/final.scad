@@ -90,6 +90,7 @@ module cutpf()
 		{
 			translate([-casewall-0.01,-casewall-0.01,-casebase-0.01])cube([pcbwidth+casewall*2+0.02,pcblength+casewall*2+0.02,casebase+pcbthickness+0.02]);
 			translate([0.01-margin/2,0.01-margin/2,-casebase-1])cube([pcbwidth+margin-0.02,pcblength+margin+0.02,height+2]);
+			board();
 		}
 		translate([-casewall,-casewall,-casebase])case();
 	}
@@ -109,6 +110,7 @@ module cutpb()
 		{
 			translate([-casewall-0.01,-casewall-0.01,-0.01])cube([pcbwidth+casewall*2+0.02,pcblength+casewall*2+0.02,casetop+pcbthickness+0.02]);
 			translate([0.01-margin/2,0.01-margin/2,-casebase-1])cube([pcbwidth+margin-0.02,pcblength+margin+0.02,height+2]);
+			board();
 		}
 		translate([-casewall,-casewall,-casebase])case();
 	}
@@ -157,7 +159,7 @@ module top()
 				translate([-1,-1,-1])cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,casebase+pcbthickness+1]);
 				translate([casewall/2+fit/2,casewall/2+fit/2,casebase])cube([pcbwidth+casewall-fit,pcblength+casewall-fit,casetop+pcbthickness+1]);
 			}
-			translate([casewall,casewall,casebase-fit])boardb();
+			translate([casewall,casewall,casebase+fit])boardb();
 			translate([casewall,casewall,casebase])cutpb();
 		}
 		translate([casewall,casewall,casebase])cutpf();

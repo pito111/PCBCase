@@ -1,5 +1,5 @@
 {
-	translate([0,0,6])cube([44.5,37,1.6]);
+	translate([0,0,6])cube([44.4999,37,1.5999]);
 	translate([5,0,6])cube([33.5,37,3.2]);
 	translate([2.5,2.5,0])cylinder(d=5,h=6,$fn=7);
 	translate([2.5,37-2.5,0])cylinder(d=5,h=6,$fn=7);
