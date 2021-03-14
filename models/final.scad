@@ -37,26 +37,34 @@ module boardb()
 
 module pyramid()
 { // A pyramid
- polyhedron(points=[[0,0,0],[-height,-height,height],[-height,height,height],[height,height,height],[height,-height,height]],faces=[[0,1,2],[0,2,3],[0,3,4],[0,4,0],[4,3,2,1]]);
+ polyhedron(points=[[0,0,0],[-height,-height,height],[-height,height,height],[height,height,height],[height,-height,height]],faces=[[0,1,2],[0,2,3],[0,3,4],[0,4,1],[4,3,2,1]]);
 }
 
 module boardpf()
 { // the push up but pyramid
 	render()
-		minkowski()
+		intersection()
 		{
-			boardf();
-			pyramid();
+			translate([-casewall,-casewall,-casebase])cube([pcbwidth+casewall*2,pcblength+casewall*2,height]);
+			minkowski()
+			{
+				pyramid();
+				boardf();
+			}
 		}
 }
 
 module boardpb()
 { // the push down but pyramid
 	render()
-		minkowski()
+		intersection()
 		{
-			boardb();
-			scale([1,1,-1])pyramid();
+			translate([-casewall,-casewall,-casebase])cube([pcbwidth+casewall*2,pcblength+casewall*2,height]);
+			minkowski()
+			{
+				scale([1,1,-1])pyramid();
+				boardb();
+			}
 		}
 }
 
@@ -119,8 +127,8 @@ module base()
 		{
 			case();
 			translate([-1,-1,casebase+pcbthickness])cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,casetop+1]);
-			translate([casewall,casewall,casebase])cube([pcbwidth,pcblength,casetop+pcbthickness+1]);
-			translate([casewall,casewall,casebase])boardf();
+			translate([casewall/2,casewall/2,casebase])cube([pcbwidth+casewall,pcblength+casewall,casetop+pcbthickness+1]);
+			translate([casewall,casewall,casebase-fit])boardf();
 			translate([casewall,casewall,casebase])cutf();
 		}
 		translate([casewall,casewall,casebase])cutb();
@@ -134,7 +142,7 @@ module top()
 		difference()
 		{
 			case();
-			translate([casewall,casewall,casebase])boardb();
+			translate([casewall,casewall,casebase+fit])boardb();
 			minkowski()
 			{
 				base();
@@ -147,7 +155,7 @@ module top()
 module test()
 {
 	board();
-	translate([pcbwidth+casewall+10,0,0])boardf();
+	translate([1*(pcbwidth+casewall+10),0,0])boardf();
 	translate([2*(pcbwidth+casewall+10),0,0])boardb();
 	translate([3*(pcbwidth+casewall+10),0,0])boardpf();
 	translate([4*(pcbwidth+casewall+10),0,0])boardpb();
