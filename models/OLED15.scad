@@ -1,5 +1,3 @@
-// OLED 1.5" display
-rotate([0,0,-90])
 {
 	translate([0,0,6])cube([44.5,37,1.6]);
 	translate([5,0,6])cube([33.5,37,3.2]);

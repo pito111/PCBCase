@@ -1,4 +1,3 @@
-// 8 way SPOX right angle
 translate([-2.5,-6.6,0])
 {
 	cube([22.4,4.9,4.9]);
