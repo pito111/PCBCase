@@ -37,25 +37,27 @@ module boardb()
 
 module pyramid()
 { // A pyramid
- polyhedron(points=[[0,0,0],[-height,-height,height],[-height,height,height],[height,height,height],[height,-height,height]],faces=[[0,1,2],[0,2,3],[0,3,4],[0,4,0],[1,2,3,4]]);
+ polyhedron(points=[[0,0,0],[-height,-height,height],[-height,height,height],[height,height,height],[height,-height,height]],faces=[[0,1,2],[0,2,3],[0,3,4],[0,4,0],[4,3,2,1]]);
 }
 
 module boardpf()
 { // the push up but pyramid
-	minkowski()
-	{
-		boardf();
-		pyramid();
-	}
+	render()
+		minkowski()
+		{
+			boardf();
+			pyramid();
+		}
 }
 
 module boardpb()
 { // the push down but pyramid
-	minkowski()
-	{
-		boardb();
-		scale([1,1,-1])pyramid();
-	}
+	render()
+		minkowski()
+		{
+			boardb();
+			scale([1,1,-1])pyramid();
+		}
 }
 
 module boardm()

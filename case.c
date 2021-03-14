@@ -485,7 +485,7 @@ write_scad(void)
    for (int n = 0; n < modulen; n++)
       if (modules[n].ok)
       {
-         fprintf(f, "module m%d() // %s\n{\n", n, modules[n].desc);
+         fprintf(f, "module m%d()\n{ // %s\n", n, modules[n].desc);
          copy_file(f, modules[n].filename);
          fprintf(f, "}\n\n");
       }
