@@ -52,6 +52,7 @@ module cutf()
 		boardf();
 		translate([-margin/2,-margin/2,-casebase])
 		cube([pcbwidth+margin,pcblength+margin,casebase+casetop+pcbthickness+101]);
+		// TODO the base itself
 		boardm();
 	}
 }
@@ -63,6 +64,7 @@ module cutb()
 		boardb();
 		translate([-margin/2,-margin/2,-casebase])
 		cube([pcbwidth+margin,pcblength+margin,casebase+casetop+pcbthickness+101]);
+		// TODO the base itself
 		boardm();
 	}
 }
@@ -70,8 +72,9 @@ module cutb()
 // Make the case
 
 // For now this is just plotting the board
-boardf();
-translate([pcbwidth+casewall+10,0,0])boardb();
-translate([2*(pcbwidth+casewall+10),0,0])cutf();
-translate([3*(pcbwidth+casewall+10),0,0])cutb();
+board();
+translate([pcbwidth+casewall+10,0,0])boardf();
+translate([2*(pcbwidth+casewall+10),0,0])boardb();
+translate([3*(pcbwidth+casewall+10),0,0])cutf();
+translate([4*(pcbwidth+casewall+10),0,0])cutb();
 
