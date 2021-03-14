@@ -1,9 +1,10 @@
 * PCB Case
 
-OpenSCAD modules to make a simple box/case for a rectangular PCB with components.
+This is a bit of a mixture of stuff.
 
-Example.svg has milling/drilling for a simple PCB with an ESP32 module, 4 pin min SPOX connector and USB-C connector as well as a small regulator. The svg is as viewed from solder side of single sided PCB. Opening Example.svg in inkscape you can select each part and see the X/Y co-ordinates which are the left/bottom in mm. These have then been used in the pcb() module in Example.scad to position each part. Note that that as there is a 1mm cut around the design the X/Y is 1mm too high hence the parts being enclosed in a translate([-1,-1,0]).
+There is some openscad code that allows manual set up of a PCB design for use when making milled designs. Example.scad shows how to use that.
 
-The case() module has the width and height of the PCB and the width for top/bottom/side, and then includes pcb(0); pcb(-1); pcb(1); The value 0/-1/1 is a "stage" parameter used in the parts to identify if drawing the part itself (0) or an area cut away from the base box (-1) or added to the base box(1). This is simply passed to the parts to do the right thing.
-
-The parts are drawn to cover the part itself and any solder, and pins through the board. The part is actually slightly enlarged to allow for manual placement errors, depending on the part (i.e. much less for parts with alignment holes in PCB).
+There is also newer C code. This is designs to take an kicad_pcb file and produce an openscad file that is the case.
+The problem is that you need 3D models for your parts for this to work sensibly, so the C code has a list of footprints as basic openscad outlines. This is not like the 3D models in KiCad which are accurate, it is simply boxes and shapes that allow for the 3D box to have a sensibly sized cut out for the part.
+In many cases this means the model is just a cuboid. But in some cases it is slightly more important as it has the attached connector included.
+Any parts of the design that would breach the case cause cut outs and supports in the case surround.
