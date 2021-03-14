@@ -20,7 +20,6 @@ const char     *pcbfile = NULL;
 char           *scadfile = NULL;
 const char     *modeldir = "PCBCase/models";
 double          pcbthickness = 0;
-double          casethickness = 2;
 double          casewall = 3;
 double          pcbwidth = 0;
 double          pcblength = 0;
@@ -292,7 +291,6 @@ write_scad(void)
    fprintf(f, "casebase=%lf;\n", casebase);
    fprintf(f, "casetop=%lf;\n", casetop);
    fprintf(f, "casewall=%lf;\n", casewall);
-   fprintf(f, "casethickness=%lf;\n", casethickness);
    fprintf(f, "pcbthickness=%lf;\n", pcbthickness);
 
    double          lx = DBL_MAX,
@@ -509,7 +507,6 @@ main(int argc, const char *argv[])
          {"pcb-thickness", 0, POPT_ARG_DOUBLE, &pcbthickness, 0, "PCB thickness (default: auto)", "mm"},
          {"base", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &casebase, 0, "Case base", "mm"},
          {"top", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &casetop, 0, "Case top", "mm"},
-         {"thickness", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &casethickness, 0, "Case thickness", "mm"},
          {"wall", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &casewall, 0, "Case wall", "mm"},
          {"margin", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &margin, 0, "margin", "mm"},
          {"debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug"},

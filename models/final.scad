@@ -52,7 +52,8 @@ module cutf()
 		boardf();
 		translate([-margin/2,-margin/2,-casebase])
 		cube([pcbwidth+margin,pcblength+margin,casebase+casetop+pcbthickness+101]);
-		// TODO the base itself
+		translate([-casewall-1,-casewall-1,1])
+		cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,casetop+pcbthickness+1]);
 		boardm();
 	}
 }
@@ -64,17 +65,67 @@ module cutb()
 		boardb();
 		translate([-margin/2,-margin/2,-casebase])
 		cube([pcbwidth+margin,pcblength+margin,casebase+casetop+pcbthickness+101]);
-		// TODO the base itself
+		translate([-casewall-1,-casewall-1,-casebase-1])
+		cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,casebase+1]);
 		boardm();
 	}
 }
 
-// Make the case
+module case()
+{
+	hull()
+	{
+		translate([margin,0,margin])
+		cube([pcbwidth+casewall*2-margin*2,pcblength+casewall*2,casebase+pcbthickness+casetop-margin*2]);
+		translate([0,margin,margin])
+		cube([pcbwidth+casewall*2,pcblength+casewall*2-margin*2,casebase+pcbthickness+casetop-margin*2]);
+		translate([margin,margin,0])
+		cube([pcbwidth+casewall*2-margin*2,pcblength+casewall*2-margin*2,casebase+pcbthickness+casetop]);
+	}
+}
 
-// For now this is just plotting the board
-board();
-translate([pcbwidth+casewall+10,0,0])boardf();
-translate([2*(pcbwidth+casewall+10),0,0])boardb();
-translate([3*(pcbwidth+casewall+10),0,0])cutf();
-translate([4*(pcbwidth+casewall+10),0,0])cutb();
+module base()
+{
+	difference()
+	{
+		case();
+		translate([-1,-1,casebase+pcbthickness/2])cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,casetop+pcbthickness]);
+		translate([casewall,casewall,casebase])boardf();
+	}
+	translate([casewall,casewall,casebase])cutb();
+}
 
+module top()
+{
+	translate([0,pcblength+casewall*2,casebase+casetop+pcbthickness])rotate([180,0,0])
+	{
+		difference()
+		{
+			case();
+			translate([-1,-1,-1])cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,casebase+pcbthickness]);
+			translate([casewall,casewall,casebase])boardb();
+		}
+		translate([casewall,casewall,casebase])cutf();
+	}
+}
+
+module test()
+{
+	board();
+	translate([pcbwidth+casewall+10,0,0])boardf();
+	translate([2*(pcbwidth+casewall+10),0,0])boardb();
+	translate([3*(pcbwidth+casewall+10),0,0])cutf();
+	translate([4*(pcbwidth+casewall+10),0,0])cutb();
+	translate([5*(pcbwidth+casewall+10),0,0])case();
+	translate([6*(pcbwidth+casewall+10),0,0])base();
+	translate([7*(pcbwidth+casewall+10),0,0])top();
+}
+
+module parts()
+{
+	base();
+	translate([pcbwidth+casewall+10,0,0])top();
+}
+
+//test();
+parts();
