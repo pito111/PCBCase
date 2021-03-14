@@ -130,11 +130,7 @@ module base()
 		translate([casewall,casewall,casebase-fit])boardf();
 		translate([casewall,casewall,casebase])cutpf();
 	}
-	difference()
-	{
-		translate([casewall,casewall,casebase])cutpb();
-		translate([casewall/2-fit/2-margin/2,casewall/2-fit/2-margin/2,casebase])cube([pcbwidth+casewall+fit+margin,pcblength+casewall+fit+margin,casetop+pcbthickness+1]);
-	}
+	translate([casewall,casewall,casebase])cutpb();
 }
 
 module top()
