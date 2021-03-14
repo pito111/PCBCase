@@ -107,16 +107,16 @@ module cutpb()
 }
 
 
-module case(d=0)
+module case()
 { // The basic case
 	hull()
 	{
-		translate([casewall-d,0,casewall-d])
-		cube([pcbwidth+casewall*2-casewall*2+d*2,pcblength+casewall*2+d*2,height-casewall*2+d*2]);
-		translate([0,casewall-d,casewall-d])
-		cube([pcbwidth+casewall*2+d*2,pcblength+casewall*2-casewall*2+d*2,height-casewall*2+d*2]);
-		translate([casewall-d,casewall-d,0])
-		cube([pcbwidth+casewall*2-casewall*2+d*2,pcblength+casewall*2-casewall*2+d*2,height+d*2]);
+		translate([edge,0,edge])
+		cube([pcbwidth+casewall*2-edge*2,pcblength+casewall*2,height-edge*2]);
+		translate([0,edge,edge])
+		cube([pcbwidth+casewall*2,pcblength+casewall*2-edge*2,height-edge*2]);
+		translate([edge,edge,0])
+		cube([pcbwidth+casewall*2-edge*2,pcblength+casewall*2-edge*2,height]);
 	}
 }
 

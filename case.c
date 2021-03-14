@@ -26,6 +26,7 @@ double          casebase = 5;
 double          casetop = 5;
 double          casewall = 3;
 double          fit = 0.2;
+double          edge = 2;
 double          margin = 0.8;
 
 /* strings from file, lots of common, so make a table */
@@ -293,6 +294,7 @@ write_scad(void)
    fprintf(f, "casetop=%lf;\n", casetop);
    fprintf(f, "casewall=%lf;\n", casewall);
    fprintf(f, "fit=%lf;\n", fit);
+   fprintf(f, "edge=%lf;\n", edge);
    fprintf(f, "pcbthickness=%lf;\n", pcbthickness);
 
    double          lx = DBL_MAX,
@@ -512,6 +514,7 @@ main(int argc, const char *argv[])
          {"top", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &casetop, 0, "Case top", "mm"},
          {"wall", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &casewall, 0, "Case wall", "mm"},
          {"fit", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &fit, 0, "Case fit", "mm"},
+         {"edge", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &edge, 0, "Case edge", "mm"},
          {"margin", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &margin, 0, "margin", "mm"},
          {"debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug"},
          POPT_AUTOHELP {}
