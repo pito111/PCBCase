@@ -26,7 +26,7 @@ double          pcbwidth = 0;
 double          pcblength = 0;
 double          casebase = 10;
 double          casetop = 10;
-
+double 	margin=1;
 
 /* strings from file, lots of common, so make a table */
 int             strn = 0;
@@ -288,12 +288,12 @@ write_scad(void)
          }
    fprintf(f, "//\n\n");
    fprintf(f, "// Globals\n");
+   fprintf(f, "margin=%lf;\n", margin);
    fprintf(f, "casebase=%lf;\n", casebase);
    fprintf(f, "casetop=%lf;\n", casetop);
    fprintf(f, "casewall=%lf;\n", casewall);
    fprintf(f, "casethickness=%lf;\n", casethickness);
    fprintf(f, "pcbthickness=%lf;\n", pcbthickness);
-   fprintf(f, "//\n\n");
 
    double          lx = DBL_MAX,
                    hx = -DBL_MAX,
@@ -356,6 +356,9 @@ write_scad(void)
       if (ly < DBL_MAX)
          pcblength = hy - ly;
       ry=hy;
+      fprintf(f,"pcbwidth=%lf;\n",pcbwidth);
+      fprintf(f,"pcblength=%lf;\n",pcblength);
+      fprintf(f,"\n");
       fprintf(f, "// PCB\nmodule pcb(){");
       if (cutn)
       {                         /* Edge cut */
@@ -508,6 +511,7 @@ main(int argc, const char *argv[])
          {"top", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &casetop, 0, "Case top", "mm"},
          {"thickness", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &casethickness, 0, "Case thickness", "mm"},
          {"wall", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &casewall, 0, "Case wall", "mm"},
+         {"margin", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &margin, 0, "margin", "mm"},
          {"debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug"},
          POPT_AUTOHELP {}
       };
