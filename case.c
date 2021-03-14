@@ -275,7 +275,6 @@ write_scad(void)
       if ((o = find_obj(general, "thickness", NULL)) && o->valuen == 1 && o->values[0].isnum)
          pcbthickness = o->values[0].num;
    }
-
    fprintf(f, "// Generated case design for %s\n", pcbfile);
    fprintf(f, "// By https://github.com/revk/PCBCase\n");
    if ((o = find_obj(pcb, "title_block", NULL)))
@@ -300,6 +299,7 @@ write_scad(void)
                    hx = -DBL_MAX,
                    ly = DBL_MAX,
                    hy = -DBL_MAX;
+	 double ry; /* reference for Y, as it is flipped! */
    /* sanity */
    if (!pcbthickness)
       errx(1, "Specify pcb thickness");
@@ -355,6 +355,7 @@ write_scad(void)
          pcbwidth = hx - lx;
       if (ly < DBL_MAX)
          pcblength = hy - ly;
+      ry=hy;
       fprintf(f, "// PCB\nmodule pcb(){");
       if (cutn)
       {                         /* Edge cut */
@@ -383,7 +384,7 @@ write_scad(void)
                y = cuts[n].y1;
             }
             cuts[n].used = 1;
-            fprintf(f, "[%lf,%lf]", x - lx, y - ly);
+            fprintf(f, "[%lf,%lf]", x - lx, ry-y);
             if (todo)
                fprintf(f, ",");
          }
@@ -417,63 +418,62 @@ write_scad(void)
          back = 1;
       else if (strcmp(o2->values[0].txt, "F.Cu"))
          continue;
-      if (!(o2 = find_obj(o, "model", NULL)) || o2->valuen < 1 || !o2->values[0].istxt)
-         continue;              /* Not 3D model */
-      char           *model = strdup(o2->values[0].txt);
-      if (!model)
-         errx(1, "malloc");
-      char           *leaf = strrchr(model, '/');
-      if (leaf)
-         leaf++;
-      else
-         leaf = model;
-      char           *e = strrchr(model, '.');
-      if (e)
-         *e = 0;
-      char           *fn;
-      if (asprintf(&fn, "%s.scad", leaf) < 0)
-         errx(1, "malloc");
-      int             n;
-      for (n = 0; n < modulen; n++)
-         if (!strcmp(modules[n].filename, fn))
-            break;
-      if (n == modulen)
+      o2 = NULL;
+      while ((o2 = find_obj(o, "model", o2)))
       {
-         modules = realloc(modules, (++modulen) * sizeof(*modules));
-         if (!modules)
+         if (o2->valuen < 1 || !o2->values[0].istxt)
+            continue;           /* Not 3D model */
+         char           *model = strdup(o2->values[0].txt);
+         if (!model)
             errx(1, "malloc");
-         memset(modules + n, 0, sizeof(*modules));
-         modules[n].filename = fn;
-         if (o->valuen >= 1 && o->values[0].istxt)
-            modules[n].desc = strdup(o->values[0].txt);
+         char           *leaf = strrchr(model, '/');
+         if (leaf)
+            leaf++;
          else
-            modules[n].desc = strdup(leaf);
-         if (access(modules[n].filename, R_OK))
-            warnx("Cannot find model for %s", leaf);
-         else
-            modules[n].ok = 1;
-      } else
-         free(fn);
-      if (modules[n].ok)
-      {
-         if ((o3 = find_obj(o, "at", NULL)) && o3->valuen >= 2 && o3->values[0].isnum && o3->values[1].isnum)
+            leaf = model;
+         char           *e = strrchr(model, '.');
+         if (e)
+            *e = 0;
+         char           *fn;
+         if (asprintf(&fn, "%s.scad", leaf) < 0)
+            errx(1, "malloc");
+         int             n;
+         for (n = 0; n < modulen; n++)
+            if (!strcmp(modules[n].filename, fn))
+               break;
+         if (n == modulen)
          {
-            fprintf(f, "translate([%lf,%lf,%lf])", o3->values[0].num - lx, o3->values[1].num - ly, back ? 0 : pcbthickness);
-            if (o3->valuen >= 3 && o2->values[2].num)
-               fprintf(f, "rotate([0,0,%lf])", o3->values[2].num);
-         }
-         if (back)
-            fprintf(f, "rotate([180,0,0])");
-         if ((o3 = find_obj(o2, "at", NULL)) && (o3 = find_obj(o3, "xyz", NULL)) && o3->valuen == 3 && o3->values[0].isnum && o3->values[1].isnum && o3->values[2].isnum && (o3->values[0].num || o3->values[1].num || o3->values[2].num))
-            fprintf(f, "translate([%lf,%lf,%lf])", o3->values[0].num, o3->values[1].num, o3->values[2].num);
-         if ((o3 = find_obj(o2, "scale", NULL)) && (o3 = find_obj(o3, "xyz", NULL)) && o3->valuen == 3 && o3->values[0].isnum && o3->values[1].isnum && o3->values[2].isnum && (o3->values[0].num != 1 || o3->values[1].num != 1 || o3->values[2].num != 1))
-            fprintf(f, "scale([%lf,%lf,%lf])", o3->values[0].num, o3->values[1].num, o3->values[2].num);
-         if ((o3 = find_obj(o2, "rotate", NULL)) && (o3 = find_obj(o3, "xyz", NULL)) && o3->valuen == 3 && o3->values[0].isnum && o3->values[1].isnum && o3->values[2].isnum && (o3->values[0].num || o3->values[1].num || o3->values[2].num))
-            fprintf(f, "rotate([%lf,%lf,%lf])", o3->values[0].num, o3->values[1].num, o3->values[2].num);
-         fprintf(f, "m%d(); // %s\n", n, modules[n].desc);
-      } else
-         fprintf(f, "// Missing %s\n", modules[n].desc);
-      free(model);
+            modules = realloc(modules, (++modulen) * sizeof(*modules));
+            if (!modules)
+               errx(1, "malloc");
+            memset(modules + n, 0, sizeof(*modules));
+            modules[n].filename = fn;
+            if (o->valuen >= 1 && o->values[0].istxt)
+               modules[n].desc = strdup(o->values[0].txt);
+            else
+               modules[n].desc = strdup(leaf);
+            if (access(modules[n].filename, R_OK))
+               warnx("Cannot find model for %s", leaf);
+            else
+               modules[n].ok = 1;
+         } else
+            free(fn);
+         if (modules[n].ok)
+         {
+            if ((o3 = find_obj(o, "at", NULL)) && o3->valuen >= 2 && o3->values[0].isnum && o3->values[1].isnum)
+            {
+               fprintf(f, "translate([%lf,%lf,%lf])", o3->values[0].num - lx, ry-o3->values[1].num , back ? 0 : pcbthickness);
+               if (o3->valuen >= 3 && o2->values[2].num)
+                  fprintf(f, "rotate([0,0,%lf])", o3->values[2].num);
+            }
+            if (back)
+               fprintf(f, "rotate([180,0,0])");
+	    /* we assume 3D model is aligned, not using the offset/scale/etc of the footprint model */
+            fprintf(f, "m%d(); // %s\n", n, modules[n].desc);
+         } else
+            fprintf(f, "// Missing %s\n", modules[n].desc);
+         free(model);
+      }
    }
    fprintf(f, "}\n\n");
 
