@@ -6,8 +6,7 @@ module boardf()
 	{
 		intersection()
 		{
-			translate([-casewall-1,-casewall-1,-casebase-1])
-			cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,height+2]);
+			translate([-casewall-1,-casewall-1,-casebase-1]) cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,height+2]);
 			minkowski()
 			{
 				board();
@@ -23,8 +22,7 @@ module boardb()
 	{
 		intersection()
 		{
-			translate([-casewall-1,-casewall-1,-casebase-1])
-			cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,height+2]);
+			translate([-casewall-1,-casewall-1,-casebase-1]) cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,height+2]);
 			minkowski()
 			{
 				board();
