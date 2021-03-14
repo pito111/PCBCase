@@ -24,7 +24,7 @@ double          pcbwidth = 0;
 double          pcblength = 0;
 double          casebase = 5;
 double          casetop = 5;
-double          casewall = 2.5;
+double          casewall = 3;
 double          fit = 0.2;
 double          margin = 0.8;
 
