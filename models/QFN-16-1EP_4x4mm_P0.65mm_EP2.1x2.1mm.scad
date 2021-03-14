@@ -1,1 +1,1 @@
-cube([4,4,0.8],center=true);
+cube([4,4,1],center=true);
