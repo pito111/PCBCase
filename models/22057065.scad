@@ -9,7 +9,7 @@ translate([-2.5,-6.6,0])
 	}
 	translate([1,6,-3.5])cube([15.4,1.2,6]);
 	// Plug
-	translate([0.5,-20,0.7])cube([16.4,21,4.9]);
+	translate([0.5,-20,0.7])cube([16.4,21,3.9]);
 	translate([0,-23,0])cube([17.4,20,4.9]);
 }
 
