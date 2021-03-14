@@ -6,8 +6,8 @@ module boardf()
 	{
 		intersection()
 		{
-			translate([-casewall-1,-casewall-1,-casebase])
-			cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,height+1]);
+			translate([-casewall-1,-casewall-1,-casebase-1])
+			cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,height+2]);
 			minkowski()
 			{
 				board();
@@ -23,8 +23,8 @@ module boardb()
 	{
 		intersection()
 		{
-			translate([-casewall-1,-casewall-1,-casebase])
-			cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,height+1]);
+			translate([-casewall-1,-casewall-1,-casebase-1])
+			cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,height+2]);
 			minkowski()
 			{
 				board();
@@ -81,28 +81,30 @@ module boardm()
 module cutf()
 { // This cut up from base in the wall
 	render()
-	difference()
+	intersection()
 	{
 		boardpf();
-		translate([-0.001,-0.001,-casebase])
-		cube([pcbwidth+0.002,pcblength+0.002,height+101]);
-		translate([-casewall-1,-casewall-1,1])
-		cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,casetop+pcbthickness+1]);
-		boardm();
+		difference()
+		{
+			translate([-casewall,-casewall,-casebase])case();
+			translate([-0.01,-0.01,-casebase-1])cube([pcbwidth+0.02,pcblength+0.02,height+2]);
+			boardb();
+		}
 	}
 }
 
 module cutb()
 { // The cut down from top in the wall
 	render()
-	difference()
+	intersection()
 	{
 		boardpb();
-		translate([-margin/2,-margin/2,-casebase])
-		cube([pcbwidth+margin,pcblength+margin,height+101]);
-		translate([-casewall-1,-casewall-1,-casebase-1])
-		cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,casebase+1]);
-		boardm();
+		difference()
+		{
+			translate([-casewall,-casewall,-casebase])case();
+			translate([-0.01,-0.01,-casebase-1])cube([pcbwidth+0.02,pcblength+0.02,height+2]);
+			boardf();
+		}
 	}
 }
 
@@ -121,17 +123,18 @@ module case()
 
 module base()
 { // The base
-	render()
+	difference()
 	{
-		difference()
-		{
-			case();
-			translate([-1,-1,casebase+pcbthickness])cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,casetop+1]);
-			translate([casewall/2,casewall/2,casebase])cube([pcbwidth+casewall,pcblength+casewall,casetop+pcbthickness+1]);
-			translate([casewall,casewall,casebase-fit])boardf();
-			translate([casewall,casewall,casebase])cutf();
-		}
+		case();
+		translate([-1,-1,casebase+pcbthickness])cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,casetop+1]);
+		translate([casewall/2,casewall/2,casebase])cube([pcbwidth+casewall,pcblength+casewall,casetop+pcbthickness+1]);
+		translate([casewall,casewall,casebase-fit])boardf();
+		translate([casewall,casewall,casebase])cutf();
+	}
+	difference()
+	{
 		translate([casewall,casewall,casebase])cutb();
+		translate([casewall/2,casewall/2,casebase])cube([pcbwidth+casewall,pcblength+casewall,casetop+pcbthickness+1]);
 	}
 }
 
@@ -142,11 +145,21 @@ module top()
 		difference()
 		{
 			case();
-			translate([casewall,casewall,casebase+fit])boardb();
-			minkowski()
+			difference()
 			{
-				base();
-				cube([fit,fit,0.001],center=true);
+				translate([-1,-1,-1])cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,casebase+pcbthickness+1]);
+				translate([casewall/2+fit/2,casewall/2+fit/2,casebase])cube([pcbwidth+casewall-fit,pcblength+casewall-fit,casetop+pcbthickness+1]);
+			}
+			translate([casewall,casewall,casebase-fit])boardb();
+			translate([casewall,casewall,casebase])cutb();
+		}
+		difference()
+		{
+			translate([casewall,casewall,casebase])cutf();
+			difference()
+			{
+				translate([-1,-1,-1])cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,casebase+pcbthickness+1]);
+				translate([casewall/2+fit/2,casewall/2+fit/2,casebase])cube([pcbwidth+casewall-fit,pcblength+casewall-fit,casetop+pcbthickness+1]);
 			}
 		}
 	}
@@ -159,7 +172,7 @@ module test()
 	translate([2*(pcbwidth+casewall+10),0,0])boardb();
 	translate([3*(pcbwidth+casewall+10),0,0])boardpf();
 	translate([4*(pcbwidth+casewall+10),0,0])boardpb();
-	translate([4*(pcbwidth+casewall+10),0,0])cutf();
+	translate([5*(pcbwidth+casewall+10),0,0])cutf();
 	translate([6*(pcbwidth+casewall+10),0,0])cutb();
 	translate([7*(pcbwidth+casewall+10),0,0])case();
 	translate([8*(pcbwidth+casewall+10),0,0])base();
@@ -172,5 +185,5 @@ module parts()
 	translate([pcbwidth+casewall+10,0,0])top();
 }
 
-test();
-//parts();
+//test();
+parts();
