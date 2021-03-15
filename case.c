@@ -507,10 +507,8 @@ write_scad(void)
                errx(1, "malloc");
             memset(modules + n, 0, sizeof(*modules));
             modules[n].filename = fn;
-            if (o->valuen >= 1 && o->values[0].istxt)
-               modules[n].desc = strdup(o->values[0].txt);
-            else
-               modules[n].desc = strdup(leaf);
+            if (asprintf(&modules[n].desc, "%s %s", o->values[0].txt ? : ref ? : "-", leaf) < 0)
+               errx(1, "malloc");
             if (access(modules[n].filename, R_OK))
                warnx("Cannot find model for %s", leaf);
             else
@@ -527,8 +525,12 @@ write_scad(void)
             }
             if (back)
                fprintf(f, "rotate([180,0,0])");
-            /* we assume 3D model is aligned, not using the offset/scale/etc of the footprint model */
-            /* if we do pick up offset, remember y is negative */
+            if ((o3 = find_obj(o2, "offset", NULL)) && (o3 = find_obj(o3, "xyz", NULL)) && o3->valuen >= 3 && o3->values[0].isnum && o3->values[1].isnum && o3->values[2].isnum && (o3->values[0].num || o3->values[1].num || o3->values[2].num))
+               fprintf(f, "translate([%lf,%lf,%lf])", o3->values[0].num, o3->values[1].num, o3->values[2].num);
+            if ((o3 = find_obj(o2, "scale", NULL)) && (o3 = find_obj(o3, "xyz", NULL)) && o3->valuen >= 3 && o3->values[0].isnum && o3->values[1].isnum && o3->values[2].isnum && (o3->values[0].num != 1 || o3->values[1].num != 1 || o3->values[2].num != 1))
+               fprintf(f, "scale([%lf,%lf,%lf])", o3->values[0].num, o3->values[1].num, o3->values[2].num);
+            if ((o3 = find_obj(o2, "rotate", NULL)) && (o3 = find_obj(o3, "xyz", NULL)) && o3->valuen >= 3 && o3->values[0].isnum && o3->values[1].isnum && o3->values[2].isnum && (o3->values[0].num || o3->values[1].num || o3->values[2].num))
+               fprintf(f, "rotate([%lf,%lf,%lf])", o3->values[0].num, o3->values[1].num, o3->values[2].num);
             fprintf(f, "m%d(); // %s\n", n, modules[n].desc);
          } else
             fprintf(f, "// Missing %s\n", modules[n].desc);
