@@ -369,7 +369,7 @@ write_scad(void)
       ry = hy;
       fprintf(f, "pcbwidth=%lf;\n", pcbwidth);
       fprintf(f, "pcblength=%lf;\n", pcblength);
-      if (spacing)
+      if (!spacing)
          spacing = pcbwidth + casewall * 2 + 10;
       fprintf(f, "spacing=%lf;\n", spacing);
       fprintf(f, "\n");
