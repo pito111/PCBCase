@@ -124,10 +124,10 @@ module cut(d=0)
 {
 	hull()
 	{
-		translate([casewall/2-d/2-margin/4+casewall/4,casewall/2-d/2-margin/4,casebase])
-			cube([pcbwidth+casewall+fit+margin/2-casewall/2,pcblength+casewall+d+margin/2,casetop+pcbthickness+1]);
-		translate([casewall/2-d/2-margin/4,casewall/2-d/2-margin/4+casewall/4,casebase])
-			cube([pcbwidth+casewall+fit+margin/2,pcblength+casewall+d+margin/2-casewall/2,casetop+pcbthickness+1]);
+		translate([casewall/2-d/2-margin/4+casewall/3,casewall/2-d/2-margin/4,casebase])
+			cube([pcbwidth+casewall+fit+margin/2-2*casewall/3,pcblength+casewall+d+margin/2,casetop+pcbthickness+1]);
+		translate([casewall/2-d/2-margin/4,casewall/2-d/2-margin/4+casewall/3,casebase])
+			cube([pcbwidth+casewall+fit+margin/2,pcblength+casewall+d+margin/2-2*casewall/3,casetop+pcbthickness+1]);
 	}
 }
 
@@ -180,7 +180,7 @@ module test()
 module parts()
 {
 	base();
-	translate([pcbwidth+casewall+10,0,0])top();
+	translate([pcbwidth+casewall+spacing,0,0])top();
 }
 
 if(debug)board();
