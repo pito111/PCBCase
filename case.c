@@ -19,13 +19,14 @@ int             debug = 0;
 const char     *pcbfile = NULL;
 char           *scadfile = NULL;
 const char     *modeldir = "PCBCase/models";
+const char     *ignore = NULL;
 double          pcbthickness = 0;
 double          pcbwidth = 0;
 double          pcblength = 0;
 double          casebase = 5;
 double          casetop = 5;
 double          casewall = 3;
-double          fit = 0.2;
+double          fit = 0.1;
 double          edge = 2;
 double          margin = 0.8;
 
@@ -289,6 +290,7 @@ write_scad(void)
          }
    fprintf(f, "//\n\n");
    fprintf(f, "// Globals\n");
+   fprintf(f, "debug=%s;\n", debug ? "true" : "false");
    fprintf(f, "margin=%lf;\n", margin);
    fprintf(f, "casebase=%lf;\n", casebase);
    fprintf(f, "casetop=%lf;\n", casetop);
@@ -423,11 +425,39 @@ write_scad(void)
          back = 1;
       else if (strcmp(o2->values[0].txt, "F.Cu"))
          continue;
+      const char     *ref = NULL;
       o2 = NULL;
+      while ((o2 = find_obj(o, "fp_text", o2)))
+      {
+         if (o2->valuen >= 2 && o2->values[1].istxt)
+         {
+            ref = o2->values[1].txt;
+            break;
+         }
+      }
+      if (ref && ignore)
+      {
+         int             l = strlen(ref);
+         const char     *i = ignore;
+         while (*i)
+         {
+            if (!strncmp(i, ref, l) && (!i[l] || i[l] == ','))
+               break;
+            while (*i != ',')
+               i++;
+            while (*i == ',')
+               i++;
+         }
+         if (*i)
+            continue;           /* ignore whole ref */
+      }
+      o2 = NULL;
+      int             id = 0;
       while ((o2 = find_obj(o, "model", o2)))
       {
          if (o2->valuen < 1 || !o2->values[0].istxt)
             continue;           /* Not 3D model */
+         id++;
          char           *model = strdup(o2->values[0].txt);
          if (!model)
             errx(1, "malloc");
@@ -446,6 +476,24 @@ write_scad(void)
          for (n = 0; n < modulen; n++)
             if (!strcmp(modules[n].filename, fn))
                break;
+         if (debug && ref)
+            fprintf(stderr, "Module %s.%d %s%s\n", ref, id, leaf, back ? " (back)" : "");
+         if (ref && ignore)
+         {
+            int             l = strlen(ref);
+            const char     *i = ignore;
+            while (*i)
+            {
+               if (!strncmp(i, ref, l) && i[l] == '.' && atoi(i + l + 1) == id)
+                  break;
+               while (*i != ',')
+                  i++;
+               while (*i == ',')
+                  i++;
+            }
+            if (*i)
+               continue;        /* ignore Specific model */
+         }
          if (n == modulen)
          {
             modules = realloc(modules, (++modulen) * sizeof(*modules));
@@ -468,7 +516,7 @@ write_scad(void)
             if ((o3 = find_obj(o, "at", NULL)) && o3->valuen >= 2 && o3->values[0].isnum && o3->values[1].isnum)
             {
                fprintf(f, "translate([%lf,%lf,%lf])", o3->values[0].num - lx, ry - o3->values[1].num, back ? 0 : pcbthickness);
-               if (o3->valuen >= 3 && o2->values[2].num)
+               if (o3->valuen >= 3 && o3->values[2].isnum)
                   fprintf(f, "rotate([0,0,%lf])", o3->values[2].num);
             }
             if (back)
@@ -504,18 +552,19 @@ main(int argc, const char *argv[])
    {                            /* POPT */
       poptContext     optCon;   /* context for parsing  command - line options */
       const struct poptOption optionsTable[] = {
-         {"pcb-file", 'f', POPT_ARG_STRING, &pcbfile, 0, "PCB file", "filename"},
+         {"pcb-file", 'i', POPT_ARG_STRING, &pcbfile, 0, "PCB file", "filename"},
          {"scad-file", 'o', POPT_ARG_STRING, &scadfile, 0, "Openscad file", "filename"},
-         {"model-dir", 'm', POPT_ARG_STRING | POPT_ARGFLAG_SHOW_DEFAULT, &modeldir, 0, "Model directory", "dir"},
-         {"width", 0, POPT_ARG_DOUBLE, &pcbwidth, 0, "PCB width (default: auto)", "mm"},
-         {"length", 0, POPT_ARG_DOUBLE, &pcblength, 0, "PCB length (default: auto)", "mm"},
-         {"pcb-thickness", 0, POPT_ARG_DOUBLE, &pcbthickness, 0, "PCB thickness (default: auto)", "mm"},
-         {"base", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &casebase, 0, "Case base", "mm"},
-         {"top", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &casetop, 0, "Case top", "mm"},
-         {"wall", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &casewall, 0, "Case wall", "mm"},
-         {"fit", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &fit, 0, "Case fit", "mm"},
-         {"edge", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &edge, 0, "Case edge", "mm"},
-         {"margin", 0, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &margin, 0, "margin", "mm"},
+         {"ignore", 'I', POPT_ARG_STRING, &ignore, 0, "Ignore", "ref{,ref}"},
+         {"base", 'b', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &casebase, 0, "Case base", "mm"},
+         {"top", 't', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &casetop, 0, "Case top", "mm"},
+         {"wall", 'w', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &casewall, 0, "Case wall", "mm"},
+         {"edge", 'e', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &edge, 0, "Case edge", "mm"},
+         {"fit", 'f', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &fit, 0, "Case fit", "mm"},
+         {"margin", 'm', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &margin, 0, "margin", "mm"},
+         {"width", 'W', POPT_ARG_DOUBLE, &pcbwidth, 0, "PCB width (default: auto)", "mm"},
+         {"length", 'L', POPT_ARG_DOUBLE, &pcblength, 0, "PCB length (default: auto)", "mm"},
+         {"pcb-thickness", 'T', POPT_ARG_DOUBLE, &pcbthickness, 0, "PCB thickness (default: auto)", "mm"},
+         {"model-dir", 'M', POPT_ARG_STRING | POPT_ARGFLAG_SHOW_DEFAULT, &modeldir, 0, "Model directory", "dir"},
          {"debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug"},
          POPT_AUTOHELP {}
       };

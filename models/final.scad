@@ -172,5 +172,5 @@ module parts()
 	translate([pcbwidth+casewall+10,0,0])top();
 }
 
-//test();
-parts();
+if(debug)test();
+else parts();
