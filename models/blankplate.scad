@@ -1,0 +1,22 @@
+difference()
+{
+	union()
+	{
+		difference()
+		{
+			hull()
+			{
+				translate([2,2,0])cube([82,82,1]);
+				translate([0,0,4])cube([86,86,1]);
+			}
+			translate([2,2,2])cube([82,82,10]);
+		}
+		for(x=[12.85,73.15])translate([x,43,0.5])cylinder(d1=10,s2=8,h=4.5,$fn=48);
+	}
+	for(x=[12.85,73.15])translate([x,43,-0.01])
+	{
+		cylinder(d=3.5,h=10,$fn=48);
+		cylinder(d=6.55,h=0.5,$fn=48);
+		translate([0,0,0.499])cylinder(d1=6.55,d2=0,h=3.275,$fn=48);
+	}
+}
