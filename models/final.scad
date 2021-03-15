@@ -136,8 +136,15 @@ module base()
 	difference()
 	{
 		case();
-		translate([-1,-1,casebase+pcbthickness])cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,casetop+1]);
-		cut(fit);
+		difference()
+		{
+			union()
+			{
+				translate([-1,-1,casebase+pcbthickness])cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,casetop+1]);
+				cut(fit);
+			}
+			translate([casewall,casewall,casebase])cube([pcbwidth,pcblength,pcbthickness+casetop]);
+		}
 		translate([casewall,casewall,casebase-fit])boardf();
 		translate([casewall,casewall,casebase])cutpf();
 	}
