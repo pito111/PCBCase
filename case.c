@@ -279,6 +279,12 @@ write_scad(void)
    }
    fprintf(f, "// Generated case design for %s\n", pcbfile);
    fprintf(f, "// By https://github.com/revk/PCBCase\n");
+   {
+      struct tm       t;
+      time_t          now = time(0);
+      localtime_r(&now, &t);
+      fprintf(f, "// Generated %04d-%04d-%04d %02d:%02d:%02d\n", t.tm_year + 1900, t.tm_mon + 1, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec);
+   }
    if ((o = find_obj(pcb, "title_block", NULL)))
       for (int n = 0; n < o->valuen; n++)
          if (o->values[n].isobj && (o2 = o->values[n].obj)->valuen >= 1)
