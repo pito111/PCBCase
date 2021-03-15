@@ -11,7 +11,7 @@ difference()
 			}
 			translate([2,2,2])cube([82,82,10]);
 		}
-		for(x=[12.85,73.15])translate([x,43,0.5])cylinder(d1=10,s2=8,h=4.5,$fn=48);
+		for(x=[12.85,73.15])translate([x,43,0.5])cylinder(d1=10,d2=8,h=4.5,$fn=48);
 	}
 	for(x=[12.85,73.15])translate([x,43,-0.01])
 	{
