@@ -166,21 +166,21 @@ module top()
 module test()
 {
 	board();
-	translate([1*(pcbwidth+casewall+10),0,0])boardf();
-	translate([2*(pcbwidth+casewall+10),0,0])boardb();
-	translate([3*(pcbwidth+casewall+10),0,0])cutpf();
-	translate([4*(pcbwidth+casewall+10),0,0])cutpb();
-	translate([5*(pcbwidth+casewall+10),0,0])cutf();
-	translate([6*(pcbwidth+casewall+10),0,0])cutb();
-	translate([7*(pcbwidth+casewall+10),0,0])case();
-	translate([8*(pcbwidth+casewall+10),0,0])base();
-	translate([9*(pcbwidth+casewall+10),0,0])top();
+	translate([1*spacing),0,0])boardf();
+	translate([2*spacing),0,0])boardb();
+	translate([3*spacing),0,0])cutpf();
+	translate([4*spacing),0,0])cutpb();
+	translate([5*spacing),0,0])cutf();
+	translate([6*spacing),0,0])cutb();
+	translate([7*spacing),0,0])case();
+	translate([8*spacing),0,0])base();
+	translate([9*spacing),0,0])top();
 }
 
 module parts()
 {
 	base();
-	translate([pcbwidth+casewall+spacing,0,0])top();
+	translate([spacing,0,0])top();
 }
 
 if(debug)board();

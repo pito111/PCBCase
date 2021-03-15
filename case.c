@@ -29,7 +29,7 @@ double          casewall = 3;
 double          fit = 0;
 double          edge = 2;
 double          margin = 0.8;
-double spacing=10;
+double          spacing = 0;
 
 /* strings from file, lots of common, so make a table */
 int             strn = 0;
@@ -299,7 +299,6 @@ write_scad(void)
    fprintf(f, "// Globals\n");
    fprintf(f, "debug=%s;\n", debug ? "true" : "false");
    fprintf(f, "margin=%lf;\n", margin);
-   fprintf(f, "spacing=%lf;\n", spacing);
    fprintf(f, "casebase=%lf;\n", casebase);
    fprintf(f, "casetop=%lf;\n", casetop);
    fprintf(f, "casewall=%lf;\n", casewall);
@@ -370,6 +369,9 @@ write_scad(void)
       ry = hy;
       fprintf(f, "pcbwidth=%lf;\n", pcbwidth);
       fprintf(f, "pcblength=%lf;\n", pcblength);
+      if (spacing)
+         spacing = pcbwidth + casewall * 2 + 10;
+      fprintf(f, "spacing=%lf;\n", spacing);
       fprintf(f, "\n");
       fprintf(f, "// PCB\nmodule pcb(){");
       if (cutn)
@@ -575,7 +577,7 @@ main(int argc, const char *argv[])
          {"length", 'L', POPT_ARG_DOUBLE, &pcblength, 0, "PCB length (default: auto)", "mm"},
          {"pcb-thickness", 'T', POPT_ARG_DOUBLE, &pcbthickness, 0, "PCB thickness (default: auto)", "mm"},
          {"model-dir", 'M', POPT_ARG_STRING | POPT_ARGFLAG_SHOW_DEFAULT, &modeldir, 0, "Model directory", "dir"},
-         {"spacing", 'f', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &spacing, 0, "Spacing", "mm"},
+         {"spacing", 's', POPT_ARG_DOUBLE, &spacing, 0, "Spacing (default: auto)", "mm"},
          {"debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug"},
          POPT_AUTOHELP {}
       };
