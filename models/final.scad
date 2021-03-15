@@ -125,9 +125,9 @@ module cut(d=0)
 	hull()
 	{
 		translate([casewall/2-d/2-margin/4+casewall/3,casewall/2-d/2-margin/4,casebase])
-			cube([pcbwidth+casewall+fit+margin/2-2*casewall/3,pcblength+casewall+d+margin/2,casetop+pcbthickness+1]);
+			cube([pcbwidth+casewall+d+margin/2-2*casewall/3,pcblength+casewall+d+margin/2,casetop+pcbthickness+1]);
 		translate([casewall/2-d/2-margin/4,casewall/2-d/2-margin/4+casewall/3,casebase])
-			cube([pcbwidth+casewall+fit+margin/2,pcblength+casewall+d+margin/2-2*casewall/3,casetop+pcbthickness+1]);
+			cube([pcbwidth+casewall+d+margin/2,pcblength+casewall+d+margin/2-2*casewall/3,casetop+pcbthickness+1]);
 	}
 }
 
