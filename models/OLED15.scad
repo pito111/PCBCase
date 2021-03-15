@@ -14,5 +14,15 @@
 	translate([44.5-2.5,2.5,-2.6])cylinder(d=4.99,h=1.6,$fn=24);
 	translate([44.5-2.5,37-2.5,-2.6])cylinder(d=4.99,h=1.6,$fn=24); 
 	translate([40.73,9.61,7.5])cube([2.54,7*2.54,1.5]); // pins
-	translate([7.75,1.75,7.5])cube([29,29,20]); // Display view
+	translate([7.75,1.75,7.5])
+	{ // View
+		cube([29,29,20]);
+		hull()
+		{
+			translate([0,0,2.1])
+			cube([29,29,1]);
+			translate([-20,-20,22.1])
+			cube([69,69,1]);
+		}
+	}
 }
