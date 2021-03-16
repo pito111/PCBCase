@@ -172,7 +172,7 @@ module top()
 
 module test()
 {
-	board();
+	translate([0*spacing,0,0])board();
 	translate([1*spacing,0,0])boardf();
 	translate([2*spacing,0,0])boardb();
 	translate([3*spacing,0,0])cutpf();
@@ -190,5 +190,5 @@ module parts()
 	translate([spacing,0,0])top();
 }
 
-if(debug)board();
+if(debug)test();
 else parts();
