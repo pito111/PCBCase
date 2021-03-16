@@ -9,7 +9,7 @@ module boardf()
 			translate([-casewall-1,-casewall-1,-casebase-1]) cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,height+2]);
 			minkowski()
 			{
-				board();
+				board(true);
 				cylinder(h=height+100,d=margin,$fn=8);
 			}
 		}
@@ -25,10 +25,22 @@ module boardb()
 			translate([-casewall-1,-casewall-1,-casebase-1]) cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,height+2]);
 			minkowski()
 			{
-				board();
+				board(true);
 				translate([0,0,-height-100])
 				cylinder(h=height+100,d=margin,$fn=8);
 			}
+		}
+	}
+}
+
+module boardm()
+{
+	render()
+	{
+		minkowski()
+		{
+			sphere(d=margin,$fn=8);
+			board(false);
 		}
 	}
 }
@@ -80,7 +92,7 @@ module cutpf()
 		{
 			translate([-casewall-0.01,-casewall-0.01,-casebase-0.01])cube([pcbwidth+casewall*2+0.02,pcblength+casewall*2+0.02,casebase+pcbthickness+0.02]);
 			translate([0.01-margin/2,0.01-margin/2,-casebase-1])cube([pcbwidth+margin-0.02,pcblength+margin+0.02,height+2]);
-			board();
+			board(true);
 		}
 		translate([-casewall,-casewall,-casebase])case();
 	}
@@ -100,7 +112,7 @@ module cutpb()
 		{
 			translate([-casewall-0.01,-casewall-0.01,-0.01])cube([pcbwidth+casewall*2+0.02,pcblength+casewall*2+0.02,casetop+pcbthickness+0.02]);
 			translate([0.01-margin/2,0.01-margin/2,-casebase-1])cube([pcbwidth+margin-0.02,pcblength+margin+0.02,height+2]);
-			board();
+			board(true);
 		}
 		translate([-casewall,-casewall,-casebase])case();
 	}
@@ -145,7 +157,8 @@ module base()
 			}
 			translate([casewall,casewall,casebase])cube([pcbwidth,pcblength,pcbthickness+casetop]);
 		}
-		translate([casewall,casewall,casebase-fit])boardf();
+		translate([casewall,casewall,casebase-fit/2])boardf();
+		translate([casewall,casewall,casebase])boardm();
 		translate([casewall,casewall,casebase])cutpf();
 	}
 	translate([casewall,casewall,casebase])cutpb();
@@ -163,7 +176,8 @@ module top()
 				translate([-1,-1,-1])cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,casebase+pcbthickness+1]);
 				cut(-fit);
 			}
-			translate([casewall,casewall,casebase+fit])boardb();
+			translate([casewall,casewall,casebase+fit/2])boardb();
+			translate([casewall,casewall,casebase])boardm();
 			translate([casewall,casewall,casebase])cutpb();
 		}
 		translate([casewall,casewall,casebase])cutpf();
@@ -173,15 +187,16 @@ module top()
 module test()
 {
 	translate([0*spacing,0,0])board();
-	translate([1*spacing,0,0])boardf();
-	translate([2*spacing,0,0])boardb();
-	translate([3*spacing,0,0])cutpf();
-	translate([4*spacing,0,0])cutpb();
-	translate([5*spacing,0,0])cutf();
-	translate([6*spacing,0,0])cutb();
-	translate([7*spacing,0,0])case();
-	translate([8*spacing,0,0])base();
-	translate([9*spacing,0,0])top();
+	translate([1*spacing,0,0])board(true);
+	translate([2*spacing,0,0])boardf();
+	translate([3*spacing,0,0])boardb();
+	translate([4*spacing,0,0])cutpf();
+	translate([5*spacing,0,0])cutpb();
+	translate([6*spacing,0,0])cutf();
+	translate([7*spacing,0,0])cutb();
+	translate([8*spacing,0,0])case();
+	translate([9*spacing,0,0])base();
+	translate([10*spacing,0,0])top();
 }
 
 module parts()
