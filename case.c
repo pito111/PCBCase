@@ -27,7 +27,7 @@ double          casebase = 5;
 double          casetop = 5;
 double          casewall = 3; /* margin/2 eats in to this  */
 double          fit = 0.1;
-double          edge = 2;
+double          edge = 1.5;
 double          margin = 0.8;
 double          spacing = 0;
 

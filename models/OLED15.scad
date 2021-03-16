@@ -17,6 +17,6 @@
 	hull()
 	{
 		translate([8.25,2,7.5]) cube([28,28,20]);
-		if(!pushed) translate([6.25,0,9.5]) cube([32,32,20]);
+		if(!pushed) translate([4.25,-2,11.5]) cube([36,36,20]);
 	}
 }
