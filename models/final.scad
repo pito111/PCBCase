@@ -33,18 +33,6 @@ module boardb()
 	}
 }
 
-module boardm()
-{
-	render()
-	{
-		minkowski()
-		{
-			sphere(d=margin,$fn=8);
-			board(false);
-		}
-	}
-}
-
 module pyramid()
 { // A pyramid
  polyhedron(points=[[0,0,0],[-height,-height,height],[-height,height,height],[height,height,height],[height,-height,height]],faces=[[0,1,2],[0,2,3],[0,3,4],[0,4,1],[4,3,2,1]]);
@@ -158,7 +146,7 @@ module base()
 			translate([casewall,casewall,casebase])cube([pcbwidth,pcblength,pcbthickness+casetop]);
 		}
 		translate([casewall,casewall,casebase])boardf();
-		translate([casewall,casewall,casebase])boardm();
+		translate([casewall,casewall,casebase])board(false);
 		translate([casewall,casewall,casebase])cutpf();
 	}
 	translate([casewall,casewall,casebase])cutpb();
@@ -177,7 +165,7 @@ module top()
 				cut(-fit);
 			}
 			translate([casewall,casewall,casebase])boardb();
-			translate([casewall,casewall,casebase])boardm();
+			translate([casewall,casewall,casebase])board(false);
 			translate([casewall,casewall,casebase])cutpb();
 		}
 		translate([casewall,casewall,casebase])cutpf();
