@@ -7,7 +7,7 @@ difference()
 			hull()
 			{
 				translate([2,2,0])cube([82,82,1]);
-				translate([0,0,4])cube([86,86,1]);
+				translate([0,0,7])cube([86,86,1]);
 			}
 			translate([2,2,2])cube([82,82,10]);
 		}
