@@ -30,6 +30,7 @@ double          fit = 0.1;
 double          edge = 1;
 double          margin = 0.8;
 double          spacing = 0;
+double		insideoffset=0;
 
 /* strings from file, lots of common, so make a table */
 int             strn = 0;
@@ -372,6 +373,7 @@ write_scad(void)
       if (!spacing)
          spacing = pcbwidth + casewall * 2 + 10;
       fprintf(f, "spacing=%lf;\n", spacing);
+      fprintf(f, "insideoffset=%lf;\n", insideoffset);
       fprintf(f, "\n");
       fprintf(f, "// PCB\nmodule pcb(){");
       if (cutn)
@@ -578,6 +580,7 @@ main(int argc, const char *argv[])
          {"pcb-thickness", 'T', POPT_ARG_DOUBLE, &pcbthickness, 0, "PCB thickness (default: auto)", "mm"},
          {"model-dir", 'M', POPT_ARG_STRING | POPT_ARGFLAG_SHOW_DEFAULT, &modeldir, 0, "Model directory", "dir"},
          {"spacing", 's', POPT_ARG_DOUBLE, &spacing, 0, "Spacing (default: auto)", "mm"},
+         {"inside-offset", 0, POPT_ARG_DOUBLE, &insideoffset, 0, "Internal offset", "mm"},
          {"debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug"},
          POPT_AUTOHELP {}
       };
