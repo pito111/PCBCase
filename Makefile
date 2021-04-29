@@ -1,2 +1,2 @@
 case:	case.c models models/final.scad
-	cc -O -o $@ $< -lpopt
+	gcc -I/usr/local/include -L/usr/local/lib -O -o $@ $< -lpopt
