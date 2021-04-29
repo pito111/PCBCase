@@ -39,7 +39,7 @@ module boardm()
 	{
  		minkowski()
  		{
- 			sphere(d=margin,$fn=8);
+			translate([0,0,-margin/2])cylinder(d=margin,h=margin,$fn=8);
  			board(false);
  		}
  	}
@@ -52,6 +52,16 @@ module pyramid()
  polyhedron(points=[[0,0,0],[-height,-height,height],[-height,height,height],[height,height,height],[height,-height,height]],faces=[[0,1,2],[0,2,3],[0,3,4],[0,4,1],[4,3,2,1]]);
 }
 
+module wall(d=0)
+{ // The case wall
+    	translate([0,0,-casebase-1])
+    	minkowski()
+    	{
+    		hull()pcb();
+	        cylinder(d=margin+d*2,h=height+2-pcbthickness,$fn=8);
+   	}
+}
+
 module cutf()
 { // This cut up from base in the wall
 	intersection()
@@ -60,7 +70,7 @@ module cutf()
 		difference()
 		{
 			translate([-casewall+0.01,-casewall+0.01,-casebase+0.01])cube([pcbwidth+casewall*2-0.02,pcblength+casewall*2-0.02,casebase+pcbthickness]);
-			translate([-0.01-margin/2,-0.01-margin/2,-casebase-1])cube([pcbwidth+margin+0.02,pcblength+margin+0.02,height+2]);
+			wall();
 			boardb();
 		}
 	}
@@ -74,7 +84,7 @@ module cutb()
 		difference()
 		{
 			translate([-casewall+0.01,-casewall+0.01,0.01])cube([pcbwidth+casewall*2-0.02,pcblength+casewall*2-0.02,casetop+pcbthickness]);
-			translate([-0.01-margin/2,-0.01-margin/2,-casebase-1])cube([pcbwidth+margin+0.02,pcblength+margin+0.02,height+2]);
+			wall();
 			boardf();
 		}
 	}
@@ -93,7 +103,7 @@ module cutpf()
 		difference()
 		{
 			translate([-casewall-0.01,-casewall-0.01,-casebase-0.01])cube([pcbwidth+casewall*2+0.02,pcblength+casewall*2+0.02,casebase+pcbthickness+0.02]);
-			translate([0.01-margin/2,0.01-margin/2,-casebase-1])cube([pcbwidth+margin-0.02,pcblength+margin+0.02,height+2]);
+			wall();
 			board(true);
 		}
 		translate([-casewall,-casewall,-casebase])case();
@@ -113,7 +123,7 @@ module cutpb()
 		difference()
 		{
 			translate([-casewall-0.01,-casewall-0.01,-0.01])cube([pcbwidth+casewall*2+0.02,pcblength+casewall*2+0.02,casetop+pcbthickness+0.02]);
-			translate([0.01-margin/2,0.01-margin/2,-casebase-1])cube([pcbwidth+margin-0.02,pcblength+margin+0.02,height+2]);
+			wall();
 			board(true);
 		}
 		translate([-casewall,-casewall,-casebase])case();
@@ -123,25 +133,33 @@ module cutpb()
 
 module case()
 { // The basic case
-	hull()
-	{
-		translate([edge,0,edge])
-		cube([pcbwidth+casewall*2-edge*2,pcblength+casewall*2,height-edge*2]);
-		translate([0,edge,edge])
-		cube([pcbwidth+casewall*2,pcblength+casewall*2-edge*2,height-edge*2]);
-		translate([edge,edge,0])
-		cube([pcbwidth+casewall*2-edge*2,pcblength+casewall*2-edge*2,height]);
-	}
+        minkowski()
+        {
+            hull()pcb();
+            hull()
+		{
+			translate([edge,0,edge])
+			cube([casewall*2-edge*2,casewall*2,height-edge*2-pcbthickness]);
+			translate([0,edge,edge])
+			cube([casewall*2,casewall*2-edge*2,height-edge*2-pcbthickness]);
+			translate([edge,edge,0])
+			cube([casewall*2-edge*2,casewall*2-edge*2,height-pcbthickness]);
+		}
+        }
 }
 
 module cut(d=0)
-{
-	hull()
+{ // The cut point in the wall
+	minkowski()
 	{
-		translate([casewall/2-d/2-margin/4+casewall/3,casewall/2-d/2-margin/4,casebase])
-			cube([pcbwidth+casewall+d+margin/2-2*casewall/3,pcblength+casewall+d+margin/2,casetop+pcbthickness+1]);
-		translate([casewall/2-d/2-margin/4,casewall/2-d/2-margin/4+casewall/3,casebase])
-			cube([pcbwidth+casewall+d+margin/2,pcblength+casewall+d+margin/2-2*casewall/3,casetop+pcbthickness+1]);
+        	hull()pcb();
+		hull()
+		{
+			translate([casewall/2-d/2-margin/4+casewall/3,casewall/2-d/2-margin/4,casebase])
+				cube([casewall+d+margin/2-2*casewall/3,casewall+d+margin/2,casetop+pcbthickness+1]);
+			translate([casewall/2-d/2-margin/4,casewall/2-d/2-margin/4+casewall/3,casebase])
+				cube([casewall+d+margin/2,casewall+d+margin/2-2*casewall/3,casetop+pcbthickness+1]);
+		}
 	}
 }
 
