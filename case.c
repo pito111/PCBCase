@@ -610,6 +610,8 @@ write_scad(void)
    }
    fprintf(f, "}\n\n");
 
+   fprintf(f,"module b(cx,cy,z,w,l,h){translate([cx-w/2,cy-l/2,z])cube([w,l,h]);}\n");
+
    /* Used models */
    for (int n = 0; n < modulen; n++)
       if (modules[n].ok)
