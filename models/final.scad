@@ -45,7 +45,10 @@ module boardm()
  	}
 }
 
-
+module pcbh()
+{ // PCB shape for case
+	hull()pcb();
+}
 
 module pyramid()
 { // A pyramid
@@ -57,7 +60,7 @@ module wall(d=0)
     	translate([0,0,-casebase-1])
     	minkowski()
     	{
-    		hull()pcb();
+    		pcbh();
 	        cylinder(d=margin+d*2,h=height+2-pcbthickness,$fn=8);
    	}
 }
@@ -135,7 +138,7 @@ module case()
 { // The basic case
         minkowski()
         {
-            hull()pcb();
+            pcbh();
             hull()
 		{
 			translate([edge,0,edge])
@@ -152,7 +155,7 @@ module cut(d=0)
 { // The cut point in the wall
 	minkowski()
 	{
-        	hull()pcb();
+        	pcbh();
 		hull()
 		{
 			translate([casewall/2-d/2-margin/4+casewall/3,casewall/2-d/2-margin/4,casebase])
