@@ -40,16 +40,13 @@ module boardm()
  		minkowski()
  		{
 			translate([0,0,-margin/2])cylinder(d=margin,h=margin,$fn=8);
-			union()
-			{
- 				board(false);
-				hull()intersection()
-    				{
-        				translate([0,0,-(casebase-1)])pcb(pcbthickness+(casebase-1)+(casetop-1));
-        				board(false);
-    				}
-			}
- 		}
+ 			board(false);
+		}
+		hull()intersection()
+    		{
+        		translate([0,0,-(casebase-1)])pcb(pcbthickness+(casebase-1)+(casetop-1));
+        		board(false);
+    		}
  	}
 }
 
