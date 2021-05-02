@@ -652,7 +652,7 @@ main(int argc, const char *argv[])
          {"pcb-thickness", 'T', POPT_ARG_DOUBLE, &pcbthickness, 0, "PCB thickness (default: auto)", "mm"},
          {"model-dir", 'M', POPT_ARG_STRING | POPT_ARGFLAG_SHOW_DEFAULT, &modeldir, 0, "Model directory", "dir"},
          {"spacing", 's', POPT_ARG_DOUBLE, &spacing, 0, "Spacing (default: auto)", "mm"},
-         {"no-render", 'v', POPT_ARG_NONE, &norender, 0, "No-render, just define base() and top()"},
+         {"no-render", 'n', POPT_ARG_NONE, &norender, 0, "No-render, just define base() and top()"},
          {"debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug"},
          POPT_AUTOHELP {}
       };
