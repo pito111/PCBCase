@@ -233,6 +233,3 @@ module parts()
 	base();
 	translate([spacing,0,0])top();
 }
-
-if(debug)test();
-else parts();
