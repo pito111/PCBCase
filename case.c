@@ -17,6 +17,7 @@
 
 /* yet, all globals, what the hell */
 int             debug = 0;
+int             norender = 0;
 const char     *pcbfile = NULL;
 char           *scadfile = NULL;
 const char     *modeldir = "PCBCase/models";
@@ -298,7 +299,6 @@ write_scad(void)
          }
    fprintf(f, "//\n\n");
    fprintf(f, "// Globals\n");
-   fprintf(f, "debug=%s;\n", debug ? "true" : "false");
    fprintf(f, "margin=%lf;\n", margin);
    fprintf(f, "casebase=%lf;\n", casebase);
    fprintf(f, "casetop=%lf;\n", casetop);
@@ -610,7 +610,7 @@ write_scad(void)
    }
    fprintf(f, "}\n\n");
 
-   fprintf(f,"module b(cx,cy,z,w,l,h){translate([cx-w/2,cy-l/2,z])cube([w,l,h]);}\n");
+   fprintf(f, "module b(cx,cy,z,w,l,h){translate([cx-w/2,cy-l/2,z])cube([w,l,h]);}\n");
 
    /* Used models */
    for (int n = 0; n < modulen; n++)
@@ -622,6 +622,11 @@ write_scad(void)
       }
    /* Final SCAD */
    copy_file(f, "final.scad");
+
+   if (debug)
+      fprintf(f, "test();\n");
+   else if (!norender)
+      fprintf(f, "base(); translate([spacing,0,0])top();\n");
 
    if (f != stdout)
       fclose(f);
@@ -647,6 +652,7 @@ main(int argc, const char *argv[])
          {"pcb-thickness", 'T', POPT_ARG_DOUBLE, &pcbthickness, 0, "PCB thickness (default: auto)", "mm"},
          {"model-dir", 'M', POPT_ARG_STRING | POPT_ARGFLAG_SHOW_DEFAULT, &modeldir, 0, "Model directory", "dir"},
          {"spacing", 's', POPT_ARG_DOUBLE, &spacing, 0, "Spacing (default: auto)", "mm"},
+         {"no-render", 'v', POPT_ARG_NONE, &norender, 0, "No-render, just define base() and top()"},
          {"debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug"},
          POPT_AUTOHELP {}
       };
