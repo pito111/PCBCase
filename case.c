@@ -407,12 +407,12 @@ write_scad(void)
          spacing = pcbwidth + casewall * 2 + 10;
       fprintf(f, "spacing=%lf;\n", spacing);
       fprintf(f, "\n");
-      fprintf(f, "// PCB\nmodule pcb(){");
+      fprintf(f, "// PCB\nmodule pcb(h=pcbthickness){");
       if (cutn)
       {                         /* Edge cut */
          double          x = cuts[0].x2,
                          y = cuts[0].y2;
-         fprintf(f, "linear_extrude(height=%lf)polygon([", pcbthickness);
+         fprintf(f, "linear_extrude(height=h)polygon([");
          int             todo = cutn;
          while (todo--)
          {
