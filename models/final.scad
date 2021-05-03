@@ -180,7 +180,7 @@ module base()
 		{
 			union()
 			{
-				translate([-1,-1,casebase+pcbthickness])cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,casetop+1]);
+				translate([-1,-1,casebase+overlap])cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,casetop+1]);
 				cut(fit);
 			}
 		}
@@ -200,7 +200,7 @@ module top()
 			case();
 			difference()
 			{
-				translate([-1,-1,-1])cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,casebase+pcbthickness+1]);
+				translate([-1,-1,-1])cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,casebase+overlap+1]);
 				cut(-fit);
 			}
 			translate([casewall,casewall,casebase])boardb();

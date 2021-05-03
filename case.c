@@ -28,6 +28,7 @@ double          pcblength = 0;
 double          casebase = 5;
 double          casetop = 5;
 double          casewall = 3;   /* margin/2 eats in to this  */
+double		overlap=2;
 double          fit = 0.0;
 double          edge = 1;
 double          margin = 0.8;
@@ -300,6 +301,7 @@ write_scad(void)
    fprintf(f, "//\n\n");
    fprintf(f, "// Globals\n");
    fprintf(f, "margin=%lf;\n", margin);
+   fprintf(f, "overlap=%lf;\n", overlap);
    fprintf(f, "casebase=%lf;\n", casebase);
    fprintf(f, "casetop=%lf;\n", casetop);
    fprintf(f, "casewall=%lf;\n", casewall);
@@ -647,6 +649,7 @@ main(int argc, const char *argv[])
          {"edge", 'e', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &edge, 0, "Case edge", "mm"},
          {"fit", 'f', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &fit, 0, "Case fit", "mm"},
          {"margin", 'm', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &margin, 0, "margin", "mm"},
+         {"overlap", 'O', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &overlap, 0, "overlap", "mm"},
          {"width", 'W', POPT_ARG_DOUBLE, &pcbwidth, 0, "PCB width (default: auto)", "mm"},
          {"length", 'L', POPT_ARG_DOUBLE, &pcblength, 0, "PCB length (default: auto)", "mm"},
          {"pcb-thickness", 'T', POPT_ARG_DOUBLE, &pcbthickness, 0, "PCB thickness (default: auto)", "mm"},
