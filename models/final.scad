@@ -200,7 +200,7 @@ module top()
 			case();
 			difference()
 			{
-				translate([-1,-1,-1])cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,casebase+overlap+1]);
+				translate([-1,-1,-1])cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,casebase+overlap-margin+1]);
 				cut(-fit);
 			}
 			translate([casewall,casewall,casebase])boardb();
