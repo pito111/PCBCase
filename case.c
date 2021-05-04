@@ -31,7 +31,7 @@ double          casewall = 3;   /* margin/2 eats in to this  */
 double		overlap=2;
 double          fit = 0.0;
 double          edge = 1;
-double          margin = 0.8;
+double          margin = 0.6;
 double          spacing = 0;
 
 /* strings from file, lots of common, so make a table */
