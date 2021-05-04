@@ -361,8 +361,8 @@ write_scad(void)
                   r = sqrt((x2 - cx) * (x2 - cx) + (y2 - cy) * (y2 - cy));
                   a2 = atan2(cy - y2, x2 - cx) * 180 / M_PI;
                   a1 = a2 - o2->values[0].num;;
-                  x1 = cx + cos(a1 * M_PI / 180);
-                  y1 = cy - sin(a1 * M_PI / 180);
+                  x1 = cx + r * cos(a1 * M_PI / 180);
+                  y1 = cy - r * sin(a1 * M_PI / 180);
                }
                if (x1 < lx)
                   lx = x1;
@@ -480,8 +480,12 @@ write_scad(void)
             fprintf(f, "]);");
 
          }
-         if (pcbwidth && pcblength)
+         if (pcbwidth || pcblength)
          {
+            if (!pcbwidth)
+               pcbwidth = edgewidth;
+            if (!pcblength)
+               pcblength = edgewidth;
             if (edgewidth && edgelength)        /* Allows for local override with edge cuts as well */
                fprintf(f, "translate([%lf,%lf,0])", (pcbwidth - edgewidth) / 2, (pcblength - edgelength) / 2);
             fprintf(f, "cube([%lf,%lf,pcbthickness]);", pcbwidth, pcblength);   /* simple cuboid */
