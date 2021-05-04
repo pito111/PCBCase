@@ -485,9 +485,9 @@ write_scad(void)
             if (!pcbwidth)
                pcbwidth = edgewidth;
             if (!pcblength)
-               pcblength = edgewidth;
+               pcblength = edgelength;
             if (edgewidth && edgelength)        /* Allows for local override with edge cuts as well */
-               fprintf(f, "translate([%lf,%lf,0])", (pcbwidth - edgewidth) / 2, (pcblength - edgelength) / 2);
+               fprintf(f, "translate([%lf,%lf,0])", (edgewidth - pcbwidth) / 2, (edgelength - pcblength) / 2);
             fprintf(f, "cube([%lf,%lf,pcbthickness]);", pcbwidth, pcblength);   /* simple cuboid */
          }
          fprintf(f, "}\n\n");
