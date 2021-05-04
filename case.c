@@ -28,7 +28,7 @@ double          pcblength = 0;
 double          casebase = 5;
 double          casetop = 5;
 double          casewall = 3;   /* margin/2 eats in to this  */
-double		overlap=2;
+double          overlap = 2;
 double          fit = 0.0;
 double          edge = 1;
 double          margin = 0.6;
@@ -317,172 +317,181 @@ write_scad(void)
    /* sanity */
    if (!pcbthickness)
       errx(1, "Specify pcb thickness");
-   {                            /* Edge cuts */
-      struct
-      {
-         double          x1,
-                         y1;
-         double          x2,
-                         y2;
-         double          cx,
-                         cy;
-         double          a1,
-                         a2;
-         double          r;
-         unsigned char   used:1;
-      }              *cuts = NULL;
-      int             cutn = 0;
-
-      void            add(obj_t * o)
-      {
-         if ((o2 = find_obj(o, "layer", NULL)) && o2->valuen == 1 && o2->values[0].istxt && !strcmp(o2->values[0].txt, "Edge.Cuts"))
-         {                      /* scan the edge cuts */
-            if (!(o2 = find_obj(o, "start", NULL)) || !o2->values[0].isnum || !o2->values[1].isnum)
-               return;
-            double          x1 = o2->values[0].num,
-                            y1 = o2->values[1].num;
-            if              (!(o2 = find_obj(o, "end", NULL)) || !o2->values[0].isnum || !o2->values[1].isnum)
-                               return;
-            double          x2 = o2->values[0].num,
-                            y2 = o2->values[1].num;
-            double
-                            cx = 0,
-                            cy = 0,
-                            r = 0,
-                            a1 = 0,
-                            a2 = 0;
-            if              ((o2 = find_obj(o, "angle", NULL)) && o2->values[0].isnum)
-            {                   /* arc, start is centre, end is end, angle is start to end - remember y is reversed */
-               cx = x1;
-               cy = y1;
-               r = sqrt((x2 - cx) * (x2 - cx) + (y2 - cy) * (y2 - cy));
-               a2 = atan2(cy - y2, x2 - cx) * 180 / M_PI;
-               a1 = a2 - o2->values[0].num;;
-               x1 = cx + cos(a1 * M_PI / 180);
-               y1 = cy - sin(a1 * M_PI / 180);
-            }
-            if (x1 < lx)
-               lx = x1;
-            if (x1 > hx)
-               hx = x1;
-            if (y1 < ly)
-               ly = y1;
-            if (y1 > hy)
-               hy = y1;
-            if (x2 < lx)
-               lx = x2;
-            if (x2 > hx)
-               hx = x2;
-            if (y2 < ly)
-               ly = y2;
-            if (y2 > hy)
-               hy = y2;
-            cuts = realloc(cuts, (cutn + 1) * sizeof(*cuts));
-            if (!cuts)
-               errx(1, "malloc");
-            cuts[cutn].used = 0;
-            cuts[cutn].x1 = x1;
-            cuts[cutn].y1 = y1;
-            cuts[cutn].x2 = x2;
-            cuts[cutn].y2 = y2;
-            cuts[cutn].cx = cx;
-            cuts[cutn].cy = cy;
-            cuts[cutn].r = r;
-            cuts[cutn].a1 = a1;
-            cuts[cutn].a2 = a2;
-            cutn++;
-         }
-      }
-                      o = NULL;
-      while ((o = find_obj(pcb, "gr_line", o)))
-         add(o);
-      while ((o = find_obj(pcb, "gr_arc", o)))
-         add(o);
-      if (lx < DBL_MAX)
-         pcbwidth = hx - lx;
-      if (ly < DBL_MAX)
-         pcblength = hy - ly;
-      ry = hy;
-      fprintf(f, "pcbwidth=%lf;\n", pcbwidth);
-      fprintf(f, "pcblength=%lf;\n", pcblength);
-      if (!spacing)
-         spacing = pcbwidth + casewall * 2 + 10;
-      fprintf(f, "spacing=%lf;\n", spacing);
-      fprintf(f, "\n");
-      fprintf(f, "// PCB\nmodule pcb(h=pcbthickness){");
-      if (cutn)
-      {                         /* Edge cut */
-         double          x = cuts[0].x2,
-                         y = cuts[0].y2;
-         fprintf(f, "linear_extrude(height=h)polygon([");
-         int             todo = cutn;
-         while (todo--)
+   {
+      double          edgewidth = 0,
+                      edgelength = 0;
+      {                         /* Edge cuts or fixed width */
+         struct
          {
-            int             n,
-                            b1 = -1,
-                            b2 = -1;
-            double          d1 = 0,
-                            d2 = 0,
-                            t = 0,
-                            nx = 0,
-                            ny = 0,
-                            x1 = 0,
-                            y1 = 0,
-                            x2 = 0,
-                            y2 = 0;
-            inline double   dist(double x1, double y1)
-            {
-               return (x - x1) * (x - x1) + (y - y1) * (y - y1);
-            }
-            for             (n = 0; n < cutn; n++)
-               if (!cuts[n].used && ((t = dist(cuts[n].x1, cuts[n].y1)) < d1 || b1 < 0))
-               {
-                  b1 = n;
-                  d1 = t;
-               }
-            for (n = 0; n < cutn; n++)
-               if (!cuts[n].used && ((t = dist(cuts[n].x2, cuts[n].y2)) < d2 || b2 < 0))
-               {
-                  b2 = n;
-                  d2 = t;
-               }
-            int             b = 0;
-            if (d1 < d2)
-            {
-               b = b1;
-               x1 = cuts[b].x1;
-               y1 = cuts[b].y1;
-               x2 = cuts[b].x2;
-               y2 = cuts[b].y2;
-            } else
-            {
-               b = b2;
-               x1 = cuts[b].x2;
-               y1 = cuts[b].y2;
-               x2 = cuts[b].x1;
-               y2 = cuts[b].y1;
-            }
-            cuts[b].used = 1;
-            if (x1 != x || y1 != y)
-               fprintf(f, "[%lf,%lf],", x1 - lx, ry - y1);
-            if (cuts[b].r)
-               for (double a = cuts[b].a2 + 5; a < cuts[b].a1; a += 5)
-                  fprintf(f, "[%lf,%lf],", (cuts[b].cx + cuts[b].r * cos(a * M_PI / 180)) - lx, ry - (cuts[b].cy - cuts[b].r * sin(a * M_PI / 180)));
-            fprintf(f, "[%lf,%lf]", x2 - lx, ry - y2);
-            x = x2;
-            y = y2;
-            if (todo)
-               fprintf(f, ",");
-         }
-         fprintf(f, "]);");
+            double          x1,
+                            y1;
+            double          x2,
+                            y2;
+            double          cx,
+                            cy;
+            double          a1,
+                            a2;
+            double          r;
+            unsigned char   used:1;
+         }              *cuts = NULL;
+         int             cutn = 0;
 
-      } else if (pcbwidth && pcblength)
-         fprintf(f, "cube([%lf,%lf,%lf]);", pcbwidth, pcblength, pcbthickness); /* cuboid */
-      fprintf(f, "}\n\n");
-      free(cuts);
+         void            add(obj_t * o)
+         {
+            if ((o2 = find_obj(o, "layer", NULL)) && o2->valuen == 1 && o2->values[0].istxt && !strcmp(o2->values[0].txt, "Edge.Cuts"))
+            {                   /* scan the edge cuts */
+               if (!(o2 = find_obj(o, "start", NULL)) || !o2->values[0].isnum || !o2->values[1].isnum)
+                  return;
+               double          x1 = o2->values[0].num,
+                               y1 = o2->values[1].num;
+               if              (!(o2 = find_obj(o, "end", NULL)) || !o2->values[0].isnum || !o2->values[1].isnum)
+                                  return;
+               double          x2 = o2->values[0].num,
+                               y2 = o2->values[1].num;
+               double
+                               cx = 0,
+                               cy = 0,
+                               r = 0,
+                               a1 = 0,
+                               a2 = 0;
+               if              ((o2 = find_obj(o, "angle", NULL)) && o2->values[0].isnum)
+               {                /* arc, start is centre, end is end, angle is start to end - remember y is reversed */
+                  cx = x1;
+                  cy = y1;
+                  r = sqrt((x2 - cx) * (x2 - cx) + (y2 - cy) * (y2 - cy));
+                  a2 = atan2(cy - y2, x2 - cx) * 180 / M_PI;
+                  a1 = a2 - o2->values[0].num;;
+                  x1 = cx + cos(a1 * M_PI / 180);
+                  y1 = cy - sin(a1 * M_PI / 180);
+               }
+               if (x1 < lx)
+                  lx = x1;
+               if (x1 > hx)
+                  hx = x1;
+               if (y1 < ly)
+                  ly = y1;
+               if (y1 > hy)
+                  hy = y1;
+               if (x2 < lx)
+                  lx = x2;
+               if (x2 > hx)
+                  hx = x2;
+               if (y2 < ly)
+                  ly = y2;
+               if (y2 > hy)
+                  hy = y2;
+               cuts = realloc(cuts, (cutn + 1) * sizeof(*cuts));
+               if (!cuts)
+                  errx(1, "malloc");
+               cuts[cutn].used = 0;
+               cuts[cutn].x1 = x1;
+               cuts[cutn].y1 = y1;
+               cuts[cutn].x2 = x2;
+               cuts[cutn].y2 = y2;
+               cuts[cutn].cx = cx;
+               cuts[cutn].cy = cy;
+               cuts[cutn].r = r;
+               cuts[cutn].a1 = a1;
+               cuts[cutn].a2 = a2;
+               cutn++;
+            }
+         }
+                         o = NULL;
+         while ((o = find_obj(pcb, "gr_line", o)))
+            add(o);
+         while ((o = find_obj(pcb, "gr_arc", o)))
+            add(o);
+         if (lx < DBL_MAX)
+            edgewidth = hx - lx;
+         if (ly < DBL_MAX)
+            edgelength = hy - ly;
+         ry = hy;
+         fprintf(f, "pcbwidth=%lf;\n", pcbwidth ? : edgewidth);
+         fprintf(f, "pcblength=%lf;\n", pcblength ? : edgelength);
+         if (!spacing)
+            spacing = (pcbwidth ? : edgewidth) + casewall * 2 + 10;
+         fprintf(f, "spacing=%lf;\n", spacing);
+         fprintf(f, "\n");
+         fprintf(f, "// PCB\nmodule pcb(h=pcbthickness){");
+         if (cutn)
+         {                      /* Edge cut */
+            double          x = cuts[0].x2,
+                            y = cuts[0].y2;
+            fprintf(f, "linear_extrude(height=h)polygon([");
+            int             todo = cutn;
+            while (todo--)
+            {
+               int             n,
+                               b1 = -1,
+                               b2 = -1;
+               double          d1 = 0,
+                               d2 = 0,
+                               t = 0,
+                               nx = 0,
+                               ny = 0,
+                               x1 = 0,
+                               y1 = 0,
+                               x2 = 0,
+                               y2 = 0;
+               inline double   dist(double x1, double y1)
+               {
+                  return (x - x1) * (x - x1) + (y - y1) * (y - y1);
+               }
+               for             (n = 0; n < cutn; n++)
+                  if (!cuts[n].used && ((t = dist(cuts[n].x1, cuts[n].y1)) < d1 || b1 < 0))
+                  {
+                     b1 = n;
+                     d1 = t;
+                  }
+               for (n = 0; n < cutn; n++)
+                  if (!cuts[n].used && ((t = dist(cuts[n].x2, cuts[n].y2)) < d2 || b2 < 0))
+                  {
+                     b2 = n;
+                     d2 = t;
+                  }
+               int             b = 0;
+               if (d1 < d2)
+               {
+                  b = b1;
+                  x1 = cuts[b].x1;
+                  y1 = cuts[b].y1;
+                  x2 = cuts[b].x2;
+                  y2 = cuts[b].y2;
+               } else
+               {
+                  b = b2;
+                  x1 = cuts[b].x2;
+                  y1 = cuts[b].y2;
+                  x2 = cuts[b].x1;
+                  y2 = cuts[b].y1;
+               }
+               cuts[b].used = 1;
+               if (x1 != x || y1 != y)
+                  fprintf(f, "[%lf,%lf],", x1 - lx, ry - y1);
+               if (cuts[b].r)
+                  for (double a = cuts[b].a2 + 5; a < cuts[b].a1; a += 5)
+                     fprintf(f, "[%lf,%lf],", (cuts[b].cx + cuts[b].r * cos(a * M_PI / 180)) - lx, ry - (cuts[b].cy - cuts[b].r * sin(a * M_PI / 180)));
+               fprintf(f, "[%lf,%lf]", x2 - lx, ry - y2);
+               x = x2;
+               y = y2;
+               if (todo)
+                  fprintf(f, ",");
+            }
+            fprintf(f, "]);");
+
+         }
+         if (pcbwidth && pcblength)
+         {
+            if (edgewidth && edgelength)        /* Allows for local override with edge cuts as well */
+               fprintf(f, "translate([%lf,%lf,0])", (pcbwidth - edgewidth) / 2, (pcblength - edgelength) / 2);
+            fprintf(f, "cube([%lf,%lf,pcbthickness]);", pcbwidth, pcblength);   /* simple cuboid */
+         }
+         fprintf(f, "}\n\n");
+         free(cuts);
+      }
+      if (!(pcbwidth ? : edgewidth) || !(pcblength ? : edgewidth))
+         errx(1, "Specify pcb size");
    }
-   if (!pcbwidth || !pcblength)
-      errx(1, "Specify pcb size");
 
    struct
    {
