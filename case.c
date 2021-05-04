@@ -406,10 +406,10 @@ write_scad(void)
          if (ly < DBL_MAX)
             edgelength = hy - ly;
          ry = hy;
-         fprintf(f, "pcbwidth=%lf;\n", pcbwidth ? : edgewidth);
-         fprintf(f, "pcblength=%lf;\n", pcblength ? : edgelength);
+         fprintf(f, "pcbwidth=%lf;\n", pcbwidth > edgewidth ? pcbwidth : edgewidth);
+         fprintf(f, "pcblength=%lf;\n", pcblength > edgelength ? pcblength : edgelength);
          if (!spacing)
-            spacing = (pcbwidth ? : edgewidth) + casewall * 2 + 10;
+            spacing = (pcbwidth > edgewidth ? pcbwidth : edgewidth) + casewall * 2 + 10;
          fprintf(f, "spacing=%lf;\n", spacing);
          fprintf(f, "\n");
          fprintf(f, "// PCB\nmodule pcb(h=pcbthickness){");
