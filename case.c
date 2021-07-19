@@ -1,6 +1,7 @@
 /* Make an OpendScad file from a kicad_pcb file */
 /* (c) 2021 Adrian Kennard Andrews & Arnold Ltd */
 
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
@@ -470,14 +471,17 @@ write_scad(void)
                   y2 = cuts[b].y1;
                }
                cuts[b].used = 1;
-               if (x1 != x || y1 != y)
-                  fprintf(f, "[%lf,%lf],", x1 - lx, ry - y1);
+	        if (x1 != x || y1 != y)
+                  fprintf(f, "[%lf,%lf],", (x = x1) - lx, ry - (y = y1));
                if (cuts[b].r)
-                  for (double a = cuts[b].a2 + 5; a < cuts[b].a1; a += 5)
-                     fprintf(f, "[%lf,%lf],", (cuts[b].cx + cuts[b].r * cos(a * M_PI / 180)) - lx, ry - (cuts[b].cy - cuts[b].r * sin(a * M_PI / 180)));
-               fprintf(f, "[%lf,%lf]", x2 - lx, ry - y2);
-               x = x2;
-               y = y2;
+               {
+                  double          n = 90 / cuts[b].r / 4;
+                  fprintf(stderr, "r=%lf, n=%lf\n", cuts[b].r, n);
+                  for (double a = cuts[b].a2 + n; a < cuts[b].a1; a += n)
+                     fprintf(f, "[%lf,%lf],", (x = (cuts[b].cx + cuts[b].r * cos(a * M_PI / 180))) - lx, ry - (y = (cuts[b].cy - cuts[b].r * sin(a * M_PI / 180))));
+               }
+               if (x2 != x || y2 != y)
+                  fprintf(f, "[%lf,%lf]", (x = x2) - lx, ry - (y = y2));
                if (todo)
                   fprintf(f, ",");
             }
