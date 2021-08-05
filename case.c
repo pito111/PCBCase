@@ -475,7 +475,7 @@ write_scad(void)
                   fprintf(f, "[%lf,%lf],", (x = x1) - lx, ry - (y = y1));
                if (cuts[b].r)
                {
-                  double          n = round(90 / cuts[b].r / 4);
+                  double          n = 90 / cuts[b].r / 2;
                   //fprintf(stderr, "r=%lf, n=%lf\n", cuts[b].r, n);
                   for (double a = cuts[b].a2 + n; a < cuts[b].a1; a += n)
                      fprintf(f, "[%lf,%lf],", (x = (cuts[b].cx + cuts[b].r * cos(a * M_PI / 180))) - lx, ry - (y = (cuts[b].cy - cuts[b].r * sin(a * M_PI / 180))));
