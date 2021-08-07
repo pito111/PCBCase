@@ -19,6 +19,7 @@
 /* yet, all globals, what the hell */
 int             debug = 0;
 int             norender = 0;
+int curves=2;
 const char     *pcbfile = NULL;
 char           *scadfile = NULL;
 const char     *modeldir = "PCBCase/models";
@@ -475,8 +476,7 @@ write_scad(void)
                   fprintf(f, "[%lf,%lf],", (x = x1) - lx, ry - (y = y1));
                if (cuts[b].r)
                {
-                  double          n = 90 / cuts[b].r / 2;
-                  //fprintf(stderr, "r=%lf, n=%lf\n", cuts[b].r, n);
+                  double          n = 90 / cuts[b].r / curves;
                   for (double a = cuts[b].a2 + n; a < cuts[b].a1; a += n)
                      fprintf(f, "[%lf,%lf],", (x = (cuts[b].cx + cuts[b].r * cos(a * M_PI / 180))) - lx, ry - (y = (cuts[b].cy - cuts[b].r * sin(a * M_PI / 180))));
                }
@@ -675,6 +675,7 @@ main(int argc, const char *argv[])
          {"length", 'L', POPT_ARG_DOUBLE, &pcblength, 0, "PCB length (default: auto)", "mm"},
          {"pcb-thickness", 'T', POPT_ARG_DOUBLE, &pcbthickness, 0, "PCB thickness (default: auto)", "mm"},
          {"model-dir", 'M', POPT_ARG_STRING | POPT_ARGFLAG_SHOW_DEFAULT, &modeldir, 0, "Model directory", "dir"},
+         {"curves", 0, POPT_ARG_INT | POPT_ARGFLAG_SHOW_DEFAULT, &curves, 0, "Parts for curves", "N"},
          {"spacing", 's', POPT_ARG_DOUBLE, &spacing, 0, "Spacing (default: auto)", "mm"},
          {"no-render", 'n', POPT_ARG_NONE, &norender, 0, "No-render, just define base() and top()"},
          {"debug", 'v', POPT_ARG_NONE, &debug, 0, "Debug"},
