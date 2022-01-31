@@ -516,7 +516,7 @@ write_scad(void)
    /* The main PCB */
    fprintf(f, "// Populated PCB\nmodule board(pushed=false){\n	pcb();\n");
    o = NULL;
-   while ((o = find_obj(pcb, "module", o)))
+   while ((o = find_obj(pcb, "footprint", o)))
    {
       char            back = 0; /* back of board */
       if (!(o2 = find_obj(o, "layer", NULL)) || o2->valuen != 1 || !o2->values[0].istxt)
