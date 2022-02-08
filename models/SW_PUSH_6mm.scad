@@ -1,4 +1,4 @@
-translate([-3,-3,0])
+translate([3,-3,0])
 {
 	b(0,0,0,6,6,4);
 	cylinder(d=4,h=100);
