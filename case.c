@@ -309,7 +309,6 @@ void write_scad(void)
    if (!pcbthickness)
       errx(1, "Specify pcb thickness");
    void outline(const char *layer, const char *tag) {
-      {                         /* Edge cuts or fixed width */
          struct {
             double x1,
              y1;
@@ -388,9 +387,35 @@ void write_scad(void)
          while ((o = find_obj(pcb, "gr_arc", o)))
             add(o);
          ry = hy;
-         fprintf(f, "\nmodule %s(h=pcbthickness){", tag);
-	 // TODO change to points an paths and allow holes...
+         char *points = NULL;
+         size_t lpo;
+         FILE *po = open_memstream(&points, &lpo);
+         char *paths = NULL;
+         size_t lpa;
+         FILE *pa = open_memstream(&paths, &lpa);
          char started = 0;
+         double *pointx = NULL;
+         double *pointy = NULL;
+         int pointn = 0,
+             pointa = 0;
+         int addpoint(double x, double y) {
+            int p;
+            for (p = 0; p < pointn && (pointx[p] != x || pointy[p] != y); p++);
+            if (p == pointn)
+            {
+               if (p == pointa)
+               {
+                  pointa += 100;
+                  pointx = realloc(pointx, sizeof(*pointx) * pointa);
+                  pointy = realloc(pointy, sizeof(*pointy) * pointa);
+               }
+               pointx[p] = x;
+               pointy[p] = y;
+               fprintf(po, "[%lf,%lf],", x, y);
+	       pointn++;
+            }
+	    return p;
+         }
          if (cutn)
          {                      /* Edge cut */
             double x = cuts[0].x2,
@@ -442,28 +467,35 @@ void write_scad(void)
                   y2 = cuts[b].y1;
                }
                cuts[b].used = 1;
-               if (!started||x1 != x || y1 != y)
+               if (!started || x1 != x || y1 != y)
                {
                   if (started)
-                     fprintf(f, "]);");
-                  fprintf(f, "linear_extrude(height=h)polygon([[%lf,%lf]", (x = x1) - lx, ry - (y = y1));
+                     fprintf(pa, "],");
+                  fprintf(pa, "[%d", addpoint((x = x1) - lx, ry - (y = y1)));
                }
                started = 1;
                if (cuts[b].r)
                {
                   double n = 90 / cuts[b].r / curves;
                   for (double a = cuts[b].a2 + n; a < cuts[b].a1; a += n)
-                     fprintf(f, ",[%lf,%lf]", (x = (cuts[b].cx + cuts[b].r * cos(a * M_PI / 180))) - lx, ry - (y = (cuts[b].cy - cuts[b].r * sin(a * M_PI / 180))));
+                     fprintf(pa,",%d",addpoint((x = (cuts[b].cx + cuts[b].r * cos(a * M_PI / 180))) - lx, ry - (y = (cuts[b].cy - cuts[b].r * sin(a * M_PI / 180)))));
                }
                if (x2 != x || y2 != y)
-                  fprintf(f, ",[%lf,%lf]", (x = x2) - lx, ry - (y = y2));
+                  fprintf(pa,",%d",addpoint((x = x2) - lx, ry - (y = y2)));
             }
             if (started)
-               fprintf(f, "]);");
+               fprintf(pa, "]");
          }
-         fprintf(f, "}\n");
+         fclose(po);
+         if (lpo)
+            points[--lpo] = 0;
+         fclose(pa);
+         fprintf(f, "\nmodule %s(h=pcbthickness){linear_extrude(height=h)polygon(points=[%s],paths=[%s]);}\n", tag, points, paths);
+         free(points);
+         free(paths);
+         free(pointx);
+         free(pointy);
          free(cuts);
-      }
    }
    outline("Edge.Cuts", "pcb");
    outline(useredge ? "Cmts.User" : "Edge.Cuts", "outline");
