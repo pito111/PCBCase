@@ -1,4 +1,4 @@
-if(!pushed)translate([44.5,37,0])rotate([0,0,180])
+translate([44.5,37,0])rotate([0,0,180])
 {
 	translate([0,0,6])hull()for(x=[1.5,44.5-1.5])for(y=[1.5,37-1.5])translate([x,y,0])cylinder(r=1.4995,h=1.599,$fn=24);
 	for(x=[2.5,44.5-2.5])for(y=[2.5,37-2.5])translate([x,y,0])cylinder(d=4.98,h=6,$fn=6);
