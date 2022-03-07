@@ -42,11 +42,18 @@ module boardm()
 			translate([0,0,-margin/2])cylinder(d=margin,h=margin,$fn=8);
  			board(false);
 		}
-		hull()intersection()
+		if(nohull) intersection()
     		{
         		translate([0,0,-(casebase-1)])pcb(pcbthickness+(casebase-1)+(casetop-1));
+        		translate([0,0,-(casebase-1)])outline(pcbthickness+(casebase-1)+(casetop-1));
         		board(false);
     		}
+		else hull()intersection()
+                {
+                        translate([0,0,-(casebase-1)])pcb(pcbthickness+(casebase-1)+(casetop-1));
+                        translate([0,0,-(casebase-1)])outline(pcbthickness+(casebase-1)+(casetop-1));
+                        board(false);
+		}
  	}
 }
 

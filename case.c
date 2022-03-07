@@ -21,6 +21,7 @@ int debug = 0;
 int norender = 0;
 int curves = 2;
 int useredge = 0;
+int nohull=0;
 const char *pcbfile = NULL;
 char *scadfile = NULL;
 const char *modeldir = "PCBCase/models";
@@ -299,6 +300,7 @@ void write_scad(void)
    fprintf(f, "fit=%lf;\n", fit);
    fprintf(f, "edge=%lf;\n", edge);
    fprintf(f, "pcbthickness=%lf;\n", pcbthickness);
+   fprintf(f,"nohull=%s;\n",nohull?"true":"false");
 
    double lx = DBL_MAX,
        hx = -DBL_MAX,
@@ -670,6 +672,7 @@ int main(int argc, const char *argv[])
          { "wall", 'w', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &casewall, 0, "Case wall", "mm" },
          { "edge", 'e', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &edge, 0, "Case edge", "mm" },
          { "fit", 'f', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &fit, 0, "Case fit", "mm" },
+         { "no-hull", 'h', POPT_ARG_NONE, &nohull, 0, "No hull on parts" },
          { "margin", 'm', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &margin, 0, "margin", "mm" },
          { "overlap", 'O', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &overlap, 0, "overlap", "mm" },
          { "user-edge", 'E', POPT_ARG_NONE, &useredge, 0, "Use Cmts.Edge for case" },
