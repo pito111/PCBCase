@@ -26,8 +26,6 @@ char *scadfile = NULL;
 const char *modeldir = "PCBCase/models";
 const char *ignore = NULL;
 double pcbthickness = 0;
-double pcbwidth = 0;
-double pcblength = 0;
 double casebase = 5;
 double casetop = 5;
 double casewall = 3;            /* margin/2 eats in to this  */
@@ -306,8 +304,6 @@ void write_scad(void)
        hx = -DBL_MAX,
        ly = DBL_MAX,
        hy = -DBL_MAX;
-   double edgewidth = 0,
-       edgelength = 0;
    double ry;                   /* reference for Y, as it is flipped! */
    /* sanity */
    if (!pcbthickness)
@@ -391,17 +387,7 @@ void write_scad(void)
             add(o);
          while ((o = find_obj(pcb, "gr_arc", o)))
             add(o);
-         if (lx < DBL_MAX)
-            edgewidth = hx - lx;
-         if (ly < DBL_MAX)
-            edgelength = hy - ly;
          ry = hy;
-         if (!spacing)
-            spacing = (pcbwidth > edgewidth ? pcbwidth : edgewidth) + casewall * 2 + 10;
-         if (pcbwidth > edgewidth)
-            lx -= (pcbwidth - edgewidth) / 2;
-         if (pcblength > edgelength)
-            hy += (pcblength - edgelength) / 2;
          fprintf(f, "\n");
          fprintf(f, "// PCB\nmodule %s(h=pcbthickness){", tag);
          if (cutn)
@@ -472,27 +458,26 @@ void write_scad(void)
             fprintf(f, "]);");
 
          }
-         if (pcbwidth || pcblength)
-         {
-            if (!pcbwidth)
-               pcbwidth = edgewidth;
-            if (!pcblength)
-               pcblength = edgelength;
-            if (edgewidth && edgelength)        /* Allows for local override with edge cuts as well */
-               fprintf(f, "translate([%lf,%lf,0])", (edgewidth - pcbwidth) / 2, (edgelength - pcblength) / 2);
-            fprintf(f, "cube([%lf,%lf,pcbthickness]);", pcbwidth, pcblength);   /* simple cuboid */
-         }
          fprintf(f, "}\n\n");
          free(cuts);
       }
-      if (!(pcbwidth ? : edgewidth) || !(pcblength ? : edgewidth))
-         errx(1, "Specify pcb size");
    }
    outline("Edge.Cuts", "pcb");
    outline(useredge ? "Cmts.User" : "Edge.Cuts", "outline");
+
+   double edgewidth = 0,
+       edgelength = 0;
+   if (lx < DBL_MAX)
+      edgewidth = hx - lx;
+   if (ly < DBL_MAX)
+      edgelength = hy - ly;
+   if (!spacing)
+      spacing = edgewidth + casewall * 2 + 10;
+   if (!edgewidth || !edgelength)
+      errx(1, "Specify pcb size");
    fprintf(f, "spacing=%lf;\n", spacing);
-   fprintf(f, "pcbwidth=%lf;\n", pcbwidth > edgewidth ? pcbwidth : edgewidth);
-   fprintf(f, "pcblength=%lf;\n", pcblength > edgelength ? pcblength : edgelength);
+   fprintf(f, "pcbwidth=%lf;\n", edgewidth);
+   fprintf(f, "pcblength=%lf;\n", edgelength);
 
    struct {
       char *filename;
@@ -658,8 +643,6 @@ int main(int argc, const char *argv[])
          { "fit", 'f', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &fit, 0, "Case fit", "mm" },
          { "margin", 'm', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &margin, 0, "margin", "mm" },
          { "overlap", 'O', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &overlap, 0, "overlap", "mm" },
-         { "width", 'W', POPT_ARG_DOUBLE, &pcbwidth, 0, "PCB width (default: auto)", "mm" },
-         { "length", 'L', POPT_ARG_DOUBLE, &pcblength, 0, "PCB length (default: auto)", "mm" },
          { "user-edge", 'E', POPT_ARG_NONE, &useredge, 0, "Use Cmts.Edge for case" },
          { "pcb-thickness", 'T', POPT_ARG_DOUBLE, &pcbthickness, 0, "PCB thickness (default: auto)", "mm" },
          { "model-dir", 'M', POPT_ARG_STRING | POPT_ARGFLAG_SHOW_DEFAULT, &modeldir, 0, "Model directory", "dir" },
