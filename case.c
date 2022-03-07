@@ -306,12 +306,12 @@ void write_scad(void)
        hx = -DBL_MAX,
        ly = DBL_MAX,
        hy = -DBL_MAX;
+   double edgewidth = 0,
+       edgelength = 0;
    double ry;                   /* reference for Y, as it is flipped! */
    /* sanity */
    if (!pcbthickness)
       errx(1, "Specify pcb thickness");
-   double edgewidth = 0,
-       edgelength = 0;
    void outline(const char *layer, const char *tag) {
       {                         /* Edge cuts or fixed width */
          struct {
