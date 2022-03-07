@@ -388,8 +388,7 @@ void write_scad(void)
          while ((o = find_obj(pcb, "gr_arc", o)))
             add(o);
          ry = hy;
-         fprintf(f, "\n");
-         fprintf(f, "// PCB\nmodule %s(h=pcbthickness){", tag);
+         fprintf(f, "\nmodule %s(h=pcbthickness){", tag);
          if (cutn)
          {                      /* Edge cut */
             double x = cuts[0].x2,
@@ -458,7 +457,7 @@ void write_scad(void)
             fprintf(f, "]);");
 
          }
-         fprintf(f, "}\n\n");
+         fprintf(f, "}\n");
          free(cuts);
       }
    }
