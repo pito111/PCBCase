@@ -521,6 +521,28 @@ void write_scad(void)
    } *modules = NULL;
    int modulen = 0;
 
+   const char *checkignore(const char *ref) {
+      if (!ignore || !ref || !*ref || !*ignore)
+         return NULL;
+      const char *i = ignore;
+      while (*i)
+      {
+         const char *r = ref;
+         while (*i && *i != ',' && *r && *i == *r)
+         {
+            i++;
+            r++;
+         }
+         if ((!*i || *i == ',') && !*r)
+            return ref;
+         while (*i && *i != ',')
+            i++;
+         while (*i == ',')
+            i++;
+      }
+      return NULL;
+   }
+
    /* The main PCB */
    fprintf(f, "// Populated PCB\nmodule board(pushed=false){\n	pcb();\n");
    o = NULL;
@@ -543,24 +565,8 @@ void write_scad(void)
             break;
          }
       }
-      if (ref && ignore)
-      {
-	    warnx("ignore=%s",ignore);
-	    warnx("ref=%s",ref);
-         int l = strlen(ref);
-         const char *i = ignore;
-         while (*i)
-         {
-            if (!strncmp(i, ref, l) && (!i[l] || i[l] == ','))
-               break;
-            while (*i != ',')
-               i++;
-            while (*i == ',')
-               i++;
-         }
-         if (*i)
-            continue;           /* ignore whole ref */
-      }
+      if (checkignore(ref))
+         continue;
       o2 = NULL;
       int id = 0;
       while ((o2 = find_obj(o, "model", o2)))
@@ -588,24 +594,8 @@ void write_scad(void)
                break;
          if (debug && ref)
             fprintf(stderr, "Module %s.%d %s%s\n", ref, id, leaf, back ? " (back)" : "");
-         if (ref && ignore)
-         {
-            int l = strlen(ref);
-            const char *i = ignore;
-	    warnx("ignore=%s",ignore);
-	    warnx("ref=%s",ref);
-            while (*i)
-            {
-               if (!strncmp(i, ref, l) && i[l] == '.' && atoi(i + l + 1) == id)
-                  break;
-               while (*i != ',')
-                  i++;
-               while (*i == ',')
-                  i++;
-            }
-            if (*i)
-               continue;        /* ignore Specific model */
-         }
+         if (checkignore(ref))
+            continue;
          if (n == modulen)
          {
             modules = realloc(modules, (++modulen) * sizeof(*modules));
