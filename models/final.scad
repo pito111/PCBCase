@@ -52,7 +52,7 @@ module boardm()
 
 module pcbh()
 { // PCB shape for case
-	hull()pcb();
+	hull()outline();
 }
 
 module pyramid()
@@ -214,6 +214,7 @@ module top()
 module test()
 {
 	translate([0*spacing,0,0])pcb();
+	translate([0*spacing,0,0])outline();
 	translate([1*spacing,0,0])wall();
 	translate([2*spacing,0,0])board();
 	translate([3*spacing,0,0])board(true);
