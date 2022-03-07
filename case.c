@@ -309,193 +309,193 @@ void write_scad(void)
    if (!pcbthickness)
       errx(1, "Specify pcb thickness");
    void outline(const char *layer, const char *tag) {
-         struct {
-            double x1,
-             y1;
-            double x2,
-             y2;
-            double cx,
-             cy;
-            double a1,
-             a2;
-            double r;
-            unsigned char used:1;
-         } *cuts = NULL;
-         int cutn = 0;
+      struct {
+         double x1,
+          y1;
+         double x2,
+          y2;
+         double cx,
+          cy;
+         double a1,
+          a2;
+         double r;
+         unsigned char used:1;
+      } *cuts = NULL;
+      int cutn = 0;
 
-         void add(obj_t * o) {
-            if ((o2 = find_obj(o, "layer", NULL)) && o2->valuen == 1 && o2->values[0].istxt && !strcmp(o2->values[0].txt, layer))
-            {                   /* scan the edge cuts */
-               if (!(o2 = find_obj(o, "start", NULL)) || !o2->values[0].isnum || !o2->values[1].isnum)
-                  return;
-               double x1 = o2->values[0].num,
-                   y1 = o2->values[1].num;
-               if (!(o2 = find_obj(o, "end", NULL)) || !o2->values[0].isnum || !o2->values[1].isnum)
-                  return;
-               double x2 = o2->values[0].num,
-                   y2 = o2->values[1].num;
-               double cx = 0,
-                   cy = 0,
-                   r = 0,
-                   a1 = 0,
-                   a2 = 0;
-               if ((o2 = find_obj(o, "angle", NULL)) && o2->values[0].isnum)
-               {                /* arc, start is centre, end is end, angle is start to end - remember y is reversed */
-                  cx = x1;
-                  cy = y1;
-                  r = sqrt((x2 - cx) * (x2 - cx) + (y2 - cy) * (y2 - cy));
-                  a2 = atan2(cy - y2, x2 - cx) * 180 / M_PI;
-                  a1 = a2 - o2->values[0].num;;
-                  x1 = cx + r * cos(a1 * M_PI / 180);
-                  y1 = cy - r * sin(a1 * M_PI / 180);
-               }
-               if (x1 < lx)
-                  lx = x1;
-               if (x1 > hx)
-                  hx = x1;
-               if (y1 < ly)
-                  ly = y1;
-               if (y1 > hy)
-                  hy = y1;
-               if (x2 < lx)
-                  lx = x2;
-               if (x2 > hx)
-                  hx = x2;
-               if (y2 < ly)
-                  ly = y2;
-               if (y2 > hy)
-                  hy = y2;
-               cuts = realloc(cuts, (cutn + 1) * sizeof(*cuts));
-               if (!cuts)
-                  errx(1, "malloc");
-               cuts[cutn].used = 0;
-               cuts[cutn].x1 = x1;
-               cuts[cutn].y1 = y1;
-               cuts[cutn].x2 = x2;
-               cuts[cutn].y2 = y2;
-               cuts[cutn].cx = cx;
-               cuts[cutn].cy = cy;
-               cuts[cutn].r = r;
-               cuts[cutn].a1 = a1;
-               cuts[cutn].a2 = a2;
-               cutn++;
+      void add(obj_t * o) {
+         if ((o2 = find_obj(o, "layer", NULL)) && o2->valuen == 1 && o2->values[0].istxt && !strcmp(o2->values[0].txt, layer))
+         {                      /* scan the edge cuts */
+            if (!(o2 = find_obj(o, "start", NULL)) || !o2->values[0].isnum || !o2->values[1].isnum)
+               return;
+            double x1 = o2->values[0].num,
+                y1 = o2->values[1].num;
+            if (!(o2 = find_obj(o, "end", NULL)) || !o2->values[0].isnum || !o2->values[1].isnum)
+               return;
+            double x2 = o2->values[0].num,
+                y2 = o2->values[1].num;
+            double cx = 0,
+                cy = 0,
+                r = 0,
+                a1 = 0,
+                a2 = 0;
+            if ((o2 = find_obj(o, "angle", NULL)) && o2->values[0].isnum)
+            {                   /* arc, start is centre, end is end, angle is start to end - remember y is reversed */
+               cx = x1;
+               cy = y1;
+               r = sqrt((x2 - cx) * (x2 - cx) + (y2 - cy) * (y2 - cy));
+               a2 = atan2(cy - y2, x2 - cx) * 180 / M_PI;
+               a1 = a2 - o2->values[0].num;;
+               x1 = cx + r * cos(a1 * M_PI / 180);
+               y1 = cy - r * sin(a1 * M_PI / 180);
             }
+            if (x1 < lx)
+               lx = x1;
+            if (x1 > hx)
+               hx = x1;
+            if (y1 < ly)
+               ly = y1;
+            if (y1 > hy)
+               hy = y1;
+            if (x2 < lx)
+               lx = x2;
+            if (x2 > hx)
+               hx = x2;
+            if (y2 < ly)
+               ly = y2;
+            if (y2 > hy)
+               hy = y2;
+            cuts = realloc(cuts, (cutn + 1) * sizeof(*cuts));
+            if (!cuts)
+               errx(1, "malloc");
+            cuts[cutn].used = 0;
+            cuts[cutn].x1 = x1;
+            cuts[cutn].y1 = y1;
+            cuts[cutn].x2 = x2;
+            cuts[cutn].y2 = y2;
+            cuts[cutn].cx = cx;
+            cuts[cutn].cy = cy;
+            cuts[cutn].r = r;
+            cuts[cutn].a1 = a1;
+            cuts[cutn].a2 = a2;
+            cutn++;
          }
-         o = NULL;
-         while ((o = find_obj(pcb, "gr_line", o)))
-            add(o);
-         while ((o = find_obj(pcb, "gr_arc", o)))
-            add(o);
-         ry = hy;
-         char *points = NULL;
-         size_t lpo;
-         FILE *po = open_memstream(&points, &lpo);
-         char *paths = NULL;
-         size_t lpa;
-         FILE *pa = open_memstream(&paths, &lpa);
-         char started = 0;
-         double *pointx = NULL;
-         double *pointy = NULL;
-         int pointn = 0,
-             pointa = 0;
-         int addpoint(double x, double y) {
-            int p;
-            for (p = 0; p < pointn && (pointx[p] != x || pointy[p] != y); p++);
-            if (p == pointn)
+      }
+      o = NULL;
+      while ((o = find_obj(pcb, "gr_line", o)))
+         add(o);
+      while ((o = find_obj(pcb, "gr_arc", o)))
+         add(o);
+      ry = hy;
+      char *points = NULL;
+      size_t lpo;
+      FILE *po = open_memstream(&points, &lpo);
+      char *paths = NULL;
+      size_t lpa;
+      FILE *pa = open_memstream(&paths, &lpa);
+      char started = 0;
+      double *pointx = NULL;
+      double *pointy = NULL;
+      int pointn = 0,
+          pointa = 0;
+      int addpoint(double x, double y) {
+         int p;
+         for (p = 0; p < pointn && (pointx[p] != x || pointy[p] != y); p++);
+         if (p == pointn)
+         {
+            if (p == pointa)
             {
-               if (p == pointa)
-               {
-                  pointa += 100;
-                  pointx = realloc(pointx, sizeof(*pointx) * pointa);
-                  pointy = realloc(pointy, sizeof(*pointy) * pointa);
-               }
-               pointx[p] = x;
-               pointy[p] = y;
-               fprintf(po, "[%lf,%lf],", x, y);
-	       pointn++;
+               pointa += 100;
+               pointx = realloc(pointx, sizeof(*pointx) * pointa);
+               pointy = realloc(pointy, sizeof(*pointy) * pointa);
             }
-	    return p;
+            pointx[p] = x;
+            pointy[p] = y;
+            fprintf(po, "[%lf,%lf],", x, y);
+            pointn++;
          }
-         if (cutn)
-         {                      /* Edge cut */
-            double x = cuts[0].x2,
-                y = cuts[0].y2;
-            int todo = cutn;
-            while (todo--)
+         return p;
+      }
+      if (cutn)
+      {                         /* Edge cut */
+         double x = cuts[0].x2,
+             y = cuts[0].y2;
+         int todo = cutn;
+         while (todo--)
+         {
+            int n,
+             b1 = -1,
+                b2 = -1;
+            double d1 = 0,
+                d2 = 0,
+                t = 0,
+                nx = 0,
+                ny = 0,
+                x1 = 0,
+                y1 = 0,
+                x2 = 0,
+                y2 = 0;
+            inline double dist(double x1, double y1) {
+               return (x - x1) * (x - x1) + (y - y1) * (y - y1);
+            }
+            for (n = 0; n < cutn; n++)
+               if (!cuts[n].used && ((t = dist(cuts[n].x1, cuts[n].y1)) < d1 || b1 < 0))
+               {
+                  b1 = n;
+                  d1 = t;
+               }
+            for (n = 0; n < cutn; n++)
+               if (!cuts[n].used && ((t = dist(cuts[n].x2, cuts[n].y2)) < d2 || b2 < 0))
+               {
+                  b2 = n;
+                  d2 = t;
+               }
+            int b = 0;
+            if (d1 < d2)
             {
-               int n,
-                b1 = -1,
-                   b2 = -1;
-               double d1 = 0,
-                   d2 = 0,
-                   t = 0,
-                   nx = 0,
-                   ny = 0,
-                   x1 = 0,
-                   y1 = 0,
-                   x2 = 0,
-                   y2 = 0;
-               inline double dist(double x1, double y1) {
-                  return (x - x1) * (x - x1) + (y - y1) * (y - y1);
-               }
-               for (n = 0; n < cutn; n++)
-                  if (!cuts[n].used && ((t = dist(cuts[n].x1, cuts[n].y1)) < d1 || b1 < 0))
-                  {
-                     b1 = n;
-                     d1 = t;
-                  }
-               for (n = 0; n < cutn; n++)
-                  if (!cuts[n].used && ((t = dist(cuts[n].x2, cuts[n].y2)) < d2 || b2 < 0))
-                  {
-                     b2 = n;
-                     d2 = t;
-                  }
-               int b = 0;
-               if (d1 < d2)
-               {
-                  b = b1;
-                  x1 = cuts[b].x1;
-                  y1 = cuts[b].y1;
-                  x2 = cuts[b].x2;
-                  y2 = cuts[b].y2;
-               } else
-               {
-                  b = b2;
-                  x1 = cuts[b].x2;
-                  y1 = cuts[b].y2;
-                  x2 = cuts[b].x1;
-                  y2 = cuts[b].y1;
-               }
-               cuts[b].used = 1;
-               if (!started || x1 != x || y1 != y)
-               {
-                  if (started)
-                     fprintf(pa, "],");
-                  fprintf(pa, "[%d", addpoint((x = x1) - lx, ry - (y = y1)));
-               }
-               started = 1;
-               if (cuts[b].r)
-               {
-                  double n = 90 / cuts[b].r / curves;
-                  for (double a = cuts[b].a2 + n; a < cuts[b].a1; a += n)
-                     fprintf(pa,",%d",addpoint((x = (cuts[b].cx + cuts[b].r * cos(a * M_PI / 180))) - lx, ry - (y = (cuts[b].cy - cuts[b].r * sin(a * M_PI / 180)))));
-               }
-               if (x2 != x || y2 != y)
-                  fprintf(pa,",%d",addpoint((x = x2) - lx, ry - (y = y2)));
+               b = b1;
+               x1 = cuts[b].x1;
+               y1 = cuts[b].y1;
+               x2 = cuts[b].x2;
+               y2 = cuts[b].y2;
+            } else
+            {
+               b = b2;
+               x1 = cuts[b].x2;
+               y1 = cuts[b].y2;
+               x2 = cuts[b].x1;
+               y2 = cuts[b].y1;
             }
-            if (started)
-               fprintf(pa, "]");
+            cuts[b].used = 1;
+            if (!started || x1 != x || y1 != y)
+            {
+               if (started)
+                  fprintf(pa, "],");
+               fprintf(pa, "[%d", addpoint((x = x1) - lx, ry - (y = y1)));
+            }
+            started = 1;
+            if (cuts[b].r)
+            {
+               double n = 90 / cuts[b].r / curves;
+               for (double a = cuts[b].a2 + n; a < cuts[b].a1; a += n)
+                  fprintf(pa, ",%d", addpoint((x = (cuts[b].cx + cuts[b].r * cos(a * M_PI / 180))) - lx, ry - (y = (cuts[b].cy - cuts[b].r * sin(a * M_PI / 180)))));
+            }
+            if (x2 != x || y2 != y)
+               fprintf(pa, ",%d", addpoint((x = x2) - lx, ry - (y = y2)));
          }
-         fclose(po);
-         if (lpo)
-            points[--lpo] = 0;
-         fclose(pa);
-         fprintf(f, "\nmodule %s(h=pcbthickness){linear_extrude(height=h)polygon(points=[%s],paths=[%s]);}\n", tag, points, paths);
-         free(points);
-         free(paths);
-         free(pointx);
-         free(pointy);
-         free(cuts);
+         if (started)
+            fprintf(pa, "]");
+      }
+      fclose(po);
+      if (lpo)
+         points[--lpo] = 0;
+      fclose(pa);
+      fprintf(f, "\nmodule %s(h=pcbthickness){linear_extrude(height=h)polygon(points=[%s],paths=[%s]);}\n", tag, points, paths);
+      free(points);
+      free(paths);
+      free(pointx);
+      free(pointy);
+      free(cuts);
    }
    outline("Edge.Cuts", "pcb");
    outline(useredge ? "Cmts.User" : "Edge.Cuts", "outline");
@@ -545,6 +545,8 @@ void write_scad(void)
       }
       if (ref && ignore)
       {
+	    warnx("ignore=%s",ignore);
+	    warnx("ref=%s",ref);
          int l = strlen(ref);
          const char *i = ignore;
          while (*i)
@@ -590,6 +592,8 @@ void write_scad(void)
          {
             int l = strlen(ref);
             const char *i = ignore;
+	    warnx("ignore=%s",ignore);
+	    warnx("ref=%s",ref);
             while (*i)
             {
                if (!strncmp(i, ref, l) && i[l] == '.' && atoi(i + l + 1) == id)
@@ -665,7 +669,7 @@ void write_scad(void)
 
 int main(int argc, const char *argv[])
 {
-   {                            /* POPT */
+   {
       poptContext optCon;       /* context for parsing  command - line options */
       const struct poptOption optionsTable[] = {
          { "pcb-file", 'i', POPT_ARG_STRING, &pcbfile, 0, "PCB file", "filename" },
