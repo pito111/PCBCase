@@ -389,11 +389,11 @@ void write_scad(void)
             add(o);
          ry = hy;
          fprintf(f, "\nmodule %s(h=pcbthickness){", tag);
+         char started = 0;
          if (cutn)
          {                      /* Edge cut */
             double x = cuts[0].x2,
                 y = cuts[0].y2;
-            fprintf(f, "linear_extrude(height=h)polygon([");
             int todo = cutn;
             while (todo--)
             {
@@ -441,21 +441,24 @@ void write_scad(void)
                   y2 = cuts[b].y1;
                }
                cuts[b].used = 1;
-               if (x1 != x || y1 != y)
-                  fprintf(f, "[%lf,%lf],", (x = x1) - lx, ry - (y = y1));
+               if (!started||x1 != x || y1 != y)
+               {
+                  if (started)
+                     fprintf(f, "]);");
+                  fprintf(f, "linear_extrude(height=h)polygon([[%lf,%lf]", (x = x1) - lx, ry - (y = y1));
+               }
+               started = 1;
                if (cuts[b].r)
                {
                   double n = 90 / cuts[b].r / curves;
                   for (double a = cuts[b].a2 + n; a < cuts[b].a1; a += n)
-                     fprintf(f, "[%lf,%lf],", (x = (cuts[b].cx + cuts[b].r * cos(a * M_PI / 180))) - lx, ry - (y = (cuts[b].cy - cuts[b].r * sin(a * M_PI / 180))));
+                     fprintf(f, ",[%lf,%lf]", (x = (cuts[b].cx + cuts[b].r * cos(a * M_PI / 180))) - lx, ry - (y = (cuts[b].cy - cuts[b].r * sin(a * M_PI / 180))));
                }
                if (x2 != x || y2 != y)
-                  fprintf(f, "[%lf,%lf]", (x = x2) - lx, ry - (y = y2));
-               if (todo)
-                  fprintf(f, ",");
+                  fprintf(f, ",[%lf,%lf]", (x = x2) - lx, ry - (y = y2));
             }
-            fprintf(f, "]);");
-
+            if (started)
+               fprintf(f, "]);");
          }
          fprintf(f, "}\n");
          free(cuts);
