@@ -389,6 +389,7 @@ void write_scad(void)
             add(o);
          ry = hy;
          fprintf(f, "\nmodule %s(h=pcbthickness){", tag);
+	 // TODO change to points an paths and allow holes...
          char started = 0;
          if (cutn)
          {                      /* Edge cut */
