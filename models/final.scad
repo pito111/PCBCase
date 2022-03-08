@@ -59,7 +59,8 @@ module boardm()
 
 module pcbh()
 { // PCB shape for case
-	hull()outline();
+	if(useredge)outline();
+	else hull()outline();
 }
 
 module pyramid()

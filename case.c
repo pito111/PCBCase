@@ -21,7 +21,7 @@ int debug = 0;
 int norender = 0;
 int curves = 2;
 int useredge = 0;
-int nohull=0;
+int nohull = 0;
 const char *pcbfile = NULL;
 char *scadfile = NULL;
 const char *modeldir = "PCBCase/models";
@@ -300,7 +300,8 @@ void write_scad(void)
    fprintf(f, "fit=%lf;\n", fit);
    fprintf(f, "edge=%lf;\n", edge);
    fprintf(f, "pcbthickness=%lf;\n", pcbthickness);
-   fprintf(f,"nohull=%s;\n",nohull?"true":"false");
+   fprintf(f, "nohull=%s;\n", nohull ? "true" : "false");
+   fprintf(f, "useredge=%s;\n", useredge ? "true" : "false");
 
    double lx = DBL_MAX,
        hx = -DBL_MAX,
