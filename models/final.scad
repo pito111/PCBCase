@@ -1,5 +1,15 @@
 height=casebase+pcbthickness+casetop;
 
+module boardh(pushed=false)
+{ // Board with hulled parts
+	union()
+	{
+		pcb();
+		board(pushed,false);
+		if(!nohull)hull()board(pushed,true);
+	}
+}
+
 module boardf()
 { // This is the board, but stretched up to make a push out in from the front
 	render()
@@ -9,7 +19,7 @@ module boardf()
 			translate([-casewall-1,-casewall-1,-casebase-1]) cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,height+2]);
 			minkowski()
 			{
-				board(true);
+				boardh(true);
 				cylinder(h=height+100,d=margin,$fn=8);
 			}
 		}
@@ -25,7 +35,7 @@ module boardb()
 			translate([-casewall-1,-casewall-1,-casebase-1]) cube([pcbwidth+casewall*2+2,pcblength+casewall*2+2,height+2]);
 			minkowski()
 			{
-				board(true);
+				boardh(true);
 				translate([0,0,-height-100])
 				cylinder(h=height+100,d=margin,$fn=8);
 			}
@@ -40,20 +50,14 @@ module boardm()
  		minkowski()
  		{
 			translate([0,0,-margin/2])cylinder(d=margin,h=margin,$fn=8);
- 			board(false);
+ 			boardh(false);
 		}
-		if(nohull) intersection()
+		intersection()
     		{
         		translate([0,0,-(casebase-1)])pcb(pcbthickness+(casebase-1)+(casetop-1));
         		translate([0,0,-(casebase-1)])outline(pcbthickness+(casebase-1)+(casetop-1));
-        		board(false);
+			boardh(false);
     		}
-		else hull()intersection()
-                {
-                        translate([0,0,-(casebase-1)])pcb(pcbthickness+(casebase-1)+(casetop-1));
-                        translate([0,0,-(casebase-1)])outline(pcbthickness+(casebase-1)+(casetop-1));
-                        board(false);
-		}
  	}
 }
 
@@ -120,7 +124,7 @@ module cutpf()
 		{
 			translate([-casewall-0.01,-casewall-0.01,-casebase-0.01])cube([pcbwidth+casewall*2+0.02,pcblength+casewall*2+0.02,casebase+overlap+0.02]);
 			wall();
-			board(true);
+			boardh(true);
 		}
 		translate([-casewall,-casewall,-casebase])case();
 	}
@@ -140,7 +144,7 @@ module cutpb()
 		{
 			translate([-casewall-0.01,-casewall-0.01,-0.01])cube([pcbwidth+casewall*2+0.02,pcblength+casewall*2+0.02,casetop+pcbthickness+0.02]);
 			wall();
-			board(true);
+			boardh(true);
 		}
 		translate([-casewall,-casewall,-casebase])case();
 	}
@@ -221,20 +225,22 @@ module top()
 
 module test()
 {
-	translate([0*spacing,0,0])pcb();
-	translate([1*spacing,0,0])outline();
-	translate([2*spacing,0,0])wall();
-	translate([3*spacing,0,0])board();
-	translate([4*spacing,0,0])board(true);
-	translate([5*spacing,0,0])boardf();
-	translate([6*spacing,0,0])boardb();
-	translate([7*spacing,0,0])cutpf();
-	translate([8*spacing,0,0])cutpb();
-	translate([9*spacing,0,0])cutf();
-	translate([10*spacing,0,0])cutb();
-	translate([11*spacing,0,0])case();
-	translate([12*spacing,0,0])base();
-	translate([13*spacing,0,0])top();
+	translate([0*spacing,0,0])base();
+	translate([1*spacing,0,0])top();
+	translate([2*spacing,0,0])pcb();
+	translate([3*spacing,0,0])outline();
+	translate([4*spacing,0,0])wall();
+	translate([5*spacing,0,0])board();
+	translate([6*spacing,0,0])board(false,true);
+	translate([7*spacing,0,0])board(true);
+	translate([8*spacing,0,0])boardh();
+	translate([9*spacing,0,0])boardf();
+	translate([10*spacing,0,0])boardb();
+	translate([11*spacing,0,0])cutpf();
+	translate([12*spacing,0,0])cutpb();
+	translate([13*spacing,0,0])cutf();
+	translate([14*spacing,0,0])cutb();
+	translate([15*spacing,0,0])case();
 }
 
 module parts()
