@@ -36,7 +36,7 @@ double edge = 1;
 double margin = 0.5;
 double spacing = 0;
 double delta = 0.01;
-double hullcap = 0.6;
+double hullcap = 1;
 //Curve delta
 
 /* strings from file, lots of common, so make a table */
