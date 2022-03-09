@@ -8,7 +8,7 @@ module boardh(pushed=false)
 		board(pushed,false);
 		if(!nohull)hull()intersection()
 		{
-			translate([0,0,-casebase])outline(height);
+			translate([0,0,-casebase])outline(casebase+pcbthickness+casetop);
 			board(pushed,true);
 		}
 	}
