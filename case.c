@@ -498,9 +498,9 @@ void write_scad(void)
                double am = atan2(ym - cy, xm - cx);
                double a2 = atan2(y2 - cy, x2 - cx);
                //warnx("cx=%lf cy=%lf a1=%lf am=%lf a2=%lf", cx, cy, a1 * 180.0 / M_PI, am * 180.0 / M_PI, a2 * 180.0 / M_PI);
-               if (a2 < a1 && (am > a1 || am < a2))
+               if (a2 <= a1 && (am > a1 || am < a2))
                   a2 += 2 * M_PI;
-               else if (a2 > a1 && (am < a1 || am > a2))
+               else if (a2 >= a1 && (am < a1 || am > a2))
                   a2 -= 2 * M_PI;
                if (delta < r)
                {
