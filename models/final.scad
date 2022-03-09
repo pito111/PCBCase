@@ -6,10 +6,10 @@ module boardh(pushed=false)
 	{
 		pcb();
 		board(pushed,false);
-		if(!nohull)hull()intersection()
+		if(!nohull)intersection()
 		{
 			translate([0,0,-casebase])outline(casebase+pcbthickness+casetop);
-			board(pushed,true);
+			hull()board(pushed,true);
 		}
 	}
 }
