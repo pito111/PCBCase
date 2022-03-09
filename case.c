@@ -36,7 +36,7 @@ double edge = 1;
 double margin = 0.5;
 double spacing = 0;
 double delta = 0.01;
-double hullcap=0.4;
+double hullcap = 0.6;
 //Curve delta
 
 /* strings from file, lots of common, so make a table */
@@ -304,7 +304,7 @@ void write_scad(void)
    fprintf(f, "edge=%lf;\n", edge);
    fprintf(f, "pcbthickness=%lf;\n", pcbthickness);
    fprintf(f, "nohull=%s;\n", nohull ? "true" : "false");
-   fprintf(f, "hullcap=%lf;\n",hullcap);
+   fprintf(f, "hullcap=%lf;\n", hullcap);
    fprintf(f, "useredge=%s;\n", (useredge1 || useredge2) ? "true" : "false");
 
    double lx = DBL_MAX,
