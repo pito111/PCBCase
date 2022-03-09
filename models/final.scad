@@ -6,7 +6,11 @@ module boardh(pushed=false)
 	{
 		pcb();
 		board(pushed,false);
-		if(!nohull)hull()board(pushed,true);
+		if(!nohull)hull()intersection()
+		{
+			translate([0,0,-casebase])outline(height);
+			board(pushed,true);
+		}
 	}
 }
 
