@@ -36,6 +36,7 @@ double edge = 1;
 double margin = 0.5;
 double spacing = 0;
 double delta = 0.01;
+double hullcap=0.4;
 //Curve delta
 
 /* strings from file, lots of common, so make a table */
@@ -303,6 +304,7 @@ void write_scad(void)
    fprintf(f, "edge=%lf;\n", edge);
    fprintf(f, "pcbthickness=%lf;\n", pcbthickness);
    fprintf(f, "nohull=%s;\n", nohull ? "true" : "false");
+   fprintf(f, "hullcap=%lf;\n",hullcap);
    fprintf(f, "useredge=%s;\n", (useredge1 || useredge2) ? "true" : "false");
 
    double lx = DBL_MAX,
@@ -707,6 +709,7 @@ int main(int argc, const char *argv[])
          { "wall", 'w', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &casewall, 0, "Case wall", "mm" },
          { "edge", 'e', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &edge, 0, "Case edge", "mm" },
          { "fit", 'f', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &fit, 0, "Case fit", "mm" },
+         { "hull-cap", 3, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &hullcap, 0, "Hull cap", "mm" },
          { "no-hull", 'h', POPT_ARG_NONE, &nohull, 0, "No hull on parts" },
          { "margin", 'm', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &margin, 0, "margin", "mm" },
          { "overlap", 'O', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &overlap, 0, "overlap", "mm" },

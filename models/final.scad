@@ -4,13 +4,13 @@ module boardh(pushed=false)
 { // Board with hulled parts
 	union()
 	{
-		pcb();
-		board(pushed,false);
 		if(!nohull)intersection()
 		{
-			translate([0,0,-casebase])outline(casebase+pcbthickness+casetop);
+			translate([0,0,hullcap-casebase])outline(casebase+pcbthickness+casetop-hullcap*2);
 			hull()board(pushed,true);
 		}
+		board(pushed,false);
+		pcb();
 	}
 }
 
