@@ -19,7 +19,8 @@
 /* yet, all globals, what the hell */
 int debug = 0;
 int norender = 0;
-int useredge = 0;
+int useredge1 = 0;
+int useredge2 = 0;
 int nohull = 0;
 const char *pcbfile = NULL;
 char *scadfile = NULL;
@@ -302,7 +303,7 @@ void write_scad(void)
    fprintf(f, "edge=%lf;\n", edge);
    fprintf(f, "pcbthickness=%lf;\n", pcbthickness);
    fprintf(f, "nohull=%s;\n", nohull ? "true" : "false");
-   fprintf(f, "useredge=%s;\n", useredge ? "true" : "false");
+   fprintf(f, "useredge=%s;\n", (useredge1 || useredge2) ? "true" : "false");
 
    double lx = DBL_MAX,
        hx = -DBL_MAX,
@@ -527,7 +528,7 @@ void write_scad(void)
       free(cuts);
    }
    outline("Edge.Cuts", "pcb");
-   outline(useredge ? "Cmts.User" : "Edge.Cuts", "outline");
+   outline(useredge1 ? "Eco1.User" : useredge2 ? "Eco2.User" : "Edge.Cuts", "outline");
 
    double edgewidth = 0,
        edgelength = 0;
@@ -702,7 +703,8 @@ int main(int argc, const char *argv[])
          { "no-hull", 'h', POPT_ARG_NONE, &nohull, 0, "No hull on parts" },
          { "margin", 'm', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &margin, 0, "margin", "mm" },
          { "overlap", 'O', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &overlap, 0, "overlap", "mm" },
-         { "user-edge", 'E', POPT_ARG_NONE, &useredge, 0, "Use Cmts.Edge for case" },
+         { "edge1", 0, POPT_ARG_NONE, &useredge1, 0, "Use Eco1.User for case" },
+         { "edge2", 0, POPT_ARG_NONE, &useredge2, 0, "Use Eco2.User for case" },
          { "pcb-thickness", 'T', POPT_ARG_DOUBLE, &pcbthickness, 0, "PCB thickness (default: auto)", "mm" },
          { "model-dir", 'M', POPT_ARG_STRING | POPT_ARGFLAG_SHOW_DEFAULT, &modeldir, 0, "Model directory", "dir" },
          { "spacing", 's', POPT_ARG_DOUBLE, &spacing, 0, "Spacing (default: auto)", "mm" },
