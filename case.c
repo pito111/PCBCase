@@ -631,13 +631,13 @@ void write_scad(void)
          for (n = 0; n < modulen; n++)
             if (!strcmp(modules[n].filename, fn))
                break;
-         if (debug && ref)
-            fprintf(stderr, "Module %s.%d %s%s\n", ref, id, leaf, back ? " (back)" : "");
          char *refn;
          if (asprintf(&refn, "%s.%d", ref, id) < 0)
             errx(1, "malloc");
          if (checkignore(refn))
             continue;
+         if (debug && ref)
+            fprintf(stderr, "Module %s.%d %s%s\n", ref, id, leaf, back ? " (back)" : "");
          free(refn);
          if (n == modulen)
          {
