@@ -633,8 +633,12 @@ void write_scad(void)
                break;
          if (debug && ref)
             fprintf(stderr, "Module %s.%d %s%s\n", ref, id, leaf, back ? " (back)" : "");
-         if (checkignore(ref))
+         char *refn;
+         if (asprintf(&refn, "%s.%d", ref, id) < 0)
+            errx(1, "malloc");
+         if (checkignore(refn))
             continue;
+         free(refn);
          if (n == modulen)
          {
             modules = realloc(modules, (++modulen) * sizeof(*modules));
