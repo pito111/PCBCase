@@ -494,15 +494,18 @@ void write_scad(void)
                double a2 = atan2(cy - y2, x2 - cx);
                if (a2 < a1)
                   a2 += M_PI * 2;
-               double da = 2 * acos(1 - delta / r);
-               int steps = ((a2 - a1) / da + 1);
-               //warnx("x1=%lf y1=%lf xm=%lf ym=%lf x2=%lf y2=%lf", x1, y1, xm, ym, x2, y2);
-               //warnx("xq=%lf yq=%lf qm=%lf q2=%lf as=%lf r=%lf", xq, yq, qm, q2, as * 180.0 / M_PI, r);
-               //warnx("cx=%lf cy=%lf a1=%lf a2=%lf da=%lf steps=%d", cx, cy, a1 * 180.0 / M_PI, a2 * 180.0 / M_PI, da * 180.0 / M_PI, steps);
-               for (int i = 1; i < steps; i++)
+               if (delta < r)
                {
-                  double a = a1 + (a2 - a1) * i / steps;
-                  fprintf(pa, ",%d", addpoint((x = (cx + r * cos(a))) - lx, ry - (y = (cy - r * sin(a)))));
+                  double da = 2 * acos(1 - delta / r);
+                  int steps = ((a2 - a1) / da + 1);
+                  //warnx("x1=%lf y1=%lf xm=%lf ym=%lf x2=%lf y2=%lf", x1, y1, xm, ym, x2, y2);
+                  //warnx("xq=%lf yq=%lf qm=%lf q2=%lf as=%lf r=%lf", xq, yq, qm, q2, as * 180.0 / M_PI, r);
+                  //warnx("cx=%lf cy=%lf a1=%lf a2=%lf da=%lf steps=%d", cx, cy, a1 * 180.0 / M_PI, a2 * 180.0 / M_PI, da * 180.0 / M_PI, steps);
+                  for (int i = 1; i < steps; i++)
+                  {
+                     double a = a1 + (a2 - a1) * i / steps;
+                     fprintf(pa, ",%d", addpoint((x = (cx + r * cos(a))) - lx, ry - (y = (cy - r * sin(a)))));
+                  }
                }
             }
             started = 1;
