@@ -574,7 +574,7 @@ void write_scad(void)
    }
 
    /* The main PCB */
-   fprintf(f, "// Populated PCB\nmodule board(pushed=false){\n	pcb();\n");
+   fprintf(f, "// Populated PCB\nmodule board(pushed=false,hulled=false){\n");
    o = NULL;
    while ((o = find_obj(pcb, "footprint", o)))
    {
@@ -657,7 +657,7 @@ void write_scad(void)
                fprintf(f, "scale([%lf,%lf,%lf])", o3->values[0].num, o3->values[1].num, o3->values[2].num);
             if ((o3 = find_obj(o2, "rotate", NULL)) && (o3 = find_obj(o3, "xyz", NULL)) && o3->valuen >= 3 && o3->values[0].isnum && o3->values[1].isnum && o3->values[2].isnum && (o3->values[0].num || o3->values[1].num || o3->values[2].num))
                fprintf(f, "rotate([%lf,%lf,%lf])", o3->values[0].num, o3->values[1].num, o3->values[2].num);
-            fprintf(f, "m%d(pushed); // %s\n", n, modules[n].desc);
+            fprintf(f, "m%d(pushed,hulled); // %s\n", n, modules[n].desc);
          } else
             fprintf(f, "// Missing %s\n", modules[n].desc);
          free(model);
@@ -671,7 +671,7 @@ void write_scad(void)
    for (int n = 0; n < modulen; n++)
       if (modules[n].ok)
       {
-         fprintf(f, "module m%d(pushed=false)\n{ // %s\n", n, modules[n].desc);
+         fprintf(f, "module m%d(pushed=false,hulled=false)\n{ // %s\n", n, modules[n].desc);
          copy_file(f, modules[n].filename);
          fprintf(f, "}\n\n");
       }
