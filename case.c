@@ -515,6 +515,8 @@ write_scad(void)
                //warnx("cx=%lf cy=%lf a1=%lf am=%lf a2=%lf", cx, cy, a1 * 180.0 / M_PI, am * 180.0 / M_PI, a2 * 180.0 / M_PI);
                if (a2<a1&&(am>a1||am<a2))
                   a2 += 2 * M_PI;
+	       else if(a2>a1&&(am<a1||am>a2))
+                  a2 -= 2 * M_PI;
                if (delta < r)
                {
                   double          da = 2 * acos(1 - delta / r);
