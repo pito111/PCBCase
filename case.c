@@ -482,8 +482,8 @@ void write_scad(void)
             }
             if (cuts[b].arc)
             {
-               double xq = (x1 + x2) / 2,
-                   yq = (y1 + y2) / 2;
+               double xq = (x1 + x2) / 2;
+               double yq = (y1 + y2) / 2;
                double qm = sqrt((xq - xm) * (xq - xm) + (yq - ym) * (yq - ym));
                double q2 = sqrt((xq - x2) * (xq - x2) + (yq - y2) * (yq - y2));
                double as = atan2(q2, qm);
@@ -504,7 +504,6 @@ void write_scad(void)
                   double a = a1 + (a2 - a1) * i / steps;
                   fprintf(pa, ",%d", addpoint((x = (cx + r * cos(a))) - lx, ry - (y = (cy - r * sin(a)))));
                }
-
             }
             started = 1;
             if (x2 != x || y2 != y)
