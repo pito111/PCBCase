@@ -327,6 +327,17 @@ void write_scad(void)
          unsigned char used:1;
       } *cuts = NULL;
       int cutn = 0;
+      void edges(double x,double y)
+      {
+            if (x < lx)
+               lx = x;
+            if (x > hx)
+               hx = x;
+            if (y < ly)
+               ly = y;
+            if (y > hy)
+               hy = y;
+      }
 
       void add(obj_t * o) {
          if ((o2 = find_obj(o, "layer", NULL)) && o2->valuen == 1 && o2->values[0].istxt && !strcmp(o2->values[0].txt, layer))
@@ -347,6 +358,7 @@ void write_scad(void)
                arc = 1;
                xm = o2->values[0].num;
 	       ym = o2->values[1].num;
+	       edges(xm,ym);
             }
             cuts = realloc(cuts, (cutn + 1) * sizeof(*cuts));
             if (!cuts)
@@ -354,8 +366,10 @@ void write_scad(void)
             cuts[cutn].used = 0;
             cuts[cutn].x1 = x1;
             cuts[cutn].y1 = y1;
+	    edges(x1,y1);
             cuts[cutn].x2 = x2;
             cuts[cutn].y2 = y2;
+	    edges(x2,y2);
             cuts[cutn].xm = xm;
             cuts[cutn].ym = ym;
             cuts[cutn].arc = arc;
@@ -394,14 +408,6 @@ void write_scad(void)
             pointy[p] = y;
             fprintf(po, "[%lf,%lf],", x, y);
             pointn++;
-            if (x < lx)
-               lx = x;
-            if (x > hx)
-               hx = x;
-            if (y < ly)
-               ly = y;
-            if (y > hy)
-               hy = y;
          }
          return p;
       }
