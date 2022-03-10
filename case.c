@@ -30,7 +30,8 @@ double pcbthickness = 0;
 double casebase = 5;
 double casetop = 5;
 double casewall = 3;            /* margin/2 eats in to this  */
-double overlap = 2;
+double overlap = 2;		/* Lip overlap */
+double lip=0.4;			/* Lip offset */
 double fit = 0.0;
 double edge = 1;
 double margin = 0.5;
@@ -298,6 +299,7 @@ void write_scad(void)
    fprintf(f, "// Globals\n");
    fprintf(f, "margin=%lf;\n", margin);
    fprintf(f, "overlap=%lf;\n", overlap);
+   fprintf(f, "lip=%lf;\n", lip);
    fprintf(f, "casebase=%lf;\n", casebase);
    fprintf(f, "casetop=%lf;\n", casetop);
    fprintf(f, "casewall=%lf;\n", casewall);
