@@ -345,32 +345,9 @@ void write_scad(void)
             if ((o2 = find_obj(o, "mid", NULL)) && o2->values[0].isnum && o2->values[1].isnum)
             {
                arc = 1;
-               xm = o2->values[0].num, ym = o2->values[1].num;
-               if (xm < lx)
-                  lx = xm;
-               if (xm > hx)
-                  hx = xm;
-               if (ym < ly)
-                  ly = ym;
-               if (ym > hy)
-                  hy = ym;
+               xm = o2->values[0].num;
+	       ym = o2->values[1].num;
             }
-            if (x1 < lx)
-               lx = x1;
-            if (x1 > hx)
-               hx = x1;
-            if (y1 < ly)
-               ly = y1;
-            if (y1 > hy)
-               hy = y1;
-            if (x2 < lx)
-               lx = x2;
-            if (x2 > hx)
-               hx = x2;
-            if (y2 < ly)
-               ly = y2;
-            if (y2 > hy)
-               hy = y2;
             cuts = realloc(cuts, (cutn + 1) * sizeof(*cuts));
             if (!cuts)
                errx(1, "malloc");
@@ -417,6 +394,14 @@ void write_scad(void)
             pointy[p] = y;
             fprintf(po, "[%lf,%lf],", x, y);
             pointn++;
+            if (x < lx)
+               lx = x;
+            if (x > hx)
+               hx = x;
+            if (y < ly)
+               ly = y;
+            if (y > hy)
+               hy = y;
          }
          return p;
       }
@@ -433,12 +418,8 @@ void write_scad(void)
             double d1 = 0,
                 d2 = 0,
                 t = 0,
-                nx = 0,
-                ny = 0,
                 x1 = 0,
                 y1 = 0,
-                xm = 0,
-                ym = 0,
                 x2 = 0,
                 y2 = 0;
             inline double dist(double x1, double y1) {
@@ -462,8 +443,6 @@ void write_scad(void)
                b = b1;
                x1 = cuts[b].x1;
                y1 = cuts[b].y1;
-               xm = cuts[b].xm;
-               ym = cuts[b].ym;
                x2 = cuts[b].x2;
                y2 = cuts[b].y2;
             } else
@@ -471,8 +450,6 @@ void write_scad(void)
                b = b2;
                x1 = cuts[b].x2;
                y1 = cuts[b].y2;
-               xm = cuts[b].xm;
-               ym = cuts[b].ym;
                x2 = cuts[b].x1;
                y2 = cuts[b].y1;
             }
@@ -487,6 +464,8 @@ void write_scad(void)
             {
                //warnx("Arc");
                //warnx("x1=%lf y1=%lf xm=%lf ym=%lf x2=%lf y2=%lf", x1, y1, xm, ym, x2, y2);
+               double xm = cuts[b].xm;
+               double ym = cuts[b].ym;
                double xq = (x1 + x2) / 2;
                double yq = (y1 + y2) / 2;
                double qm = sqrt((xq - xm) * (xq - xm) + (yq - ym) * (yq - ym));
