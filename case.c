@@ -30,8 +30,8 @@ double pcbthickness = 0;
 double casebase = 5;
 double casetop = 5;
 double casewall = 3;            /* margin/2 eats in to this  */
-double overlap = 2;		/* Lip overlap */
-double lip=0.4;			/* Lip offset */
+double overlap = 2;             /* Lip overlap */
+double lip = 0;                 /* Lip offset */
 double fit = 0.0;
 double edge = 1;
 double margin = 0.5;
@@ -319,6 +319,8 @@ void write_scad(void)
    /* sanity */
    if (!pcbthickness)
       errx(1, "Specify pcb thickness");
+   if (!lip)
+      lip = pcbthickness / 2;
    void outline(const char *layer, const char *tag) {
       struct {
          double x1,
