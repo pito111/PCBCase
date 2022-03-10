@@ -25,7 +25,7 @@ module boardf()
 			minkowski()
 			{
 				boardh(true);
-				cylinder(h=height+100,d=margin);
+				cylinder(h=height+100,d=margin,$fn=8);
 			}
 		}
 	}
@@ -42,7 +42,7 @@ module boardb()
 			{
 				boardh(true);
 				translate([0,0,-height-100])
-				cylinder(h=height+100,d=margin);
+				cylinder(h=height+100,d=margin,$fn=8);
 			}
 		}
 	}
@@ -54,15 +54,15 @@ module boardm()
 	{
  		minkowski()
  		{
-			translate([0,0,-margin/2])cylinder(d=margin,h=margin);
+			translate([0,0,-margin/2])cylinder(d=margin,h=margin,$fn=8);
  			boardh(false);
 		}
-		intersection()
-    		{
-        		translate([0,0,-(casebase-1)])pcb(pcbthickness+(casebase-1)+(casetop-1));
-        		translate([0,0,-(casebase-1)])outline(pcbthickness+(casebase-1)+(casetop-1));
+		//intersection()
+    		//{
+        		//translate([0,0,-(casebase-hullcap)])pcb(pcbthickness+(casebase-hullcap)+(casetop-hullcap));
+        		//translate([0,0,-(casebase-hullcap)])outline(pcbthickness+(casebase-hullcap)+(casetop-hullcap));
 			boardh(false);
-    		}
+    		//}
  	}
 }
 
