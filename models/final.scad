@@ -1,4 +1,5 @@
 height=casebase+pcbthickness+casetop;
+$fn=12;
 
 module boardh(pushed=false)
 { // Board with hulled parts
@@ -24,7 +25,7 @@ module boardf()
 			minkowski()
 			{
 				boardh(true);
-				cylinder(h=height+100,d=margin,$fn=8);
+				cylinder(h=height+100,d=margin);
 			}
 		}
 	}
@@ -41,7 +42,7 @@ module boardb()
 			{
 				boardh(true);
 				translate([0,0,-height-100])
-				cylinder(h=height+100,d=margin,$fn=8);
+				cylinder(h=height+100,d=margin);
 			}
 		}
 	}
@@ -53,7 +54,7 @@ module boardm()
 	{
  		minkowski()
  		{
-			translate([0,0,-margin/2])cylinder(d=margin,h=margin,$fn=8);
+			translate([0,0,-margin/2])cylinder(d=margin,h=margin);
  			boardh(false);
 		}
 		intersection()
@@ -65,10 +66,10 @@ module boardm()
  	}
 }
 
-module pcbh()
+module pcbh(h=pcbthickness,r=0)
 { // PCB shape for case
-	if(useredge)outline();
-	else hull()outline();
+	if(useredge)outline(h,r);
+	else hull()outline(h,r);
 }
 
 module pyramid()
@@ -78,12 +79,7 @@ module pyramid()
 
 module wall(d=0)
 { // The case wall
-    	translate([0,0,-casebase-1])
-    	minkowski()
-    	{
-    		pcbh();
-	        cylinder(d=margin+d*2,h=height+2-pcbthickness,$fn=8);
-   	}
+    	translate([0,0,-casebase-d])pcbh(height+d*2,margin/2+d);
 }
 
 module cutf()
@@ -157,34 +153,16 @@ module cutpb()
 
 module case()
 { // The basic case
-        minkowski()
-        {
-            pcbh();
-            hull()
-		{
-			translate([edge,0,edge])
-			cube([casewall*2-edge*2,casewall*2,height-edge*2-pcbthickness]);
-			translate([0,edge,edge])
-			cube([casewall*2,casewall*2-edge*2,height-edge*2-pcbthickness]);
-			translate([edge,edge,0])
-			cube([casewall*2-edge*2,casewall*2-edge*2,height-pcbthickness]);
-		}
-        }
+	hull()
+	{
+		translate([casewall,casewall,0])pcbh(height,casewall-edge);
+		translate([casewall,casewall,edge])pcbh(height-edge*2,casewall);
+	}
 }
 
 module cut(d=0)
 { // The cut point in the wall
-	minkowski()
-	{
-        	pcbh();
-		hull()
-		{
-			translate([casewall/2-d/2-margin/4+casewall/3,casewall/2-d/2-margin/4,casebase])
-				cube([casewall+d+margin/2-2*casewall/3,casewall+d+margin/2,casetop+pcbthickness+1]);
-			translate([casewall/2-d/2-margin/4,casewall/2-d/2-margin/4+casewall/3,casebase])
-				cube([casewall+d+margin/2,casewall+d+margin/2-2*casewall/3,casetop+pcbthickness+1]);
-		}
-	}
+	translate([casewall,casewall,casebase])pcbh(casetop+pcbthickness+1,casewall/2+d/2+margin/4);
 }
 
 module base()
