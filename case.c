@@ -708,6 +708,7 @@ int main(int argc, const char *argv[])
          { "no-hull", 'h', POPT_ARG_NONE, &nohull, 0, "No hull on parts" },
          { "margin", 'm', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &margin, 0, "margin", "mm" },
          { "overlap", 'O', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &overlap, 0, "overlap", "mm" },
+         { "lip", 0, POPT_ARG_DOUBLE , &lip, 0, "lip offset (default pcbthickness/2)", "mm" },
          { "edge1", 0, POPT_ARG_NONE, &useredge1, 0, "Use Eco1.User for case" },
          { "edge2", 0, POPT_ARG_NONE, &useredge2, 0, "Use Eco2.User for case" },
          { "pcb-thickness", 'T', POPT_ARG_DOUBLE, &pcbthickness, 0, "PCB thickness (default: auto)", "mm" },
