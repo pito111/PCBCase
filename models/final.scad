@@ -162,7 +162,7 @@ module case()
 
 module cut(d=0)
 { // The cut point in the wall
-	translate([casewall,casewall,casebase])pcbh(casetop+pcbthickness+1,casewall/2+d/2+margin/4);
+	translate([casewall,casewall,casebase+pcbthickness/2])pcbh(casetop+pcbthickness/2+1,casewall/2+d/2+margin/4);
 }
 
 module base()
