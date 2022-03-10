@@ -37,6 +37,7 @@ double margin = 0.5;
 double spacing = 0;
 double delta = 0.01;
 double hullcap = 1;
+double hulledge = 1;
 //Curve delta
 
 /* strings from file, lots of common, so make a table */
@@ -305,6 +306,7 @@ void write_scad(void)
    fprintf(f, "pcbthickness=%lf;\n", pcbthickness);
    fprintf(f, "nohull=%s;\n", nohull ? "true" : "false");
    fprintf(f, "hullcap=%lf;\n", hullcap);
+   fprintf(f, "hulledge=%lf;\n", hulledge);
    fprintf(f, "useredge=%s;\n", (useredge1 || useredge2) ? "true" : "false");
 
    double lx = DBL_MAX,
@@ -327,16 +329,15 @@ void write_scad(void)
          unsigned char used:1;
       } *cuts = NULL;
       int cutn = 0;
-      void edges(double x,double y)
-      {
-            if (x < lx)
-               lx = x;
-            if (x > hx)
-               hx = x;
-            if (y < ly)
-               ly = y;
-            if (y > hy)
-               hy = y;
+      void edges(double x, double y) {
+         if (x < lx)
+            lx = x;
+         if (x > hx)
+            hx = x;
+         if (y < ly)
+            ly = y;
+         if (y > hy)
+            hy = y;
       }
 
       void add(obj_t * o) {
@@ -357,8 +358,8 @@ void write_scad(void)
             {
                arc = 1;
                xm = o2->values[0].num;
-	       ym = o2->values[1].num;
-	       edges(xm,ym);
+               ym = o2->values[1].num;
+               edges(xm, ym);
             }
             cuts = realloc(cuts, (cutn + 1) * sizeof(*cuts));
             if (!cuts)
@@ -366,10 +367,10 @@ void write_scad(void)
             cuts[cutn].used = 0;
             cuts[cutn].x1 = x1;
             cuts[cutn].y1 = y1;
-	    edges(x1,y1);
+            edges(x1, y1);
             cuts[cutn].x2 = x2;
             cuts[cutn].y2 = y2;
-	    edges(x2,y2);
+            edges(x2, y2);
             cuts[cutn].xm = xm;
             cuts[cutn].ym = ym;
             cuts[cutn].arc = arc;
@@ -514,7 +515,7 @@ void write_scad(void)
       if (lpo)
          points[--lpo] = 0;
       fclose(pa);
-      fprintf(f, "\nmodule %s(h=pcbthickness){linear_extrude(height=h)polygon(points=[%s],paths=[%s]);}\n", tag, points, paths);
+      fprintf(f, "\nmodule %s(h=pcbthickness,r=0){linear_extrude(height=h)offset(r=r)polygon(points=[%s],paths=[%s]);}\n", tag, points, paths);
       free(points);
       free(paths);
       free(pointx);
@@ -699,6 +700,7 @@ int main(int argc, const char *argv[])
          { "edge", 'e', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &edge, 0, "Case edge", "mm" },
          { "fit", 'f', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &fit, 0, "Case fit", "mm" },
          { "hull-cap", 3, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &hullcap, 0, "Hull cap", "mm" },
+         { "hull-edge", 3, POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &hulledge, 0, "Hull edge", "mm" },
          { "no-hull", 'h', POPT_ARG_NONE, &nohull, 0, "No hull on parts" },
          { "margin", 'm', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &margin, 0, "margin", "mm" },
          { "overlap", 'O', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &overlap, 0, "overlap", "mm" },

@@ -6,7 +6,7 @@ module boardh(pushed=false)
 	{
 		if(!nohull)intersection()
 		{
-			translate([0,0,hullcap-casebase])outline(casebase+pcbthickness+casetop-hullcap*2);
+			translate([0,0,hullcap-casebase])outline(casebase+pcbthickness+casetop-hullcap*2,-hulledge);
 			hull()board(pushed,true);
 		}
 		board(pushed,false);
