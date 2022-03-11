@@ -165,13 +165,16 @@ obj_t *parse_obj(const char **pp, const char *e)
       }
       if (q == p)
       {                         /* seems legit */
+         char *val = strndup(t, q - t);
          double v = 0;
-         if (sscanf(t, "%lf", &v) == 1)
+         if (sscanf(val, "%lf", &v) == 1)
          {                      /* safe as we know followed by space or close bracket and not EOF */
             value->isnum = 1;
             value->num = v;
+            free(val);
             continue;
          }
+         free(val);
       }
       /* assume string */
       value->istxt = 1;
@@ -708,7 +711,7 @@ int main(int argc, const char *argv[])
          { "no-hull", 'h', POPT_ARG_NONE, &nohull, 0, "No hull on parts" },
          { "margin", 'm', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &margin, 0, "margin", "mm" },
          { "overlap", 'O', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &overlap, 0, "overlap", "mm" },
-         { "lip", 0, POPT_ARG_DOUBLE , &lip, 0, "lip offset (default pcbthickness/2)", "mm" },
+         { "lip", 0, POPT_ARG_DOUBLE, &lip, 0, "lip offset (default pcbthickness/2)", "mm" },
          { "edge1", 0, POPT_ARG_NONE, &useredge1, 0, "Use Eco1.User for case" },
          { "edge2", 0, POPT_ARG_NONE, &useredge2, 0, "Use Eco2.User for case" },
          { "pcb-thickness", 'T', POPT_ARG_DOUBLE, &pcbthickness, 0, "PCB thickness (default: auto)", "mm" },
