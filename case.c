@@ -421,8 +421,9 @@ void write_scad(void)
       }
       if (cutn)
       {                         /* Edge cut */
-         double x = cuts[0].x2,
-             y = cuts[0].y2;
+         double x = NAN,
+             y = NAN;
+         int start = -1;
          int todo = cutn;
          while (todo--)
          {
@@ -470,9 +471,12 @@ void write_scad(void)
             cuts[b].used = 1;
             if (!started || x1 != x || y1 != y)
             {
+               if (start >= 0)
+                  warnx("Not closed path");
+               start = addpoint((x = x1) - lx, ry - (y = y1));
                if (started)
                   fprintf(pa, "],");
-               fprintf(pa, "[%d", addpoint((x = x1) - lx, ry - (y = y1)));
+               fprintf(pa, "[%d", start);
             }
             if (cuts[b].arc)
             {
@@ -507,13 +511,23 @@ void write_scad(void)
                   for (int i = 1; i < steps; i++)
                   {
                      double a = a1 + (a2 - a1) * i / steps;
-                     fprintf(pa, ",%d", addpoint((x = (cx + r * cos(a))) - lx, ry - (y = (cy + r * sin(a)))));
+                     int p = addpoint((x = (cx + r * cos(a))) - lx, ry - (y = (cy + r * sin(a))));
+                     if (p == start)
+                        start = -1;
+                     else
+                        fprintf(pa, ",%d", p);
                   }
                }
             }
             started = 1;
             if (x2 != x || y2 != y)
-               fprintf(pa, ",%d", addpoint((x = x2) - lx, ry - (y = y2)));
+            {
+               int p = addpoint((x = x2) - lx, ry - (y = y2));
+               if (p == start)
+                  start = -1;
+               else
+                  fprintf(pa, ",%d", p);
+            }
          }
          if (started)
             fprintf(pa, "]");
