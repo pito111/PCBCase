@@ -472,7 +472,7 @@ void write_scad(void)
             if (!started || x1 != x || y1 != y)
             {
                if (start >= 0)
-                  warnx("Not closed path");
+                  warnx("Not closed path (%lf,%lf)", x1, y1);
                start = addpoint((x = x1) - lx, ry - (y = y1));
                if (started)
                   fprintf(pa, "],");
