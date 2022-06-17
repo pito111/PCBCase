@@ -1,3 +1,3 @@
-if(!hulled)b(0,0,0,6,6,4);
+if(!hulled)b(0,0,0,6,6,2.8); // Used as a tamper, so tight...
 b(0,0,0,9,6,1.1);
 
