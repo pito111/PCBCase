@@ -29,7 +29,7 @@ module boardf()
 					boardh(true);
 					cylinder(h=height+100,d=margin,$fn=8);
 				}
-				pcb();
+				board(false,false);
 			}
 		}
 	}
@@ -50,7 +50,7 @@ module boardb()
 					translate([0,0,-height-100])
 					cylinder(h=height+100,d=margin,$fn=8);
 				}
-				pcb();
+				board(false,false);
 			}
 		}
 	}
