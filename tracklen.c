@@ -1,5 +1,5 @@
 /* Report KiCad track l;engths */
-/* (c) 2021 Adrian Kennard Andrews & Arnold Ltd */
+/* (c) 2021-2022 Adrian Kennard Andrews & Arnold Ltd */
 
 #define _GNU_SOURCE
 #include <stdio.h>
@@ -313,6 +313,7 @@ report_footprint(obj_t * o)
       else if (a2 >= a1 && (am < a1 || am > a2))
          a2 -= 2 * M_PI;
       long double     d = (a2 - a1);
+      if(d<0)d=0-d;
       l->len += r * d;
       if (debug)
          warnx("%s\t%Lf,%Lf\t%Lf,%Lf\t%Lf,%Lf\t%Lf\t%Lf", l->tag, x1, y1, xm, ym, x2, y2, r, d * 180 / M_PI);
