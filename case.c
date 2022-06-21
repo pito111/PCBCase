@@ -1,5 +1,5 @@
 /* Make an OpendScad file from a kicad_pcb file */
-/* (c) 2021 Adrian Kennard Andrews & Arnold Ltd */
+/* (c) 2021-2022 Adrian Kennard Andrews & Arnold Ltd */
 
 #define _GNU_SOURCE
 #include <stdio.h>
