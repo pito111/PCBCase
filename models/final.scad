@@ -1,5 +1,5 @@
 height=casebase+pcbthickness+casetop;
-$fn=12;
+$fn=48;
 
 module boardh(pushed=false)
 { // Board with hulled parts
