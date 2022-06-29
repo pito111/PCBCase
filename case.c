@@ -352,20 +352,52 @@ write_scad(void)
          unsigned char   used:1;
       }              *cuts = NULL;
       int             cutn = 0;
-      void            edges(double x, double y)
-      {
-         if (x < lx)
-            lx = x;
-         if (x > hx)
-            hx = x;
-         if (y < ly)
-            ly = y;
-         if (y > hy)
-            hy = y;
-      }
 
-      void            add(obj_t * o)
+      void            add(obj_t * o, double dx, double dy, double a)
       {
+         void            makecuts(double x1, double y1, double xm, double ym, double x2, double y2, int arc)
+         {
+            void            translate(double *xp, double *yp)
+            {
+               if (a)
+                  warnx("TODO rotate footprint");
+               (*xp) += dx;
+               (*yp) += dy;
+            }
+                            translate(&x1, &y1);
+                            translate(&x2, &y2);
+                            translate(&xm, &ym);
+            void            edges(double x, double y)
+            {
+               //Record limits
+               if (x < lx)
+                  lx = x;
+               if (x > hx)
+                  hx = x;
+               if (y < ly)
+                  ly = y;
+               if (y > hy)
+                  hy = y;
+            }
+                            cuts = realloc(cuts, (cutn + 1) * sizeof(*cuts));
+            if              (!cuts)
+                               errx(1, "malloc");
+                            cuts[cutn].used = 0;
+                            cuts[cutn].x1 = x1;
+                            cuts[cutn].y1 = y1;
+                            edges(x1, y1);
+                            cuts[cutn].x2 = x2;
+                            cuts[cutn].y2 = y2;
+                            edges(x1, y1);
+            if              (arc)
+            {
+               cuts[cutn].xm = xm;
+               cuts[cutn].ym = ym;
+               edges(xm, ym);
+            }
+                            cuts[cutn].arc = arc;
+                            cutn++;
+         }
          obj_t          *o2 = find_obj(o, "layer", NULL);
          if              (!o2 || o2->valuen != 1 || !o2->values[0].istxt || strcmp(o2->values[0].txt, layer))
                             return;
@@ -380,11 +412,8 @@ write_scad(void)
             long double     cx = o2->values[0].num,
                             cy = o2->values[1].num;
             long double     r = sqrtl((cx - x2) * (cx - x2) + (cy - y2) * (cy - y2));
-                            edges(cx - r, cy);
-                            edges(cx + r, cy);
-                            edges(cx, cy - r);
-                            edges(cx, cy + r);
-            /* add cuts */
+                            makecuts(cx - r, cy, cx, cy + r, cx + r, cy, 1);
+                            makecuts(cx + r, cy, cx, cy - r, cx - r, cy, 1);
                             return;
          }
          double          x1 = o2->values[0].num,
@@ -392,50 +421,38 @@ write_scad(void)
          double          xm = 0,
                          ym = 0;
          char            arc = 0;
-         if              ((o2 = find_obj(o, "mid", NULL)) && o2->values[0].isnum && o2->values[1].isnum)
+         if ((o2 = find_obj(o, "mid", NULL)) && o2->values[0].isnum && o2->values[1].isnum)
          {
             arc = 1;
             xm = o2->values[0].num;
             ym = o2->values[1].num;
-            edges(xm, ym);
          }
-                         cuts = realloc(cuts, (cutn + 1) * sizeof(*cuts));
-         if (!cuts)
-            errx(1, "malloc");
-         cuts[cutn].used = 0;
-         cuts[cutn].x1 = x1;
-         cuts[cutn].y1 = y1;
-         edges(x1, y1);
-         cuts[cutn].x2 = x2;
-         cuts[cutn].y2 = y2;
-         edges(x2, y2);
-         cuts[cutn].xm = xm;
-         cuts[cutn].ym = ym;
-         cuts[cutn].arc = arc;
-         cutn++;
+         makecuts(x1, y1, xm, ym, x2, y2, arc);
       }
       o = NULL;
       while ((o = find_obj(pcb, "gr_line", o)))
-         add(o);
+         add(o, 0, 0, 0);
       while ((o = find_obj(pcb, "gr_arc", o)))
-         add(o);
+         add(o, 0, 0, 0);
       while ((o = find_obj(pcb, "gr_circle", o)))
-         add(o);
+         add(o, 0, 0, 0);
       obj_t          *fp = NULL;
       while ((fp = find_obj(pcb, "footprint", fp)))
       {
          o2 = find_obj(fp, "at", NULL);
-         if (!o2 || o2->valuen != 3 || !o2->values[0].isnum || !o2->values[1].isnum || !o2->values[2].isnum)
+         if (!o2 || o2->valuen < 2 || !o2->values[0].isnum || !o2->values[1].isnum)
             continue;
          long double     x = o2->values[0].num,
                          y = o2->values[1].num,
-                         a = o2->values[2].num;
+                         a = 0;
+         if (o2->valuen >= 3 && o2->values[2].isnum)
+            a = o2->values[2].num;
          while ((o = find_obj(fp, "fp_line", o)))
-            add(o);
+            add(o, x, y, a);
          while ((o = find_obj(fp, "fp_arc", o)))
-            add(o);
+            add(o, x, y, a);
          while ((o = find_obj(fp, "fp_circle", o)))
-            add(o);
+            add(o, x, y, a);
       }
       ry = hy;
       char           *points = NULL;
