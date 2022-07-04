@@ -1,8 +1,9 @@
 // Screw 6mm
-rotate([0,-90,0],$fn=100)
+if(!hulled&&!pushed)
+rotate([0,90,0],$fn=100)
 {
-	translate([0,0,-100])cylinder(d=12,h=100);
-	cylinder(d1=12,d2=6,h=3);
-	cylinder(d=6,h=100);
+	hull()for(x=[-1,1])translate([x,0,-2])cylinder(d=12,h=2);
+	hull()for(x=[-1,1])translate([x,0,0])cylinder(d1=12,d2=6,h=3);
+	hull()for(x=[-1,1])translate([x,0,0])cylinder(d=6,h=100);
 }
 
