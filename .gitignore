@@ -4,3 +4,4 @@ case.c.BAK
 tracklen.c.BAK
 *~
 *.dsym
+.DS_Store
