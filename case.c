@@ -745,7 +745,7 @@ write_scad(void)
             if ((o3 = find_obj(o2, "scale", NULL)) && (o3 = find_obj(o3, "xyz", NULL)) && o3->valuen >= 3 && o3->values[0].isnum && o3->values[1].isnum && o3->values[2].isnum && (o3->values[0].num != 1 || o3->values[1].num != 1 || o3->values[2].num != 1))
                fprintf(f, "scale([%lf,%lf,%lf])", o3->values[0].num, o3->values[1].num, o3->values[2].num);
             if ((o3 = find_obj(o2, "rotate", NULL)) && (o3 = find_obj(o3, "xyz", NULL)) && o3->valuen >= 3 && o3->values[0].isnum && o3->values[1].isnum && o3->values[2].isnum && (o3->values[0].num || o3->values[1].num || o3->values[2].num))
-               fprintf(f, "rotate([%lf,%lf,%lf])", o3->values[0].num, o3->values[1].num, o3->values[2].num);
+               fprintf(f, "rotate([%lf,%lf,%lf])", -o3->values[0].num, o3->values[1].num, o3->values[2].num);
             fprintf(f, "m%d(pushed,hulled); // %s%s\n", n, modules[n].desc,back?"":" (back)");
          } else
             fprintf(f, "// Missing %s\n", modules[n].desc);
@@ -768,7 +768,7 @@ write_scad(void)
    copy_file(f, "final.scad");
 
    if (debug)
-      fprintf(f, "test();\n");
+      fprintf(f, "board();\n");
    else if (!norender)
       fprintf(f, "base(); translate([spacing,0,0])top();\n");
 
