@@ -745,8 +745,8 @@ write_scad(void)
             if ((o3 = find_obj(o2, "scale", NULL)) && (o3 = find_obj(o3, "xyz", NULL)) && o3->valuen >= 3 && o3->values[0].isnum && o3->values[1].isnum && o3->values[2].isnum && (o3->values[0].num != 1 || o3->values[1].num != 1 || o3->values[2].num != 1))
                fprintf(f, "scale([%lf,%lf,%lf])", o3->values[0].num, o3->values[1].num, o3->values[2].num);
             if ((o3 = find_obj(o2, "rotate", NULL)) && (o3 = find_obj(o3, "xyz", NULL)) && o3->valuen >= 3 && o3->values[0].isnum && o3->values[1].isnum && o3->values[2].isnum && (o3->values[0].num || o3->values[1].num || o3->values[2].num))
-               fprintf(f, "rotate([%lf,%lf,%lf])", -o3->values[0].num, o3->values[1].num, o3->values[2].num);
-            fprintf(f, "m%d(pushed,hulled); // %s\n", n, modules[n].desc);
+               fprintf(f, "rotate([%lf,%lf,%lf])", o3->values[0].num, o3->values[1].num, o3->values[2].num);
+            fprintf(f, "m%d(pushed,hulled); // %s%s\n", n, modules[n].desc,back?"":" (back)");
          } else
             fprintf(f, "// Missing %s\n", modules[n].desc);
          free(model);
