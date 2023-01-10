@@ -1,6 +1,6 @@
 // Generated case design for PCB/Test/Test.kicad_pcb
 // By https://github.com/revk/PCBCase
-// Generated 2023-01-10 16:19:34
+// Generated 2023-01-10 16:30:02
 //
 
 // Globals
@@ -26,22 +26,23 @@ pcbwidth=50.000000;
 pcblength=50.000000;
 // Populated PCB
 module board(pushed=false,hulled=false){
-translate([5.000000,25.000000,1.600000])rotate([0,0,90.000000])translate([0.000000,2.700000,0.000000])rotate([90.000000,0.000000,0.000000])m0(pushed,hulled); // RevK:ESP32-PICO-MINI-02 ESP32-PICO-MINI-02 (back)
-translate([25.000000,45.000000,1.600000])translate([0.000000,2.700000,0.000000])rotate([90.000000,0.000000,0.000000])m0(pushed,hulled); // RevK:ESP32-PICO-MINI-02 ESP32-PICO-MINI-02 (back)
-translate([50.000000,10.000000,1.600000])rotate([0,0,90.000000])translate([0.000000,3.385000,0.000000])rotate([90.000000,0.000000,0.000000])m1(pushed,hulled); // RevK:USC16-TR-Round CSP-USC16-TR (back)
-translate([10.500000,0.000000,1.600000])translate([0.000000,3.385000,0.000000])rotate([90.000000,0.000000,0.000000])m1(pushed,hulled); // RevK:USC16-TR-Round CSP-USC16-TR (back)
-translate([0.000000,40.000000,1.600000])rotate([0,0,-90.000000])translate([0.000000,3.385000,0.000000])rotate([90.000000,0.000000,0.000000])m1(pushed,hulled); // RevK:USC16-TR-Round CSP-USC16-TR (back)
-translate([25.000000,5.000000,1.600000])rotate([0,0,180.000000])translate([0.000000,2.700000,0.000000])rotate([90.000000,0.000000,0.000000])m0(pushed,hulled); // RevK:ESP32-PICO-MINI-02 ESP32-PICO-MINI-02 (back)
-translate([40.800000,50.500000,1.600000])rotate([0,0,180.000000])translate([0.000000,3.385000,0.000000])rotate([90.000000,0.000000,0.000000])m1(pushed,hulled); // RevK:USC16-TR-Round CSP-USC16-TR (back)
-translate([45.000000,25.000000,1.600000])rotate([0,0,-90.000000])translate([0.000000,2.700000,0.000000])rotate([90.000000,0.000000,0.000000])m0(pushed,hulled); // RevK:ESP32-PICO-MINI-02 ESP32-PICO-MINI-02 (back)
-translate([40.800000,50.500000,0.000000])rotate([180,0,0])translate([0.000000,3.385000,0.000000])rotate([90.000000,0.000000,0.000000])m1(pushed,hulled); // RevK:USC16-TR-Round CSP-USC16-TR
-translate([0.000000,40.000000,0.000000])rotate([0,0,90.000000])rotate([180,0,0])translate([0.000000,3.385000,0.000000])rotate([90.000000,0.000000,0.000000])m1(pushed,hulled); // RevK:USC16-TR-Round CSP-USC16-TR
-translate([25.000000,5.000000,0.000000])rotate([180,0,0])translate([0.000000,2.700000,0.000000])rotate([90.000000,0.000000,0.000000])m0(pushed,hulled); // RevK:ESP32-PICO-MINI-02 ESP32-PICO-MINI-02
-translate([10.500000,0.000000,0.000000])rotate([0,0,180.000000])rotate([180,0,0])translate([0.000000,3.385000,0.000000])rotate([90.000000,0.000000,0.000000])m1(pushed,hulled); // RevK:USC16-TR-Round CSP-USC16-TR
-translate([5.000000,25.000000,0.000000])rotate([0,0,-90.000000])rotate([180,0,0])translate([0.000000,2.700000,0.000000])rotate([90.000000,0.000000,0.000000])m0(pushed,hulled); // RevK:ESP32-PICO-MINI-02 ESP32-PICO-MINI-02
-translate([25.000000,45.000000,0.000000])rotate([0,0,180.000000])rotate([180,0,0])translate([0.000000,2.700000,0.000000])rotate([90.000000,0.000000,0.000000])m0(pushed,hulled); // RevK:ESP32-PICO-MINI-02 ESP32-PICO-MINI-02
-translate([50.000000,10.000000,0.000000])rotate([0,0,-90.000000])rotate([180,0,0])translate([0.000000,3.385000,0.000000])rotate([90.000000,0.000000,0.000000])m1(pushed,hulled); // RevK:USC16-TR-Round CSP-USC16-TR
-translate([45.000000,25.000000,0.000000])rotate([0,0,90.000000])rotate([180,0,0])translate([0.000000,2.700000,0.000000])rotate([90.000000,0.000000,0.000000])m0(pushed,hulled); // RevK:ESP32-PICO-MINI-02 ESP32-PICO-MINI-02
+translate([5.000000,25.000000,1.600000])rotate([0,0,90.000000])translate([0.000000,2.700000,0.000000])rotate([90.000000,0.000000,-0.000000])m0(pushed,hulled); // RevK:ESP32-PICO-MINI-02 ESP32-PICO-MINI-02 (back)
+translate([44.000000,2.000000,1.600000])translate([3.810000,0.000000,0.000000])rotate([-0.000000,0.000000,-90.000000])m1(pushed,hulled); // RevK:JLC-PinHeader_1x04_P2.54mm_Right PinHeader_1x04_P2.54mm_Horizontal (back)
+translate([25.000000,45.000000,1.600000])translate([0.000000,2.700000,0.000000])rotate([90.000000,0.000000,-0.000000])m0(pushed,hulled); // RevK:ESP32-PICO-MINI-02 ESP32-PICO-MINI-02 (back)
+translate([50.000000,10.000000,1.600000])rotate([0,0,90.000000])translate([0.000000,3.385000,0.000000])rotate([90.000000,0.000000,-0.000000])m2(pushed,hulled); // RevK:USC16-TR-Round CSP-USC16-TR (back)
+translate([10.500000,0.000000,1.600000])translate([0.000000,3.385000,0.000000])rotate([90.000000,0.000000,-0.000000])m2(pushed,hulled); // RevK:USC16-TR-Round CSP-USC16-TR (back)
+translate([0.000000,40.000000,1.600000])rotate([0,0,-90.000000])translate([0.000000,3.385000,0.000000])rotate([90.000000,0.000000,-0.000000])m2(pushed,hulled); // RevK:USC16-TR-Round CSP-USC16-TR (back)
+translate([25.000000,5.000000,1.600000])rotate([0,0,180.000000])translate([0.000000,2.700000,0.000000])rotate([90.000000,0.000000,-0.000000])m0(pushed,hulled); // RevK:ESP32-PICO-MINI-02 ESP32-PICO-MINI-02 (back)
+translate([40.800000,50.500000,1.600000])rotate([0,0,180.000000])translate([0.000000,3.385000,0.000000])rotate([90.000000,0.000000,-0.000000])m2(pushed,hulled); // RevK:USC16-TR-Round CSP-USC16-TR (back)
+translate([45.000000,25.000000,1.600000])rotate([0,0,-90.000000])translate([0.000000,2.700000,0.000000])rotate([90.000000,0.000000,-0.000000])m0(pushed,hulled); // RevK:ESP32-PICO-MINI-02 ESP32-PICO-MINI-02 (back)
+translate([40.800000,50.500000,0.000000])rotate([180,0,0])translate([0.000000,3.385000,0.000000])rotate([90.000000,0.000000,-0.000000])m2(pushed,hulled); // RevK:USC16-TR-Round CSP-USC16-TR
+translate([0.000000,40.000000,0.000000])rotate([0,0,90.000000])rotate([180,0,0])translate([0.000000,3.385000,0.000000])rotate([90.000000,0.000000,-0.000000])m2(pushed,hulled); // RevK:USC16-TR-Round CSP-USC16-TR
+translate([25.000000,5.000000,0.000000])rotate([180,0,0])translate([0.000000,2.700000,0.000000])rotate([90.000000,0.000000,-0.000000])m0(pushed,hulled); // RevK:ESP32-PICO-MINI-02 ESP32-PICO-MINI-02
+translate([10.500000,0.000000,0.000000])rotate([0,0,180.000000])rotate([180,0,0])translate([0.000000,3.385000,0.000000])rotate([90.000000,0.000000,-0.000000])m2(pushed,hulled); // RevK:USC16-TR-Round CSP-USC16-TR
+translate([5.000000,25.000000,0.000000])rotate([0,0,-90.000000])rotate([180,0,0])translate([0.000000,2.700000,0.000000])rotate([90.000000,0.000000,-0.000000])m0(pushed,hulled); // RevK:ESP32-PICO-MINI-02 ESP32-PICO-MINI-02
+translate([25.000000,45.000000,0.000000])rotate([0,0,180.000000])rotate([180,0,0])translate([0.000000,2.700000,0.000000])rotate([90.000000,0.000000,-0.000000])m0(pushed,hulled); // RevK:ESP32-PICO-MINI-02 ESP32-PICO-MINI-02
+translate([50.000000,10.000000,0.000000])rotate([0,0,-90.000000])rotate([180,0,0])translate([0.000000,3.385000,0.000000])rotate([90.000000,0.000000,-0.000000])m2(pushed,hulled); // RevK:USC16-TR-Round CSP-USC16-TR
+translate([45.000000,25.000000,0.000000])rotate([0,0,90.000000])rotate([180,0,0])translate([0.000000,2.700000,0.000000])rotate([90.000000,0.000000,-0.000000])m0(pushed,hulled); // RevK:ESP32-PICO-MINI-02 ESP32-PICO-MINI-02
 }
 
 module b(cx,cy,z,w,l,h){translate([cx-w/2,cy-l/2,z])cube([w,l,h]);}
@@ -56,6 +57,14 @@ translate([-13.2/2,-16.6/2,0])
 }
 
 module m1(pushed=false,hulled=false)
+{ // RevK:JLC-PinHeader_1x04_P2.54mm_Right PinHeader_1x04_P2.54mm_Horizontal
+translate([-1.27,-8.89,-1]) // Cropped pins
+cube([2.54,10.16,2]);
+translate([-1.27,-8.89,0])
+cube([50,10.16,2.54]);
+}
+
+module m2(pushed=false,hulled=false)
 { // RevK:USC16-TR-Round CSP-USC16-TR
 rotate([-90,0,0])translate([-4.47,-3.84,0])
 {
