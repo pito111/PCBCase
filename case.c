@@ -603,15 +603,16 @@ write_scad(void)
       if (lpo)
          points[--lpo] = 0;
       fclose(pa);
-      fprintf(f, "\nmodule %s(h=pcbthickness,r=0){linear_extrude(height=h)offset(r=r)polygon(points=[%s],paths=[%s]);}\n", tag, points, paths);
+      if(tag)fprintf(f, "\nmodule %s(h=pcbthickness,r=0){linear_extrude(height=h)offset(r=r)polygon(points=[%s],paths=[%s]);}\n", tag, points, paths);
       free(points);
       free(paths);
       free(pointx);
       free(pointy);
       free(cuts);
    }
-   outline("Edge.Cuts", "pcb");
-   outline(useredge1 ? "Eco1.User" : useredge2 ? "Eco2.User" : "Edge.Cuts", "outline");
+   outline("Edge.Cuts", NULL); // Gets min/max set for this - does not output
+   outline(useredge1 ? "Eco1.User" : useredge2 ? "Eco2.User" : "Edge.Cuts", "outline"); // Updates min/max before output
+   outline("Edge.Cuts", "pcb"); // Actually output this time
 
    double          edgewidth = 0,
                    edgelength = 0;
