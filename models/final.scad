@@ -87,7 +87,14 @@ module pyramid()
 
 module wall(d=0)
 { // The case wall
-    	translate([0,0,-casebase-d])pcbh(height+d*2,margin/2+d);
+	if(useredge)
+    		translate([0,0,-casebase-d])
+			intersection()
+			{
+				pcb(height+d*2,margin/2+d);
+				pcbh(height+d*2,margin/2+d);
+			}
+	else pcbh(height+d*2,margin/2+d);
 }
 
 module cutf()
