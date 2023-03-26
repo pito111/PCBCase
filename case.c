@@ -630,11 +630,42 @@ write_scad(void)
 
    struct
    {
-      char           *filename;
-      char           *desc;
-      unsigned char   ok:1;
+      char           *filename;	// Filename (malloc)
+      char           *desc;	// Description (malloc)
+      unsigned char   ok:1;	// If file exists
+      unsigned char n:1;	// If module expects n parameter
    }              *modules = NULL;
    int             modulen = 0;
+
+   int find_module(char**fnp,const char *a, const char *b)
+   { // Find a module by filename, and return number, <0 for failed (including file not existing)
+	   char *fn=*fnp;
+	   *fnp=NULL;
+         int             n;
+         for (n = 0; n < modulen; n++)
+            if (!strcmp(modules[n].filename, fn))
+               break;
+	 if(n<modulen)
+	 {
+		 if(!modules[n].ok)return -1;
+		 return n;
+	 }
+            modules = realloc(modules, (++modulen) * sizeof(*modules));
+            if (!modules)
+               errx(1, "malloc");
+            memset(modules + n, 0, sizeof(*modules));
+            modules[n].filename = fn;
+            if (asprintf(&modules[n].desc, "%s %s", a,b)<0)
+               errx(1, "malloc");
+            if (access(modules[n].filename, R_OK))
+	    {
+	       if(debug)warnx("Not found %s %s %s",fn,a,b);
+		    return -1;
+	    }
+               modules[n].ok = 1;
+	       if(debug)warnx("New module %s %s %s",fn,a,b);
+	       return n;
+   }
 
    const char     *checkignore(const char *ref)
    {
@@ -693,27 +724,36 @@ write_scad(void)
          char           *fn;
          if (asprintf(&fn, "%s.scad", r) < 0)
             errx(1, "malloc");
-         int             n;
-         for (n = 0; n < modulen; n++)
-            if (!strcmp(modules[n].filename, fn))
-               break;
-         if (n == modulen)
-         {
-            modules = realloc(modules, (++modulen) * sizeof(*modules));
-            if (!modules)
-               errx(1, "malloc");
-            memset(modules + n, 0, sizeof(*modules));
-            modules[n].filename = fn;
-            if (asprintf(&modules[n].desc, "%s %s", o->values[0].txt ? : ref ? : "-", r) < 0)
-               errx(1, "malloc");
-            if (!access(modules[n].filename, R_OK))
-               modules[n].ok = 1;
-         } else
-            free(fn);
-if(modules[n].ok)
+         int             n=find_module(&fn, o->values[0].txt ? : ref ? : "-", r);
+	 int index=0;
+	 if(n<0)
+	 { // Consider parameterised maybe?
+	  const char *p=r;
+	  while(*p&&!isdigit(*p))p++;
+	  if(*p)
+	  {
+		  while(*p&&isdigit(*p))index=index*10+(*p++-'0');
+		  while(*p&&!isdigit(*p))p++;
+		  if(*p)index=0; // More than one number in place.
+	  }
+	  if(index)
+	  { // Make filename
+         if (asprintf(&fn, "%s.scad", r) < 0)
+            errx(1, "malloc");
+	 char *I=fn,*O=fn;
+	 while(*I&&!isdigit(*I))*O++=*I++;
+	 *O++='0';
+	 while(*I&&isdigit(*I))I++;
+	 while(*I&&!isdigit(*I))*O++=*I++;
+	 *O=0;
+	 n=find_module(&fn, o->values[0].txt ? : ref ? : "-", r);
+	 if(n>=0)modules[n].n=1;
+	  }
+	 }
+if(n>=0)
 { // footprint level 3D
          if (debug && ref)
-            fprintf(stderr, "Module %s %s%s\n", ref, ref, back ? " (back)" : "");
+            warnx("Module %s %s%s", ref, ref, back ? " (back)" : "");
             if ((o3 = find_obj(o, "at", NULL)) && o3->valuen >= 2 && o3->values[0].isnum && o3->values[1].isnum)
             {
                fprintf(f, "translate([%lf,%lf,%lf])", o3->values[0].num - lx, ry - o3->values[1].num, back ? 0 : pcbthickness);
@@ -722,6 +762,9 @@ if(modules[n].ok)
             }
             if (back)
                fprintf(f, "rotate([180,0,0])");
+	    if(modules[n].n&&index)
+            fprintf(f, "m%d(pushed,hulled,%d); // %s%s\n", n,index, modules[n].desc,back?"":" (back)");
+	    else
             fprintf(f, "m%d(pushed,hulled); // %s%s\n", n, modules[n].desc,back?"":" (back)");
 continue;
 }
@@ -747,34 +790,19 @@ continue;
          char           *fn;
          if (asprintf(&fn, "%s.scad", leaf) < 0)
             errx(1, "malloc");
-         int             n;
-         for (n = 0; n < modulen; n++)
-            if (!strcmp(modules[n].filename, fn))
-               break;
+         int             n=find_module(&fn, o->values[0].txt ? : ref ? : "-", leaf);
          char           *refn;
          if (asprintf(&refn, "%s.%d", ref, id) < 0)
             errx(1, "malloc");
          if (checkignore(refn))
+	 {
+		 free(refn);
             continue;
+	 }
          if (debug && ref)
-            fprintf(stderr, "Module %s.%d %s%s\n", ref, id, leaf, back ? " (back)" : "");
+            warnx("Module %s.%d %s%s", ref, id, leaf, back ? " (back)" : "");
          free(refn);
-         if (n == modulen)
-         {
-            modules = realloc(modules, (++modulen) * sizeof(*modules));
-            if (!modules)
-               errx(1, "malloc");
-            memset(modules + n, 0, sizeof(*modules));
-            modules[n].filename = fn;
-            if (asprintf(&modules[n].desc, "%s %s", o->values[0].txt ? : ref ? : "-", leaf) < 0)
-               errx(1, "malloc");
-            if (access(modules[n].filename, R_OK))
-               warnx("Cannot find model for %s", leaf);
-            else
-               modules[n].ok = 1;
-         } else
-            free(fn);
-         if (modules[n].ok)
+         if (n>=0)
          {
             if ((o3 = find_obj(o, "at", NULL)) && o3->valuen >= 2 && o3->values[0].isnum && o3->values[1].isnum)
             {
@@ -792,7 +820,10 @@ continue;
                fprintf(f, "rotate([%lf,%lf,%lf])", -o3->values[0].num, -o3->values[1].num, -o3->values[2].num);
             fprintf(f, "m%d(pushed,hulled); // %s%s\n", n, modules[n].desc,back?"":" (back)");
          } else
-            fprintf(f, "// Missing %s\n", modules[n].desc);
+	 {
+            fprintf(f, "// Missing %s.%d %s%s\n", ref, id, leaf, back ? " (back)" : "");
+	    warnx("Missing %s.%d %s%s", ref, id, leaf, back ? " (back)" : "");
+	 }
          free(model);
       }
    }
@@ -804,6 +835,9 @@ continue;
    for (int n = 0; n < modulen; n++)
       if (modules[n].ok)
       {
+	      if(modules[n].n)
+         fprintf(f, "module m%d(pushed=false,hulled=false,n=0)\n{ // %s\n", n, modules[n].desc);
+	      else
          fprintf(f, "module m%d(pushed=false,hulled=false)\n{ // %s\n", n, modules[n].desc);
          copy_file(f, modules[n].filename);
          fprintf(f, "}\n\n");
