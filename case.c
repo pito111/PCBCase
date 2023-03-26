@@ -846,7 +846,7 @@ continue;
    copy_file(f, "final.scad");
 
    if (debug)
-      fprintf(f, "board();\n");
+      fprintf(f, "board();\n#pcb();\n");
    else if (!norender)
       fprintf(f, "base(); translate([spacing,0,0])top();\n");
 
