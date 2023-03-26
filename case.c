@@ -684,6 +684,49 @@ write_scad(void)
       if (checkignore(ref))
          continue;
       o2 = NULL;
+
+      // Footprint level
+      if(ref)
+      {
+	      const char *r=strchr(ref,':');
+	      if(r)r++;else r=ref;
+         char           *fn;
+         if (asprintf(&fn, "%s.scad", r) < 0)
+            errx(1, "malloc");
+         int             n;
+         for (n = 0; n < modulen; n++)
+            if (!strcmp(modules[n].filename, fn))
+               break;
+         if (n == modulen)
+         {
+            modules = realloc(modules, (++modulen) * sizeof(*modules));
+            if (!modules)
+               errx(1, "malloc");
+            memset(modules + n, 0, sizeof(*modules));
+            modules[n].filename = fn;
+            if (asprintf(&modules[n].desc, "%s %s", o->values[0].txt ? : ref ? : "-", r) < 0)
+               errx(1, "malloc");
+            if (!access(modules[n].filename, R_OK))
+               modules[n].ok = 1;
+         } else
+            free(fn);
+if(modules[n].ok)
+{ // footprint level 3D
+         if (debug && ref)
+            fprintf(stderr, "Module %s %s%s\n", ref, ref, back ? " (back)" : "");
+            if ((o3 = find_obj(o, "at", NULL)) && o3->valuen >= 2 && o3->values[0].isnum && o3->values[1].isnum)
+            {
+               fprintf(f, "translate([%lf,%lf,%lf])", o3->values[0].num - lx, ry - o3->values[1].num, back ? 0 : pcbthickness);
+               if (o3->valuen >= 3 && o3->values[2].isnum)
+                  fprintf(f, "rotate([0,0,%lf])", o3->values[2].num);
+            }
+            if (back)
+               fprintf(f, "rotate([180,0,0])");
+            fprintf(f, "m%d(pushed,hulled); // %s%s\n", n, modules[n].desc,back?"":" (back)");
+continue;
+}
+      }
+
       int             id = 0;
       while ((o2 = find_obj(o, "model", o2)))
       {
