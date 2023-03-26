@@ -686,10 +686,10 @@ write_scad(void)
       o2 = NULL;
 
       // Footprint level
-      if(ref)
+      if(o->valuen>=1&&o->values[0].istxt)
       {
-	      const char *r=strchr(ref,':');
-	      if(r)r++;else r=ref;
+	      const char *r=strchr(o->values[0].txt,':');
+	      if(r)r++;else r=o->values[0].txt;
          char           *fn;
          if (asprintf(&fn, "%s.scad", r) < 0)
             errx(1, "malloc");
