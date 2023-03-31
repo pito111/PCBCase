@@ -715,7 +715,7 @@ void write_scad(void)
          if (n < 0)
          {                      // Consider parameterised maybe?
             const char *p = r;
-            while (*p && (!isdigit(*p) || (p > r && p[-1] != '-')))
+            while (*p && (!isdigit(*p) || (p > r && p[-1] != '-' && p[-1] != '_')))
                p++;
             if (*p)
             {
@@ -732,7 +732,7 @@ void write_scad(void)
                   errx(1, "malloc");
                char *I = fn,
                    *O = fn;
-               while (*I && (!isdigit(*I) || (I > r && I[-1] != '-')))
+               while (*I && (!isdigit(*I) || (I > r && I[-1] != '-' && I[-1] != '_')))
                   *O++ = *I++;
                *O++ = '0';
                while (*I && isdigit(*I))
