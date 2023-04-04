@@ -6,4 +6,4 @@ hull()
 	b(0,-7.5/2-7.5+1.9,0,1.7+n*2.5-2,7.5,5);
 }
 // Pins
-for(p=[0:n-1])translate([-2.5*(n-1)/2+p*2.5,0,-2.1])cylinder(r=0.3,h=2.1);
+if(!hulled)for(p=[0:n-1])translate([-2.5*(n-1)/2+p*2.5,0,-2.1])cylinder(r=0.3,h=2.1);
