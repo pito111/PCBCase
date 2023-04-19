@@ -740,11 +740,11 @@ write_scad (void)
             const char *p = r;
             // try to find a likely number...
             for (p = r; *p && (*p != 'x' || !isdigit (p[1])); p++);     // Look for xN
-            if (*p)
+            if (!*p)
                for (p = r; *p && (*p != '-' || !isdigit (p[1])); p++);  // Look for -N
-            if (*p)
+            if (!*p)
                for (p = r; *p && (*p != '_' || !isdigit (p[1])); p++);  // Look for _N
-            if (p)
+            if (!*p)
             {
                int pos = (p - r);
                while (isdigit (*p))
