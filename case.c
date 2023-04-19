@@ -744,8 +744,9 @@ write_scad (void)
                for (p = r; *p && (*p != '-' || !isdigit (p[1])); p++);  // Look for -N
             if (!*p)
                for (p = r; *p && (*p != '_' || !isdigit (p[1])); p++);  // Look for _N
-            if (!*p)
+            if (*p)
             {
+               p++;
                int pos = (p - r);
                while (isdigit (*p))
                   index = index * 10 + (*p++) - '0';
