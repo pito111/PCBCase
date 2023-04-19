@@ -738,30 +738,35 @@ write_scad (void)
          if (n < 0)
          {                      // Consider parameterised maybe?
             const char *p = r;
-            while (*p && (!isdigit (*p) || (p > r && p[-1] != '-' && p[-1] != '_')))
-               p++;
+            // try to find a likely number...
+            for (p = r; *p && (*p != 'x' || !isdigit (p[1])); p++);     // Look for xN
             if (*p)
+               for (p = r; *p && (*p != '-' || !isdigit (p[1])); p++);  // Look for -N
+            if (*p)
+               for (p = r; *p && (*p != '_' || !isdigit (p[1])); p++);  // Look for _N
+            if (p)
             {
-               while (*p && isdigit (*p))
-                  index = index * 10 + (*p++ - '0');
-            }
-            if (index)
-            {                   // Make filename
-               if (asprintf (&fn, "%s.scad", r) < 0)
-                  errx (1, "malloc");
-               char *I = fn,
-                  *O = fn;
-               while (*I && (!isdigit (*I) || (I > r && I[-1] != '-' && I[-1] != '_')))
-                  *O++ = *I++;
-               *O++ = '0';
-               while (*I && isdigit (*I))
-                  I++;
-               while (*I)
-                  *O++ = *I++;
-               *O = 0;
-               n = find_module (&fn, o->values[0].txt ? : ref ? : "-", r);
-               if (n >= 0)
-                  modules[n].n = 1;
+               int pos = (p - r);
+               while (isdigit (*p))
+                  index = index * 10 + (*p++) - '0';
+               if (index)
+               {                // Make filename
+                  if (asprintf (&fn, "%s.scad", r) < 0)
+                     errx (1, "malloc");
+                  char *I = fn,
+                     *O = fn;
+                  while (*I && I < fn + pos)
+                     *O++ = *I++;
+                  *O++ = '0';
+                  while (*I && isdigit (*I))
+                     I++;
+                  while (*I)
+                     *O++ = *I++;
+                  *O = 0;
+                  n = find_module (&fn, o->values[0].txt ? : ref ? : "-", r);
+                  if (n >= 0)
+                     modules[n].n = 1;
+               }
             }
          }
          if (n >= 0)
