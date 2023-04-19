@@ -756,7 +756,7 @@ write_scad (void)
                *O++ = '0';
                while (*I && isdigit (*I))
                   I++;
-               while (*I && !isdigit (*I))
+               while (*I)
                   *O++ = *I++;
                *O = 0;
                n = find_module (&fn, o->values[0].txt ? : ref ? : "-", r);
