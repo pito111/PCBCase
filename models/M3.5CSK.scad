@@ -1,5 +1,5 @@
-// Screw 6mm
-if(!hulled&&!pushed)
+// Screw M3.5 countersunk
+if(!hulled)
 rotate([0,90,0],$fn=24)
 {
 	translate([0,0,-10])cylinder(d=7,h=10);
