@@ -881,8 +881,8 @@ write_scad (void)
 int
 main (int argc, const char *argv[])
 {
+   poptContext optCon;          /* context for parsing  command - line options */
    {
-      poptContext optCon;       /* context for parsing  command - line options */
       const struct poptOption optionsTable[] = {
          {"pcb-file", 'i', POPT_ARG_STRING, &pcbfile, 0, "PCB file", "filename"},
          {"scad-file", 'o', POPT_ARG_STRING, &scadfile, 0, "Openscad file", "filename"},
@@ -924,7 +924,6 @@ main (int argc, const char *argv[])
          poptPrintUsage (optCon, stderr, 0);
          return -1;
       }
-      poptFreeContext (optCon);
    }
    if (!scadfile)
    {
@@ -942,5 +941,6 @@ main (int argc, const char *argv[])
    load_pcb ();
    write_scad ();
 
+   poptFreeContext (optCon);
    return 0;
 }
