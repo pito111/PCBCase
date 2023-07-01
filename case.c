@@ -19,6 +19,7 @@
 /* yet, all globals, what the hell */
 int debug = 0;
 int norender = 0;
+int panel = 0;
 int useredge1 = 0;
 int useredge2 = 0;
 int nohull = 0;
@@ -613,9 +614,12 @@ write_scad (void)
       free (pointy);
       free (cuts);
    }
-   outline ("Edge.Cuts", NULL); // Gets min/max set for this - does not output
-   outline (useredge1 ? "Eco1.User" : useredge2 ? "Eco2.User" : "Edge.Cuts", "outline");        // Updates min/max before output
-   outline ("Edge.Cuts", "pcb");        // Actually output this time
+   const char *edgecuts = "Edge.Cuts";
+   if (panel)
+      edgecuts = "Eco1.User";   // Assuming actual edge cuts are a panel and no use to anyone.
+   outline (edgecuts, NULL);    // Gets min/max set for this - does not output
+   outline (useredge1 ? "Eco1.User" : useredge2 ? "Eco2.User" : edgecuts, "outline");   // Updates min/max before output
+   outline (edgecuts, "pcb");   // Actually output this time
 
    double edgewidth = 0,
       edgelength = 0;
@@ -898,6 +902,7 @@ main (int argc, const char *argv[])
          {"margin", 'm', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &margin, 0, "margin", "mm"},
          {"overlap", 'O', POPT_ARG_DOUBLE | POPT_ARGFLAG_SHOW_DEFAULT, &overlap, 0, "overlap", "mm"},
          {"lip", 0, POPT_ARG_DOUBLE, &lip, 0, "lip offset (default pcbthickness/2)", "mm"},
+         {"panel", 0, POPT_ARG_NONE, &panel, 0, "Use Eco1.User for PCB outline"},
          {"edge1", 0, POPT_ARG_NONE, &useredge1, 0, "Use Eco1.User for case"},
          {"edge2", 0, POPT_ARG_NONE, &useredge2, 0, "Use Eco2.User for case"},
          {"pcb-thickness", 'T', POPT_ARG_DOUBLE, &pcbthickness, 0, "PCB thickness (default: auto)", "mm"},
