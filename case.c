@@ -617,7 +617,7 @@ write_scad (void)
       if (layerpcb > 0 && layerpcb < 10)
          sprintf (edgecuts, "User.%d", layerpcb);
       char casework[] = "Edge.Cuts";
-      if (layercase > 0 && layercase < 01)
+      if (layercase > 0 && layercase < 10)
          sprintf (casework, "User.%d", layercase);
       else
          strcpy (casework, edgecuts);
