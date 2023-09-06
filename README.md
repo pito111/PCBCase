@@ -10,6 +10,12 @@ Any parts of the design that would breach the case cause cut outs and supports i
 
 Parts like LEDs can have holes through the case so they are visible, etc.
 
+There are a few parameters (see `--help`) for thickness of top/bottom/walls, etc. Have a play.
+
+You can also define the PCB outline is actually another later for special cases (e.g. where PCB is in a panel but part is the small bit in the middle, etc).
+
+Ensure the board stackup has the right PCb thickness, as this is used in the design
+
 ![275724777_4932056986873909_2086496272107808800_n](https://user-images.githubusercontent.com/996983/158376722-9541f6dd-25f3-4107-ac4b-4513a761b210.jpg)
 
 ## models
