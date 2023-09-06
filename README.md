@@ -1,4 +1,4 @@
-* PCB Case
+# PCB Case
 
 
 This is designed to take an KICad 6 kicad_pcb file and produce an openscad file that is the case.
